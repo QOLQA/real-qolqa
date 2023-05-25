@@ -21,5 +21,8 @@ document.querySelector('#app').innerHTML = `
     
   </div>
 `
-console.log("Apra");
+
 setupCounter(document.querySelector('#counter'))
+
+asaskllqkwlqkwlqk
+qwkqjw1l212
