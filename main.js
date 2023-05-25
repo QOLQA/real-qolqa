@@ -24,5 +24,10 @@ document.querySelector('#app').innerHTML = `
 
 setupCounter(document.querySelector('#counter'))
 
-asaskllqkwlqkwlqk
-qwkqjw1l212
+const qolqa = {
+  integrante1 : "A",
+  integrante2 : "B",
+  integrante3 : "B",
+  integrante4 : "B"
+}
+console.log(qolqa{integrante1});
