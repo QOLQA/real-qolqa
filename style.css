@@ -46,11 +46,11 @@ h1 {
 }
 
 .logo {
+  border: solid black 10px; /*agregue un borde negro de 10 px*/
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
-  padding: 0%;
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
