@@ -3,17 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
   <body>
-    <h1>Hola Mundo</h1>
-    <h2>hELLO WOLRD</h2>
-    <h3>Encabezado 3</h3>
-    <h4>Encabezado 4</h4>
-    <h5>Encabezado 5</h5>
-    <h6>Encabezado h6 agregado</h6>
-    <div id="app"></div>
     <script type="module" src="/main.js"></script>
+    <div id="toolbar">
+      <i class="fa fa-file-text-o"> </i>
+      <hr size="1" style="margin-right: 6px;">
+    </div>
+    <div id = "container"></div>
+    <button id = "importButton" >IMPORT</button>
+    <button id = "querieButton" >QUERIES</button>
+    <button id = "saveButton" >SAVE</button>
+    <button id="btnAtras">
+      <i class="fa fa-arrow-left"></i>
+    </button>
+    <div id="ContainerSUP">{QOLQA} | Conceptual model of: </div>
+    
+    <div  id="toolbar1" class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+        <button type="button"> <i class="fa fa-undo"></i></button>
+        <button type="button"> <i class="fa fa-repeat"></i></button>
+      </div>
+    </div>
+    <div id="toolbar2" class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+          <button type="button"><i class="fa fa-search-plus"></i></button>
+          <button type="button"><i class="fa fa-search"></i></button>
+          <button type="button"><i class="fa fa-search-minus"></i></button>
+      </div>
+    </div>
+    <div id="toolbar3" class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+          <button type="button" class="fa fa-files-o"></button>
+          <button type="button" class="fa fa-table"></button>
+      </div>
+    </div>
+    <div id="toolbar4" class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+          <button type="button" class="fa fa-print"></button>
+      </div>
+    </div>
   </body>
 </html>
