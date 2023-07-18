@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "vite": "^4.2.0"
+  },
+  "dependencies": {
+    "@aire-ux/mxgraph": "^4.2.6"
   }
 }
