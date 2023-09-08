@@ -2,6 +2,7 @@
 import { table } from "./cells";
 import createGraph from "./graph";
 import createLayout from "./layout";
+import { addOverlay } from "./overlays";
 import mx from "./util";
 
 let container = document.querySelector('#container');
@@ -91,6 +92,7 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       vertex.geometry.x = pt.x;
       vertex.geometry.y = pt.y;
       vertex.geometry.alternateBounds = new mx.mxRectangle(0, 0, vertex.geometry.width, vertex.geometry.height);
+      // addOverlay(vertex, '/images/add.png', graph, {x:-10, y:0}, 'funcion1')
       graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
     }
   };
