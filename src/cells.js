@@ -1,4 +1,4 @@
-import { Column, Table } from "./userObjects";
+import { Column, Table } from "./userobjects";
 import mx from "./util";
 
 let tableObject = new Table('TABLENAME');

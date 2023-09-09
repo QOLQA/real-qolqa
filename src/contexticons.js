@@ -1,7 +1,7 @@
 import { overlay } from "./attributeTypes";
 import { column } from "./cells";
 import mx from "./util";
-
+import { addTableChildren } from "./toolbar"
 
 const imagesPath = '../../examples/images/';
 
@@ -60,6 +60,30 @@ mxVertexToolHandler.prototype.init = function() {
   );
 
   this.domNode.appendChild(img);
+
+  // agregar hijo a la tabla padre
+  let imgDoc = createImage(imagesPath + 'handle-connect.png');
+  imgDoc.setAttribute('title', 'New DocCh');
+  imgDoc.style.cursor = 'pointer';
+  imgDoc.style.width = '20px';
+  imgDoc.style.height = '20px';
+
+  mx.mxEvent.addGestureListeners(imgDoc,
+    mx.mxUtils.bind(this, function(evt) {
+      mx.mxEvent.consume(evt);
+    })
+  );
+
+  // el this se vincula con mxVexterHandler que tiene graph
+  mx.mxEvent.addListener(imgDoc, 'click',
+    mx.mxUtils.bind(this, function(evt) {
+      let graph = this.graph;
+      addTableChildren(graph);
+    })
+  )
+
+
+  this.domNode.appendChild(imgDoc);
 
   // agregar plus
   let imgPlus = createImage(imagesPath + 'plus.png');

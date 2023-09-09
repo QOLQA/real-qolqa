@@ -99,3 +99,26 @@ function addToolbarItem(graph, toolbar, prototype, image) {
   let img = toolbar.addMode(null, image, funct);
   mx.mxUtils.makeDraggable(img, graph, funct);
 }
+
+export function addTableChildren(graph) {
+  let selectedCell = graph.getSelectionCell();
+
+  if (selectedCell) {
+    var name = mx.mxUtils.prompt('Enter name for new table');
+
+    if (name != null && name.trim() != '') {
+      let childTable = graph.getModel().cloneCell(table);
+      childTable.value.name = name;
+      childTable.geometry.x = 0; // Puedes ajustar la posición inicial según tus necesidades
+      childTable.geometry.y = 0; // Puedes ajustar la posición inicial según tus necesidades
+      childTable.geometry.alternateBounds = new mx.mxRectangle(0, 0, childTable.geometry.width, childTable.geometry.height);
+
+      graph.getModel().beginUpdate();
+      try {
+        graph.addCell(childTable, selectedCell);
+      } finally {
+        graph.getModel().endUpdate();
+      }
+    }
+  }
+}
