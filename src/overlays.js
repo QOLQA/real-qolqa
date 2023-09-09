@@ -20,7 +20,7 @@ export function overlayForEdit(cell, graph, pathImage, offset, tooltip) {
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
     // abrir menu
-    console.log('abriendo el menu')
+    alert('abriendo el menu')
   })
 
   graph.addCellOverlay(cell, overlay)
