@@ -109,8 +109,15 @@ export function addTableChildren(graph) {
     if (name != null && name.trim() != '') {
       let childTable = graph.getModel().cloneCell(table);
       childTable.value.name = name;
-      childTable.geometry.x = 0; // Puedes ajustar la posición inicial según tus necesidades
-      childTable.geometry.y = 0; // Puedes ajustar la posición inicial según tus necesidades
+
+      // estilos de la tabla hijo 
+      let childStyle = childTable.getStyle();
+      childStyle += ';fillColor=#81B9FF'; 
+      childStyle += ';gradientColor=#5F98FF';
+      childStyle += ';strokeColor=#81B9FF';
+      childStyle += ';strokeWidth=1';
+      childTable.setStyle(childStyle);
+
       childTable.geometry.alternateBounds = new mx.mxRectangle(0, 0, childTable.geometry.width, childTable.geometry.height);
 
       graph.getModel().beginUpdate();
