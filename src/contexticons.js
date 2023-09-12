@@ -1,5 +1,6 @@
 import { overlay } from "./attributeTypes";
 import { column } from "./cells";
+import { addOverlay, overlayForDelete, overlayForEdit } from "./overlays";
 import mx from "./util";
 import { addTableChildren } from "./toolbar"
 
@@ -110,7 +111,9 @@ mxVertexToolHandler.prototype.init = function() {
           v1.value.name = columnName;
           //let v2 = graph.insertVertde ex(cell, null, v1, 0, 0, width, 30)
           graph.addCell(v1, cell);
-          graph.addCellOverlay(v1, overlay);
+          // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
+          overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo')
+          overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo')
         } finally {
           graph.getModel().endUpdate();
         }
