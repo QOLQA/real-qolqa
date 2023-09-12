@@ -2,6 +2,7 @@
 import { table } from "./cells";
 import createGraph from "./graph";
 import createLayout from "./layout";
+import { addOverlay } from "./overlays";
 import mx from "./util";
 
 let container = document.querySelector('#container');
@@ -91,6 +92,7 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       vertex.geometry.x = pt.x;
       vertex.geometry.y = pt.y;
       vertex.geometry.alternateBounds = new mx.mxRectangle(0, 0, vertex.geometry.width, vertex.geometry.height);
+      // addOverlay(vertex, '/images/add.png', graph, {x:-10, y:0}, 'funcion1')
       graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
     }
   };
@@ -98,4 +100,34 @@ function addToolbarItem(graph, toolbar, prototype, image) {
   // crea la imagen que es usada para el arrastre
   let img = toolbar.addMode(null, image, funct);
   mx.mxUtils.makeDraggable(img, graph, funct);
+}
+
+export function addTableChildren(graph) {
+  let selectedCell = graph.getSelectionCell();
+
+  if (selectedCell) {
+    var name = mx.mxUtils.prompt('Enter name for new table');
+
+    if (name != null && name.trim() != '') {
+      let childTable = graph.getModel().cloneCell(table);
+      childTable.value.name = name;
+
+      // estilos de la tabla hijo 
+      let childStyle = childTable.getStyle();
+      childStyle += ';fillColor=#81B9FF'; 
+      childStyle += ';gradientColor=#5F98FF';
+      childStyle += ';strokeColor=#81B9FF';
+      childStyle += ';strokeWidth=1';
+      childTable.setStyle(childStyle);
+
+      childTable.geometry.alternateBounds = new mx.mxRectangle(0, 0, childTable.geometry.width, childTable.geometry.height);
+
+      graph.getModel().beginUpdate();
+      try {
+        graph.addCell(childTable, selectedCell);
+      } finally {
+        graph.getModel().endUpdate();
+      }
+    }
+  }
 }

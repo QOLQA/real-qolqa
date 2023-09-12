@@ -1,7 +1,8 @@
 import { overlay } from "./attributeTypes";
 import { column } from "./cells";
+import { addOverlay, overlayForDelete, overlayForEdit } from "./overlays";
 import mx from "./util";
-
+import { addTableChildren } from "./toolbar"
 
 const imagesPath = '../../examples/images/';
 
@@ -61,6 +62,30 @@ mxVertexToolHandler.prototype.init = function() {
 
   this.domNode.appendChild(img);
 
+  // agregar hijo a la tabla padre
+  let imgDoc = createImage(imagesPath + 'handle-connect.png');
+  imgDoc.setAttribute('title', 'New DocCh');
+  imgDoc.style.cursor = 'pointer';
+  imgDoc.style.width = '20px';
+  imgDoc.style.height = '20px';
+
+  mx.mxEvent.addGestureListeners(imgDoc,
+    mx.mxUtils.bind(this, function(evt) {
+      mx.mxEvent.consume(evt);
+    })
+  );
+
+  // el this se vincula con mxVexterHandler que tiene graph
+  mx.mxEvent.addListener(imgDoc, 'click',
+    mx.mxUtils.bind(this, function(evt) {
+      let graph = this.graph;
+      addTableChildren(graph);
+    })
+  )
+
+
+  this.domNode.appendChild(imgDoc);
+
   // agregar plus
   let imgPlus = createImage(imagesPath + 'plus.png');
   imgPlus.setAttribute('title', 'Add attribute');
@@ -86,7 +111,9 @@ mxVertexToolHandler.prototype.init = function() {
           v1.value.name = columnName;
           //let v2 = graph.insertVertde ex(cell, null, v1, 0, 0, width, 30)
           graph.addCell(v1, cell);
-          graph.addCellOverlay(v1, overlay);
+          // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
+          overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo')
+          overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo')
         } finally {
           graph.getModel().endUpdate();
         }

@@ -19,9 +19,9 @@ function configureTableStyle(graph) {
   style[mx.mxConstants.STYLE_GRADIENTCOLOR] = '#FFAC81';//abajo tittle
   style[mx.mxConstants.STYLE_FILLCOLOR] = '#FF928B'; //arriba tittle
   style[mx.mxConstants.STYLE_SWIMLANE_FILLCOLOR] = '#FFFFFF '; //casillero del atributo 
-  style[mx.mxConstants.STYLE_STROKECOLOR] = '#FFFFFF'; // borde
+  style[mx.mxConstants.STYLE_STROKECOLOR] = '#FF928B'; // borde
   style[mx.mxConstants.STYLE_FONTCOLOR] = '#000000'; //fuente de letra T
-  style[mx.mxConstants.STYLE_STROKEWIDTH] = '2'; //grosor de borde
+  style[mx.mxConstants.STYLE_STROKEWIDTH] = '1'; //grosor de borde
   style[mx.mxConstants.STYLE_STARTSIZE] = '28'; //tamanio tittle --- NO TOCAR
   style[mx.mxConstants.STYLE_VERTICAL_ALIGN] = 'middle'; //posicion respecto a vertical
   style[mx.mxConstants.STYLE_FONTSIZE] = '12'; //tamnio de letra
