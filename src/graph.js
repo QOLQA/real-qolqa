@@ -175,9 +175,7 @@ function createGraph() {
     },
     mouseUp: function(sender, me) { },
     dragEnter: function(evt, state) {
-      if (this.currentIconSet == null) {
-        this.currentIconSet = new mxIconSet(state);
-      }
+      
     },
     dragLeave: function(evt, state) {
       if (this.currentIconSet != null) {

@@ -23,7 +23,7 @@ function mxIconSet(state) {
   mx.mxEvent.addListener(img, 'click',
     mx.mxUtils.bind(this, function(evt) {
       graph.removeCells([state.cell]);
-      mx.mxEvent.consume(evt);
+      mx.mxEvent.consume(evt)
       // funcion definida abajo
       this.destroy();
     })
