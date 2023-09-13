@@ -95,13 +95,13 @@ function createGraph() {
   }
   
   // viene de otra parte //se borran los iconos de + y X al borrar la funcion
-  graph.createHandler = function(state) {
-    if (state != null && this.isSwimlane(state.cell)) {
-      return new mxVertexToolHandler(state);
-    }
+  // graph.createHandler = function(state) {
+  //   if (state != null && this.isSwimlane(state.cell)) {
+  //     return new mxVertexToolHandler(state);
+  //   }
 
-    return mx.mxGraph.prototype.createHandler.apply(this, arguments);
-  }
+  //   return mx.mxGraph.prototype.createHandler.apply(this, arguments);
+  // }
 
   // menu para cambiar el tipo de atributo
   configMenuCell(graph);

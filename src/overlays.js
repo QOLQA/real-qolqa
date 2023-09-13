@@ -1,3 +1,4 @@
+import { column } from "./cells"
 import mx from "./util"
 
 
@@ -11,6 +12,24 @@ export function overlayForDelete(cell, graph, pathImage, offset, tooltip) {
   })
   
   graph.addCellOverlay(cell, overlay)
+}
+
+export function overlayForAddProp(cell, graph, pathImage, offset, tooltip) {
+  let columnName = mx.mxUtils.prompt('Enter a column name');
+  if (columnName != null) {
+    graph.getModel().beginUpdate();
+    try {
+      let v1 = graph.getModel().cloneCell(column);
+      v1.value.name = columnName;
+      //let v2 = graph.insertVertde ex(cell, null, v1, 0, 0, width, 30)
+      graph.addCell(v1, cell);
+      // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
+      overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo')
+      overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo')
+    } finally {
+      graph.getModel().endUpdate();
+    }
+  }
 }
 
 

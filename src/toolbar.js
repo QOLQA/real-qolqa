@@ -2,7 +2,7 @@
 import { table } from "./cells";
 import createGraph from "./graph";
 import createLayout from "./layout";
-import { addOverlay } from "./overlays";
+import { addOverlay, overlayForDelete, overlayForEdit } from "./overlays";
 import mx from "./util";
 
 let container = document.querySelector('#container');
@@ -84,6 +84,7 @@ function addToolbarItem(graph, toolbar, prototype, image) {
     graph.stopEditing(false);
 
     var name = mx.mxUtils.prompt('Enter name for new document');
+    console.log('he creado una nueva tabla')
 
     if (name != null && name.trim() != '') {
       let pt = graph.getPointForEvent(evt);
@@ -92,8 +93,11 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       vertex.geometry.x = pt.x;
       vertex.geometry.y = pt.y;
       vertex.geometry.alternateBounds = new mx.mxRectangle(0, 0, vertex.geometry.width, vertex.geometry.height);
+      overlayForDelete(vertex, graph, 'images/delete2.png', { x: -10, y: 0 }, 'Borrar documento')
+      overlayForEdit(vertex, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo')
       // addOverlay(vertex, '/images/add.png', graph, {x:-10, y:0}, 'funcion1')
       graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
+      
     }
   };
 
