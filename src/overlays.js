@@ -1,54 +1,89 @@
-import { column } from "./cells"
+import { column, table } from "./cells"
 import mx from "./util"
 
 
-export function overlayForDelete(cell, graph, pathImage, offset, tooltip) {
-  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip)
+export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignment) {
+  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
   
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
+    console.log('sender', sender)
+    console.log('evt2', evt2.properties.cell)
     graph.clearSelection()
-    graph.removeCells([cell])
+    // console.log(cell)
+    graph.getModel().beginUpdate()
+    const r = graph.removeCells([evt2.properties.cell])
+    console.log('BORRADO', r)
+    graph.getModel().endUpdate()
     alert('cell clickeado borrado de la vista')
   })
   
   graph.addCellOverlay(cell, overlay)
 }
 
-export function overlayForAddProp(cell, graph, pathImage, offset, tooltip) {
-  let columnName = mx.mxUtils.prompt('Enter a column name');
-  if (columnName != null) {
-    graph.getModel().beginUpdate();
-    try {
-      let v1 = graph.getModel().cloneCell(column);
-      v1.value.name = columnName;
-      //let v2 = graph.insertVertde ex(cell, null, v1, 0, 0, width, 30)
-      graph.addCell(v1, cell);
-      // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
-      overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo')
-      overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo')
-    } finally {
-      graph.getModel().endUpdate();
-    }
-  }
-}
-
-
-export function overlayForEdit(cell, graph, pathImage, offset, tooltip) {
-  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip)
+export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, alignment) {
+  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
 
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
-    // abrir menu
-    alert('abriendo el menu')
+    console.log('nesting document')
+    // Add a new document inside cell (evt2.properties.cell)
+    const name = mx.mxUtils.prompt('Enter name for new document')
+    if (name != null && name.trim() != '') {
+      const vertex = graph.getModel().cloneCell(table)
+      vertex.value.name = name
+      overlayForDelete(vertex, graph, 'images/delete2.png', { x:-10, y:15 }, 'Borrar documento', mx.mxConstants.ALIGN_TOP)
+      overlayForAddProp(vertex, graph, 'images/add.png', {x:-30, y:15}, 'Add property', mx.mxConstants.ALIGN_TOP)
+      overlayForNestDoc(vertex, graph, 'images/handle-connect.png', {x:-50, y:15}, 'Add document', mx.mxConstants.ALIGN_TOP)
+      graph.setSelectionCells(graph.importCells([vertex], 0, 0, evt2.properties.cell))
+    }
   })
 
   graph.addCellOverlay(cell, overlay)
 }
 
-export const addOverlay = (cell, pathImage, graph, offset, tooltip) => {
+export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, alignment) {
+
+  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
+  overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
+    graph.clearSelection()
+    // agregar nueva columna
+    const columnName = mx.mxUtils.prompt('Enter a column name')
+    if (columnName != null) {
+      graph.getModel().beginUpdate()
+      try {
+        const v1 = graph.getModel().cloneCell(column)
+        v1.value.name = columnName
+        graph.addCell(v1, evt2.properties.cell)
+        overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
+        overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
+        console.log('ejecuta todo try')
+      } finally {
+        graph.getModel().endUpdate()
+      }
+    }
+    console.log('add prop clicked')
+  })
+
+  graph.addCellOverlay(cell, overlay)
+}
+
+
+export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignment) {
+  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
+
+  overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
+    graph.clearSelection()
+    // abrir menu
+    console.log('abriendo el menu')
+  })
+
+  graph.addCellOverlay(cell, overlay)
+}
+
+export const addOverlay = (cell, pathImage, graph, offset, tooltip, alignment) => {
   let overlay = new mx.mxCellOverlay(new mx.mxImage(pathImage, 15, 15), tooltip)
   overlay.cursor = 'hand'
-  overlay.verticalAlign = mx.mxConstants.ALIGN_MIDDLE
+  overlay.verticalAlign = alignment
   overlay.offset = new mx.mxPoint(offset.x, offset.y)
 
   // overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
@@ -79,9 +114,4 @@ export const addOverlay = (cell, pathImage, graph, offset, tooltip) => {
   // graph.addCellOverlay(cell, overlay)
   return overlay
 }
-
-function removeCell(cell, graph) {
-
-}
-
 
