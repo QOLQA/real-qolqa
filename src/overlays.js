@@ -3,29 +3,25 @@ import mx from "./util"
 
 
 export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignment) {
-  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
+  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
   
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     console.log('sender', sender)
     console.log('evt2', evt2.properties.cell)
     graph.clearSelection()
-    // console.log(cell)
     graph.getModel().beginUpdate()
     const r = graph.removeCells([evt2.properties.cell])
-    console.log('BORRADO', r)
     graph.getModel().endUpdate()
-    alert('cell clickeado borrado de la vista')
   })
   
   graph.addCellOverlay(cell, overlay)
 }
 
 export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, alignment) {
-  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
+  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
 
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
-    console.log('nesting document')
     // Add a new document inside cell (evt2.properties.cell)
     const name = mx.mxUtils.prompt('Enter name for new document')
     if (name != null && name.trim() != '') {
@@ -43,7 +39,7 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
 
 export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, alignment) {
 
-  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
+  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
     // agregar nueva columna
@@ -56,7 +52,6 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
         graph.addCell(v1, evt2.properties.cell)
         overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
         overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
-        console.log('ejecuta todo try')
       } finally {
         graph.getModel().endUpdate()
       }
@@ -69,29 +64,23 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
 
 
 export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignment) {
-  const overlay = addOverlay(cell, pathImage, graph, offset, tooltip, alignment)
+  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
 
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
     // abrir menu
-    console.log('abriendo el menu')
+    alert('abriendo el menu')
   })
 
   graph.addCellOverlay(cell, overlay)
 }
 
-export const addOverlay = (cell, pathImage, graph, offset, tooltip, alignment) => {
+export const addOverlay = (pathImage, graph, offset, tooltip, alignment) => {
   let overlay = new mx.mxCellOverlay(new mx.mxImage(pathImage, 15, 15), tooltip)
   overlay.cursor = 'hand'
   overlay.verticalAlign = alignment
   overlay.offset = new mx.mxPoint(offset.x, offset.y)
 
-  // overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
-  //   graph.clearSelection()
-  //   alert(`Se presionó la funcionalidad de ${tooltip}`)
-  // })
-
-  // escucha la finalizacion del click? no
   overlay.addListener('pointerdown', (sender, eo) => {
     let evt2 = eo.getProperty('event')
     let state = eo.getProperty('state')
@@ -111,7 +100,6 @@ export const addOverlay = (cell, pathImage, graph, offset, tooltip, alignment) =
     mx.mxEvent(evt2)
   })
 
-  // graph.addCellOverlay(cell, overlay)
   return overlay
 }
 
