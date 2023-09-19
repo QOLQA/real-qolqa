@@ -53,8 +53,9 @@ function configureTableStyle(graph) {
 }
 
 function createGraph() {
+  /*
   // mxswimlane modif
-  mx.mxSwimlane.prototype.imageSize = 20;
+  mx.mxSwimlane.prototype.imageSize = 0;
   mx.mxSwimlane.prototype.imageDx = 16;
   mx.mxSwimlane.prototype.imageDy = 4;
 
@@ -63,7 +64,7 @@ function createGraph() {
       x + this.imageDx, y + this.imageDy,
       this.imageSize, this.imageSize
     );
-  }
+  }*/
 
   mx.mxConnectionHandler.prototype.connectImage = new mx.mxImage('/images/connector.gif', 16, 16);
 
