@@ -1,4 +1,5 @@
 import { column, table } from "./cells"
+import { selectionChanged }from "./userobjects";
 import mx from "./util"
 
 
@@ -68,8 +69,8 @@ export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignmen
 
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
-    // abrir menu
-    alert('abriendo el menu')
+    // abrir menu Funcion
+    selectionChanged(graph,evt2.properties.cell);
   })
 
   graph.addCellOverlay(cell, overlay)

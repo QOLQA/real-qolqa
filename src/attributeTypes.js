@@ -49,6 +49,10 @@ function modifyType(cell, type, graph) {
   // clone.name = cell.value.name;
   // console.log('clone', clone);
   clone.type = type;
+  if(document.getElementById('tipoValueTable')){
+    var selectElement = document.getElementById('tipoValueTable');
+    selectElement.value = type;
+  }
 
   graph.model.setValue(cell, clone);
 }
