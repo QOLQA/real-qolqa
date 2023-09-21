@@ -17,7 +17,7 @@ export function selectionChanged(graph, cell)
   //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
 
   // Forces focusout in IE : Cuando un elemento HTML, como un campo de entrada de texto (<input>), un área de texto (<textarea>), un botón u otro elemento interactivo, pierde el foco, el evento focusout se activa. Esto puede ocurrir cuando el usuario hace clic en otro elemento, presiona la tecla "Tab" para cambiar el enfoque a otro elemento o realiza alguna otra acción que haga que el elemento actual ya no esté seleccionado.
-  graph.container.focus();
+  // graph.container.focus();
   //Se fuerza el enfoque en el contenedor del gráfico. Esto se hace para garantizar que cualquier evento de pérdida de foco (focusout) se dispare en navegadores Internet Explorer (IE). Esto podría ser necesario para garantizar la consistencia del comportamiento del panel de propiedades en diferentes navegadores.
 
   // Clears the DIV the non-DOM way
@@ -27,14 +27,11 @@ export function selectionChanged(graph, cell)
   // Gets the selection cell
   // var cell = graph.getSelectionCell();
   // Se obtiene la celda actualmente seleccionada en el gráfico utilizando el método getSelectionCell() del objeto graph. Esto proporciona la celda que está actualmente seleccionada en el gráfico.
-
   if (cell == null )
   {
     mx.mxUtils.writeln(div, 'Nothing selected.');
-    //Se verifica si cell es nulo o no. Si no se ha seleccionado ninguna celda (es decir, cell es nulo), se muestra un mensaje 'Nothing selected.' en el panel de propiedades.
   }
-  else
-  {
+  else{
     // Writes the title
     var center = document.createElement('center');
     //Se crea un elemento HTML <center> para centrar el contenido que se agregará al panel de propiedades.
@@ -65,7 +62,7 @@ export function selectionChanged(graph, cell)
     // }
     //Un bucle for itera a través de los atributos y llama a la función createTextField(graph, form, cell, attrs[i]); para crear campos de texto para cada atributo en el formulario.
     
-    createTextField(graph, form, cell);
+    createTextField( graph,form, cell);
 
     div.appendChild(form.getTable());
     //Se agrega el formulario al panel de propiedades.
@@ -79,7 +76,7 @@ export function selectionChanged(graph, cell)
  * Creates the textfield for the given property.
  */
 // function createTextField(graph, form, cell, attribute)
-function createTextField(graph, form, cell)
+function createTextField( graph,form, cell)
 {
   // var input = form.addText(cell.value.name + ':', attribute.nodeValue);
   var input = form.addText('Nombre' + ': ', cell.value.name);
@@ -109,7 +106,6 @@ function createTextField(graph, form, cell)
 
     // Agregar el select al formulario
     var input2 = form.addField('Tipo' + ': ', select);
-    
     // var input2 = form.addText('Tipo' + ': ', cell.value.type);
   }
 

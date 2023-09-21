@@ -71,7 +71,12 @@ export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignmen
     graph.clearSelection()
     // abrir menu Funcion
     selectionChanged(graph,evt2.properties.cell);
+    if(document.getElementById('tipoValueTable')){
+      var selectElement = document.getElementById('tipoValueTable');
+      selectElement.value = evt2.properties.cell.value.type;
+    }
   })
+  
 
   graph.addCellOverlay(cell, overlay)
 }

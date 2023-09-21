@@ -78,6 +78,10 @@ if (!mx.mxClient.isBrowserSupported()) {
   // solo agregar la primera opcion
   addVertex(editorImagesPath + 'swimlane.gif', 120, 160, 'shape=swimlane;startSize=20;');
 
+  graph.getSelectionModel().addListener(mx.mxEvent.CHANGE, function(sender, evt)
+  {
+    selectionChanged(graph,null);
+  });
 
 }
 
