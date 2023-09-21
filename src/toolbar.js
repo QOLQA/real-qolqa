@@ -2,6 +2,7 @@
 import { table } from "./cells";
 import createGraph from "./graph";
 import createLayout from "./layout";
+import { selectionChanged }from "./userobjects";
 import { overlayForAddProp, overlayForDelete, overlayForEdit, overlayForNestDoc } from "./overlays";
 import mx from "./util";
 
@@ -76,6 +77,12 @@ if (!mx.mxClient.isBrowserSupported()) {
 
   // solo agregar la primera opcion
   addVertex(editorImagesPath + 'swimlane.gif', 120, 160, 'shape=swimlane;startSize=20;');
+
+  graph.getSelectionModel().addListener(mx.mxEvent.CHANGE, function(sender, evt)
+  {
+    selectionChanged(graph,null);
+  });
+
 }
 
 
