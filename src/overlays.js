@@ -53,75 +53,121 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
     mx.mxUtils.br(div);
     //createTextField(graph, form, attrs);
 */
-    // Crear un contenedor div para el formulario
-    var formContainer = document.createElement('div');
+    // Crear un contenedor div para la tabla
+    var tableContainer = document.createElement('div');
+    // Crear la tabla HTML
+    var table = document.createElement('table');
+    table.classList.add('undefined'); // Agregar la clase 'undefined' a la tabla
 
-    // Crear el formulario HTML
-    var form = document.createElement('form');
-    form.classList.add('form-group'); // Agregar la clase 'form-group' al formulario
+    var tbody = document.createElement('tbody');
 
-    var nameLabel = document.createElement('label');
-    nameLabel.setAttribute('for', 'exampleInputName');
-    nameLabel.textContent = 'Name';
+    var row1 = document.createElement('tr');
 
+    // Crear el campo de entrada de "nombre" con un id
     var nameInput = document.createElement('input');
-    nameInput.setAttribute('type', 'name');
-    nameInput.classList.add('form-control'); // Agregar la clase 'form-control' al campo de entrada
-    nameInput.setAttribute('id', 'exampleInputName');
-    nameInput.setAttribute('placeholder', 'Name');
+    nameInput.setAttribute('type', 'text');
+    nameInput.setAttribute('id', 'exampleInputName'); // Establecer el id
 
-    var emailLabel = document.createElement('label');
-    emailLabel.setAttribute('for', 'exampleInputEmail1');
-    emailLabel.textContent = 'E-mail';
+    // Crear la etiqueta "Nombre"
+    var nameLabel = document.createElement('label');
+    nameLabel.setAttribute('for', 'exampleInputName'); // Establecer el atributo "for" para asociarlo con el campo de entrada
+    nameLabel.textContent = 'Nombre: ';
 
-    var emailInput = document.createElement('input');
-    emailInput.setAttribute('type', 'email');
-    emailInput.classList.add('form-control');
-    emailInput.setAttribute('id', 'exampleInputEmail1');
-    emailInput.setAttribute('aria-describedby', 'emailHelp');
-    emailInput.setAttribute('placeholder', 'E-mail');
+    // Crear la celda de la etiqueta
+    var nameInputCell = document.createElement('td');
+    nameInputCell.appendChild(nameInput);
 
-    var passwordLabel = document.createElement('label');
-    passwordLabel.setAttribute('for', 'exampleInputPassword1');
-    passwordLabel.textContent = 'Password';
+    row1.appendChild(nameLabel);
+    row1.appendChild(nameInputCell);
 
-    var passwordInput = document.createElement('input');
-    passwordInput.setAttribute('type', 'password');
-    passwordInput.classList.add('form-control');
-    passwordInput.setAttribute('id', 'exampleInputPassword1');
-    passwordInput.setAttribute('placeholder', 'Password');
+    var row2 = document.createElement('tr');
 
-    var signUpButton = document.createElement('button');
-    signUpButton.setAttribute('type', 'submit');
-    signUpButton.classList.add('btn', 'btn-primary');
-    signUpButton.textContent = 'Sign Up';
+    var typeLabel = document.createElement('td');
+    typeLabel.textContent = 'Tipo: ';
 
-    // Agregar todos los elementos del formulario al formulario
-    form.appendChild(nameLabel);
-    form.appendChild(nameInput);
-    form.appendChild(emailLabel);
-    form.appendChild(emailInput);
-    form.appendChild(passwordLabel);
-    form.appendChild(passwordInput);
-    form.appendChild(signUpButton);
+    var typeInputCell = document.createElement('td');
+    var typeSelect = document.createElement('select');
+    typeSelect.setAttribute('id', 'tipoValueTable');
 
-    // Agregar el formulario al contenedor
-    formContainer.appendChild(form);
-    /*
-    // Crea un contenedor div para content y button01
-    var container = document.createElement('div');
-    container.appendChild(content);
-    container.appendChild(button01);*/
+    var typeOptions = [
+      'String',
+      'Integer',
+      'Boolean',
+      'Double',
+      'Arrays',
+      'Timestamp',
+      'Object',
+      'Null',
+      'Symbol',
+      'Date'
+    ];
 
+    typeOptions.forEach(function (optionText) {
+      var option = document.createElement('option');
+      option.textContent = optionText;
+      typeSelect.appendChild(option);
+    });
 
-    showModalWindow(graph, 'Properties', formContainer, 400, 300);
+    typeInputCell.appendChild(typeSelect);
 
-    console.log(formContainer);
+    row2.appendChild(typeLabel);
+    row2.appendChild(typeInputCell);
+
+    // Supongamos que tienes un botón para procesar los datos
+    var procesarBoton = document.createElement('button');
+    procesarBoton.textContent = 'Procesar Datos';
     
+    tbody.appendChild(row1);
+    tbody.appendChild(row2);
+    tbody.appendChild(procesarBoton);
+
+    table.appendChild(tbody);
     
-    // agregar nueva columna
-    const columnName = mx.mxUtils.prompt('Enter a column name') //nombre del atributo
-    const columnType = mx.mxUtils.prompt('Enter a type for the column') //tipo del atributo
+    // Agregar la tabla al contenedor
+    tableContainer.appendChild(table);
+
+    // Declarar las variables en un ámbito más amplio, por ejemplo, en el ámbito global
+    // var nombreValue;
+    //var tipoValue;
+
+    showModalWindow(graph, 'Properties', tableContainer, 400, 300);
+
+    // Función para procesar los datos cuando se hace clic en el botón
+    procesarBoton.addEventListener('click', function() {
+      // Obtener los valores de los campos de entrada
+      var nombreValue = document.getElementById('exampleInputName').value;
+      var tipoValue = document.getElementById('tipoValueTable').value;
+
+      // Hacer algo con los valores, por ejemplo, mostrarlos en la consola
+      console.log('Nombre:', nombreValue);
+      console.log('Tipo:', tipoValue);
+
+      // agregar nueva columna
+      const columnName = nombreValue //nombre del atributo
+      const columnType = tipoValue //tipo del atributo
+      if (columnName != null && columnType != null) {
+        graph.getModel().beginUpdate()
+        try {
+          const v1 = graph.getModel().cloneCell(column)
+          v1.value.name = columnName
+          v1.value.type = columnType
+          graph.addCell(v1, evt2.properties.cell)
+          overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
+          overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
+        } finally {
+          graph.getModel().endUpdate()
+        }
+      }
+      // Cerrar el modal cuando se hace clic en el botón
+      wnd.destroy();
+    }
+    );
+
+    console.log(tableContainer);
+    
+    /*// agregar nueva columna
+    const columnName = nombreValue //nombre del atributo
+    const columnType = tipoValue //tipo del atributo
     if (columnName != null && columnType != null) {
       graph.getModel().beginUpdate()
       try {
@@ -134,67 +180,13 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
       } finally {
         graph.getModel().endUpdate()
       }
-    }
+    }*/
     console.log('add prop clicked')
     
   })
 
   graph.addCellOverlay(cell, overlay)
 }
-
-function createTextField(graph, form, attribute) //DOM
-		{
-        for (var i = 0; i < attribute.length; i++)
-        {
-          
-				var input = form.addText(attribute[i] + ':', attribute.nodeValue);
-
-				var applyHandler = function()
-				{
-					var newValue = input.value || '';
-          if (newValue != null ) {
-            graph.getModel().beginUpdate()
-            try {
-              const v1 = graph.getModel().cloneCell(column)
-              if (i==0)
-                v1.value.name = newValue
-              else if (i == 1)
-                v1.value.type = newValue
-              graph.addCell(v1, evt2.properties.cell)
-              overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
-              overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
-            } finally {
-              graph.getModel().endUpdate()
-            }
-          }					
-				}; 
-
-				mx.mxEvent.addListener(input, 'keypress', function (evt)
-				{
-					// Needs to take shift into account for textareas
-					if (evt.keyCode == /*enter*/13 &&
-						!mx.mxEvent.isShiftDown(evt))
-					{
-						input.blur();
-					}
-				});
-
-				if (mx.mxClient.IS_IE)
-				{
-					mx.mxEvent.addListener(input, 'focusout', applyHandler);
-				}
-				else
-				{
-					// Note: Known problem is the blurring of fields in
-					// Firefox by changing the selection, in which case
-					// no event is fired in FF and the change is lost.
-					// As a workaround you should use a local variable
-					// that stores the focused field and invoke blur
-					// explicitely where we do the graph.focus above.
-					mx.mxEvent.addListener(input, 'blur', applyHandler);
-				}
-      }
-		}
 
 
 export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignment) {
