@@ -1,4 +1,6 @@
 import mx from "./util";
+
+var wnd = null;
 export default function showModalWindow(graph, title, content, width, height)
 		{
 			var background = document.createElement('div');
@@ -19,7 +21,7 @@ export default function showModalWindow(graph, title, content, width, height)
 			var x = Math.max(0, document.body.scrollWidth/2-width/2);
 			var y = Math.max(10, (document.body.scrollHeight ||
 						document.documentElement.scrollHeight)/2-height*2/3);
-			var wnd = new mx.mxWindow(title, content, x, y, width, height, false, true); //crear el DOM para el content del modal
+			wnd = new mx.mxWindow(title, content, x, y, width, height, false, true); //crear el DOM para el content del modal
 			wnd.setClosable(true);
 			
 			// Fades the background out after after the window has been closed
@@ -34,3 +36,5 @@ export default function showModalWindow(graph, title, content, width, height)
 			graph.tooltipHandler.hide();
 			wnd.setVisible(true);
 		};
+
+export { wnd };

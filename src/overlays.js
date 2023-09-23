@@ -2,6 +2,7 @@ import { column, table } from "./cells"
 import { selectionChanged }from "./userobjects";
 import mx from "./util"
 import showModalWindow from "./modal"
+import { wnd } from './modal';
 
 
 export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignment) {
@@ -115,7 +116,7 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
 
     // Supongamos que tienes un botón para procesar los datos
     var procesarBoton = document.createElement('button');
-    procesarBoton.textContent = 'Procesar Datos';
+    procesarBoton.textContent = 'Guardar';
     
     tbody.appendChild(row1);
     tbody.appendChild(row2);
@@ -130,7 +131,7 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
     // var nombreValue;
     //var tipoValue;
 
-    showModalWindow(graph, 'Properties', tableContainer, 400, 300);
+    showModalWindow(graph, 'Properties', tableContainer, 250, 100);
 
     // Función para procesar los datos cuando se hace clic en el botón
     procesarBoton.addEventListener('click', function() {
