@@ -1,93 +1,94 @@
 #toolbar {
-  position: absolute;
+  background-color: #f2f4f4;
+  border-radius: 5px;
+  bottom: 0px;
+  height: 100px;
+  left: 15px;
   overflow: hidden;
   padding: 4px;
-  left: 15px;
+  position: absolute;
   top: 100px;
   width: 24px;
+}
+#container {
   bottom: 0px;
-  background-color: #F2F4F4;
-  border-radius: 5px;
-  height: 100px;}
-#container{
-  position: absolute;
-  overflow: hidden;
   left: 45px;
-  top: 26px;
+  overflow: hidden;
+  position: absolute;
   right: 0px;
-  bottom: 0px;
+  top: 26px;
 }
 #importButton {
-  position: absolute;
-  left: 800px;
-  top: 10px;
-  background-color: #00BFA6;
-  padding: 10px;
-  color: #fff;
-  letter-spacing: 2px;
-  cursor: pointer;
+  background-color: #00bfa6;
+  border: 2px dashed #00bfa6;
   border-radius: 10px;
-  border: 2px dashed #00BFA6;
+  color: #fff;
+  cursor: pointer;
+  left: 800px;
+  letter-spacing: 2px;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
 }
 
-#querieButton{
-  position: absolute;
-  left: 895px;
-  top: 10px;
-  background-color: #00BFA6;
-  padding: 10px;
-  color: #fff;
-  letter-spacing: 2px;
-  cursor: pointer;
+#querieButton {
+  background-color: #00bfa6;
+  border: 2px dashed #00bfa6;
   border-radius: 10px;
-  border: 2px dashed #00BFA6;
+  color: #fff;
+  cursor: pointer;
+  left: 895px;
+  letter-spacing: 2px;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
 }
 
 #saveButton {
-  position: absolute;
-  left: 1000px;
-  top: 10px;
   background-color: #9c2ba7;
-  padding: 10px;
-  color: #fff;
-  letter-spacing: 2px;
-  cursor: pointer;
-  border-radius: 10px;
   border: 2px dashed #b500bf;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  left: 1000px;
+  letter-spacing: 2px;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
 }
 
 #btnAtras {
-  position: absolute;
-  overflow: hidden;
-  padding: 4px;
-  left: 15px;
-  top: 10px;
-  width: 35px;
-  bottom: 0px;
-  background-color: #F2F4F4;
+  background-color: #f2f4f4;
+  border: 2px solid #f2f4f4;
   border-radius: 5px;
-  border: 2px solid #F2F4F4;
+  bottom: 0px;
   cursor: pointer;
   height: 35px;
+  left: 15px;
+  overflow: hidden;
+  padding: 4px;
+  position: absolute;
+  top: 10px;
+  width: 35px;
 }
 
 #btnAtras i {
-  color: #17202A;
-  background-color: #F2F4F4;
+  background-color: #f2f4f4;
+  color: #17202a;
 }
 
 #ContainerSUP {
+  background-color: #f2f4f4;
+  border-radius: 5px;
+  bottom: 0px;
   font-family: Verdana;
-  position: absolute;
+  height: 23px;
+  left: 55px;
   overflow: hidden;
   padding: 5px 10px;
-  left: 55px;
+  position: absolute;
   top: 10px;
   width: 300px;
-  bottom: 0px;
-  background-color: #F2F4F4;
-  border-radius: 5px;
-  height: 23px;
 }
 /*
 #buttons {
@@ -99,12 +100,12 @@
   left: 15px;
   top: 50px;
 }*/
-.btn-toolbar{
-  position: absolute;
-  border-radius: 0.5rem;
+.btn-toolbar {
   background-color: rgb(238, 238, 238);
-  padding: 0.25rem;
+  border-radius: 0.5rem;
   left: 15px;
+  padding: 0.25rem;
+  position: absolute;
   top: 50px;
 }
 /*
@@ -116,38 +117,38 @@
   left: 87px;
   top: 50px;
 }*/
-#toolbar1{
-  position: absolute;
-  border-radius: 0.5rem;
+#toolbar1 {
   background-color: rgb(238, 238, 238);
-  padding: 0.25rem;
+  border-radius: 0.5rem;
   left: 15px;
+  padding: 0.25rem;
+  position: absolute;
   top: 50px;
 }
 
-#toolbar2{
-  position: absolute;
-  border-radius: 0.5rem;
+#toolbar2 {
   background-color: rgb(238, 238, 238);
-  padding: 0.25rem;
+  border-radius: 0.5rem;
   left: 87px;
+  padding: 0.25rem;
+  position: absolute;
   top: 50px;
 }
 
-#toolbar3{
-  position: absolute;
-  border-radius: 0.5rem;
+#toolbar3 {
   background-color: rgb(238, 238, 238);
-  padding: 0.25rem;
+  border-radius: 0.5rem;
   left: 190px;
+  padding: 0.25rem;
+  position: absolute;
   top: 50px;
 }
 
-#toolbar4{
-  position: absolute;
-  border-radius: 0.5rem;
+#toolbar4 {
   background-color: rgb(238, 238, 238);
-  padding: 0.25rem;
+  border-radius: 0.5rem;
   left: 267px;
+  padding: 0.25rem;
+  position: absolute;
   top: 50px;
 }

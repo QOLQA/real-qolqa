@@ -2,9 +2,9 @@ import { overlay } from "./attributeTypes";
 import { column } from "./cells";
 import { addOverlay, overlayForDelete, overlayForEdit } from "./overlays";
 import mx from "./util";
-import { addTableChildren } from "./toolbar"
+import { addTableChildren } from "./toolbar";
 
-const imagesPath = '../../examples/images/';
+const imagesPath = "../../examples/images/";
 
 function mxVertexToolHandler(state) {
   mx.mxVertexHandler.apply(this, arguments);
@@ -17,22 +17,22 @@ mxVertexToolHandler.prototype.constructor = mxVertexToolHandler;
 mxVertexToolHandler.prototype.domNode = null;
 // mxVertexToolHandler.prototype.graph
 
-mxVertexToolHandler.prototype.init = function() {
+mxVertexToolHandler.prototype.init = function () {
   //
   // this.constructor.prototype.init.apply(this, arguments);
   mx.mxVertexHandler.prototype.init.apply(this, arguments);
 
-  this.domNode = document.createElement('div');
-  this.domNode.style.position = 'absolute';
-  this.domNode.style.whiteSpace = 'nowrap';
+  this.domNode = document.createElement("div");
+  this.domNode.style.position = "absolute";
+  this.domNode.style.whiteSpace = "nowrap";
 
   function createImage(src) {
     if (mx.mxClient.IS_IE && !mx.mxClient.IS_SVG) {
-      let img = document.createElement('div');
-      img.style.backgroundImage = 'url(' + src + ')';
-      img.style.backgroundPosition = 'center';
-      img.style.backgroundRepeat = 'no-repeat';
-      img.style.display = (mx.mxClient.IS_QUIRKS) ? 'inline' : 'inline-block';
+      let img = document.createElement("div");
+      img.style.backgroundImage = "url(" + src + ")";
+      img.style.backgroundPosition = "center";
+      img.style.backgroundRepeat = "no-repeat";
+      img.style.display = mx.mxClient.IS_QUIRKS ? "inline" : "inline-block";
       return img;
     } else {
       return mx.mxUtils.createImage(src);
@@ -40,21 +40,24 @@ mxVertexToolHandler.prototype.init = function() {
   }
 
   // delete
-  let img = createImage(imagesPath + 'delete2.png');
-  img.setAttribute('title', 'Delete');
-  img.style.cursor = 'pointer';
-  img.style.width = '16px';
-  img.style.height = '16px';
+  let img = createImage(imagesPath + "delete2.png");
+  img.setAttribute("title", "Delete");
+  img.style.cursor = "pointer";
+  img.style.width = "16px";
+  img.style.height = "16px";
 
-  mx.mxEvent.addGestureListeners(img,
-    mx.mxUtils.bind(this, function(evt) {
+  mx.mxEvent.addGestureListeners(
+    img,
+    mx.mxUtils.bind(this, function (evt) {
       mx.mxEvent.consume(evt);
     })
   );
 
   // el this se vincula con mxVexterHandler que tiene graph
-  mx.mxEvent.addListener(img, 'click',
-    mx.mxUtils.bind(this, function(evt) {
+  mx.mxEvent.addListener(
+    img,
+    "click",
+    mx.mxUtils.bind(this, function (evt) {
       this.graph.removeCells([this.state.cell]);
       mx.mxEvent.consume(evt);
     })
@@ -63,45 +66,50 @@ mxVertexToolHandler.prototype.init = function() {
   this.domNode.appendChild(img);
 
   // agregar hijo a la tabla padre
-  let imgDoc = createImage(imagesPath + 'handle-connect.png');
-  imgDoc.setAttribute('title', 'New DocCh');
-  imgDoc.style.cursor = 'pointer';
-  imgDoc.style.width = '20px';
-  imgDoc.style.height = '20px';
+  let imgDoc = createImage(imagesPath + "handle-connect.png");
+  imgDoc.setAttribute("title", "New DocCh");
+  imgDoc.style.cursor = "pointer";
+  imgDoc.style.width = "20px";
+  imgDoc.style.height = "20px";
 
-  mx.mxEvent.addGestureListeners(imgDoc,
-    mx.mxUtils.bind(this, function(evt) {
+  mx.mxEvent.addGestureListeners(
+    imgDoc,
+    mx.mxUtils.bind(this, function (evt) {
       mx.mxEvent.consume(evt);
     })
   );
 
   // el this se vincula con mxVexterHandler que tiene graph
-  mx.mxEvent.addListener(imgDoc, 'click',
-    mx.mxUtils.bind(this, function(evt) {
+  mx.mxEvent.addListener(
+    imgDoc,
+    "click",
+    mx.mxUtils.bind(this, function (evt) {
       let graph = this.graph;
       addTableChildren(graph);
     })
-  )
-
+  );
 
   this.domNode.appendChild(imgDoc);
 
   // agregar plus
-  let imgPlus = createImage(imagesPath + 'plus.png');
-  imgPlus.setAttribute('title', 'Add attribute');
-  imgPlus.style.cursor = 'pointer';
-  imgPlus.style.width = '16px';
-  imgPlus.style.height = '16px';
+  let imgPlus = createImage(imagesPath + "plus.png");
+  imgPlus.setAttribute("title", "Add attribute");
+  imgPlus.style.cursor = "pointer";
+  imgPlus.style.width = "16px";
+  imgPlus.style.height = "16px";
 
-  mx.mxEvent.addGestureListeners(imgPlus,
-    mx.mxUtils.bind(this, function(evt) {
+  mx.mxEvent.addGestureListeners(
+    imgPlus,
+    mx.mxUtils.bind(this, function (evt) {
       mx.mxEvent.consume(evt);
     })
   );
 
-  mx.mxEvent.addListener(imgPlus, 'click',
-    mx.mxUtils.bind(this, function(evt) {
-      let columnName = mx.mxUtils.prompt('Enter a column name');
+  mx.mxEvent.addListener(
+    imgPlus,
+    "click",
+    mx.mxUtils.bind(this, function (evt) {
+      let columnName = mx.mxUtils.prompt("Enter a column name");
       if (columnName != null) {
         let graph = this.graph;
         let { cell } = this.state;
@@ -112,15 +120,28 @@ mxVertexToolHandler.prototype.init = function() {
           //let v2 = graph.insertVertde ex(cell, null, v1, 0, 0, width, 30)
           graph.addCell(v1, cell);
           // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
-          overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo')
-          overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo')
+          overlayForDelete(
+            v1,
+            graph,
+            "images/delete2.png",
+            { x: -10, y: 0 },
+            "Borrar atributo"
+          );
+          overlayForEdit(
+            v1,
+            graph,
+            "examples/editors/images/overlays/pencil.png",
+            { x: -30, y: 0 },
+            "Editar atributo"
+          );
         } finally {
           graph.getModel().endUpdate();
         }
       }
       mx.mxEvent.consume(evt);
     })
-  )
+  );
+
   this.domNode.appendChild(imgPlus);
 
   // agregar iconos
@@ -128,30 +149,28 @@ mxVertexToolHandler.prototype.init = function() {
   // console.log('constructor graph', this.constructor.prototype.graph);
   // console.log('state graph', this.state.view.graph);
   this.redrawTools();
-}
+};
 
-mxVertexToolHandler.prototype.redraw = function() {
+mxVertexToolHandler.prototype.redraw = function () {
   mx.mxVertexHandler.prototype.redraw.apply(this);
   this.redrawTools();
-}
+};
 
-mxVertexToolHandler.prototype.redrawTools = function() {
+mxVertexToolHandler.prototype.redrawTools = function () {
   if (this.state != null && this.domNode != null) {
-    let dy = (mx.mxClient.IS_VML && document.compatMode == 'CSS1Compat') ? 20 : 4;
-    this.domNode.style.left = (this.state.x + this.state.width - 56) + 'px';
-    this.domNode.style.top = (this.state.y + this.state.height + dy) + 'px';
+    let dy = mx.mxClient.IS_VML && document.compatMode == "CSS1Compat" ? 20 : 4;
+    this.domNode.style.left = this.state.x + this.state.width - 56 + "px";
+    this.domNode.style.top = this.state.y + this.state.height + dy + "px";
   }
-}
+};
 
-mxVertexToolHandler.prototype.destroy = function(sender, me) {
+mxVertexToolHandler.prototype.destroy = function (sender, me) {
   mx.mxVertexHandler.prototype.destroy.apply(this, arguments);
 
   if (this.domNode != null) {
     this.domNode.parentNode.removeChild(this.domNode);
     this.domNode = null;
   }
-}
-
-
+};
 
 export default mxVertexToolHandler;
