@@ -1,6 +1,5 @@
-import { overlay } from "./attributeTypes";
 import { column } from "./cells";
-import { addOverlay, overlayForDelete, overlayForEdit } from "./overlays";
+import { overlayForDelete, overlayForEdit } from "./overlays";
 import mx from "./util";
 import { addTableChildren } from "./toolbar"
 
@@ -152,6 +151,3 @@ mxVertexToolHandler.prototype.destroy = function(sender, me) {
   }
 }
 
-
-
-export default mxVertexToolHandler;

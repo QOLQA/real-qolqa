@@ -1,7 +1,4 @@
 
-import { configMenuCell } from "./attributeTypes";
-import mxVertexToolHandler from "./contexticons";
-import mxIconSet from "./hoverIcons";
 import mx from "./util";
 
 const container = document.querySelector('#container');
@@ -94,18 +91,6 @@ function createGraph() {
       return cell.value.name;
     }
   }
-  
-  // viene de otra parte //se borran los iconos de + y X al borrar la funcion
-  // graph.createHandler = function(state) {
-  //   if (state != null && this.isSwimlane(state.cell)) {
-  //     return new mxVertexToolHandler(state);
-  //   }
-
-  //   return mx.mxGraph.prototype.createHandler.apply(this, arguments);
-  // }
-
-  // menu para cambiar el tipo de atributo
-  configMenuCell(graph);
 
   // labels -- devuelve true si la etiqueta no es un swinlane o un borde lo que permite tratar como html
   graph.isHtmlLabel = function(cell) {

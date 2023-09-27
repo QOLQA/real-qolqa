@@ -41,5 +41,3 @@ mxIconSet.prototype.destroy = function() {
 
   this.images = null;
 }
-
-export default mxIconSet;

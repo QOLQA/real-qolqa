@@ -1,4 +1,3 @@
-//import mxVertexToolHandler from "./contexticons";
 import { table } from "./cells";
 import createGraph from "./graph";
 import createLayout from "./layout";

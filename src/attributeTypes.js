@@ -1,8 +1,8 @@
 import mx from "./util";
 
-export let overlay = new mx.mxCellOverlay(new mx.mxImage('../examples/editors/images/bottom.gif', 16, 16), 'Click Derecho para cambiar el tipo de atributo');
+let overlay = new mx.mxCellOverlay(new mx.mxImage('../examples/editors/images/bottom.gif', 16, 16), 'Click Derecho para cambiar el tipo de atributo');
 
-export function configMenuCell(graph) {
+function configMenuCell(graph) {
 
   let mxCellRendererInstallCellOverlayListeners = mx.mxCellRenderer.prototype.installCellOverlayListeners;
 
