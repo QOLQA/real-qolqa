@@ -88,7 +88,7 @@ function createTextField( graph,form, cell)
 
     // Crear el elemento select
     var select = document.createElement('select');
-    select.id = 'tipoValueTable';
+    select.id = 'tipoValue';
 
     // Agregar las opciones al select usando un bucle for
     for (var i = 0; i < valores.length; i++) {
