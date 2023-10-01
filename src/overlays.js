@@ -33,6 +33,7 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
       overlayForDelete(vertex, graph, 'images/delete2.png', { x:-10, y:15 }, 'Borrar documento', mx.mxConstants.ALIGN_TOP)
       overlayForAddProp(vertex, graph, 'images/add.png', {x:-30, y:15}, 'Add property', mx.mxConstants.ALIGN_TOP)
       overlayForNestDoc(vertex, graph, 'images/handle-connect.png', {x:-50, y:15}, 'Add document', mx.mxConstants.ALIGN_TOP)
+      vertex.setConnectable(false)
       graph.setSelectionCells(graph.importCells([vertex], 0, 0, evt2.properties.cell))
     }
   })
