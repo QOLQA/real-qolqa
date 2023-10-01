@@ -131,7 +131,7 @@ function createTextField( graph,form, cell)
         {
           if (newValue != oldValue){cell.value.name = newValue;}
           if (newValue2 != oldValue2){cell.value.type = newValue2;}
-              // graph.updateCellSize(cell);
+          graph.updateCellSize(cell);
         }
         finally
         {
