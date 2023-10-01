@@ -5,6 +5,7 @@ import { selectionChanged }from "./userobjects";
 import { overlayForAddProp, overlayForDelete, overlayForEdit, overlayForNestDoc } from "./overlays";
 import mx from "./util";
 import { column } from "./cells";
+import moveContainedSwimlanesToBack from './swimbottom';
 
 let container = document.querySelector("#container");
 
@@ -68,6 +69,38 @@ if (!mx.mxClient.isBrowserSupported()) {
   {
     selectionChanged(graph,null);
   });
+  // Arreglo para almacenar las swimlanes
+  var swimlanes = [];
+  function handleSwimlaneEvent(graph, swimlanes, moveFunction) {
+    return function(sender, evt) {
+      const cells = evt.getProperty('cells'); // Obtiene las celdas que se agregaron o se están moviendo
+  
+      // Verifica si alguna de las celdas es un swimlane
+      cells.forEach(function(cell) {
+        if (graph.isSwimlane(cell)) {
+          // Realiza acciones específicas cuando se agrega o se selecciona y arrastra una swimlane
+          console.log('Swimlane event:', cell.getValue());
+  
+          if (swimlanes.indexOf(cell) === -1) {
+            // Agrega la swimlane al arreglo si no está duplicada
+            swimlanes.push(cell);
+          }
+  
+          if (swimlanes.length > 0) {
+            // Itera sobre todas las swimlanes en el arreglo y aplica la función moveFunction a cada swimlane
+            swimlanes.forEach(function(swimlane) {
+              moveFunction(graph, swimlane);
+            });
+          }
+        }
+      });
+    };
+  }
+  
+  // Registra un oyente de eventos para detectar cuando se agregan celdas al grafo
+  graph.addListener(mx.mxEvent.CELLS_ADDED, handleSwimlaneEvent(graph, swimlanes, moveContainedSwimlanesToBack));
+  graph.addListener(mx.mxEvent.MOVE_CELLS, handleSwimlaneEvent(graph, swimlanes, moveContainedSwimlanesToBack));
+  
 }
 
 function addToolbarItem(graph, toolbar, prototype, image) {

@@ -3,6 +3,7 @@ import { selectionChanged }from "./userobjects";
 import mx from "./util"
 import showModalWindow from "./modal"
 import { wnd } from './modal';
+import moveContainedSwimlanesToBack from './swimbottom';
 
 
 export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignment) {
@@ -20,6 +21,8 @@ export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignm
   graph.addCellOverlay(cell, overlay)
 }
 
+
+
 export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, alignment) {
   const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
 
@@ -30,6 +33,25 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
     if (name != null && name.trim() != '') {
       const vertex = graph.getModel().cloneCell(table)
       vertex.value.name = name
+      
+            // Find the last child in the parent cell and position the new cell after it
+            const parent = evt2.properties.cell
+            var lastChild = null
+            const childCount = graph.model.getChildCount(parent)
+            console.log(childCount)
+            if (childCount > 0) {
+              lastChild = graph.model.getChildAt(parent, childCount)
+            }
+            
+            if (lastChild != null) {
+              const lastGeometry = graph.model.getGeometry(lastChild)
+              const newX = lastGeometry.x + lastGeometry.width + 20 // You can adjust the horizontal spacing here
+              vertex.geometry.x = newX
+              vertex.geometry.y = lastGeometry.y        
+              console.log(vertex.geometry.x)
+              console.log(vertex.geometry.y)
+            }
+
       overlayForDelete(vertex, graph, 'images/delete2.png', { x:-10, y:15 }, 'Borrar documento', mx.mxConstants.ALIGN_TOP)
       overlayForAddProp(vertex, graph, 'images/add.png', {x:-30, y:15}, 'Add property', mx.mxConstants.ALIGN_TOP)
       overlayForNestDoc(vertex, graph, 'images/handle-connect.png', {x:-50, y:15}, 'Add document', mx.mxConstants.ALIGN_TOP)
@@ -64,20 +86,17 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
   graph.addCellOverlay(cell, overlay)
 }
 
+
+
+
+
 export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, alignment) {
 
   const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
-    
+    // ---------- aqui empieza el DOM ---------------
     // Creates the form from the attributes of the user object
-    /*
-    var form = new mx.mxForm();
-    var attrs = ['Column Name','Type'];
-    div.appendChild(form.getTable());
-    mx.mxUtils.br(div);
-    //createTextField(graph, form, attrs);
-*/
     // Crear un contenedor div para la tabla
     var tableContainer = document.createElement('div');
     // Crear la tabla HTML
@@ -150,7 +169,7 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
     
     // Agregar la tabla al contenedor
     tableContainer.appendChild(table);
-
+    // ---------- hasta aqui llega el DOM ---------------
     // Declarar las variables en un ámbito más amplio, por ejemplo, en el ámbito global
     // var nombreValue;
     //var tipoValue;
@@ -179,33 +198,22 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
           graph.addCell(v1, evt2.properties.cell)
           overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
           overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
+
+           // Find the last child in the parent cell and position the new cell after it
+           const parent = evt2.properties.cell
+           moveContainedSwimlanesToBack(graph, parent);
+           
         } finally {
           graph.getModel().endUpdate()
         }
       }
       // Cerrar el modal cuando se hace clic en el botón
       wnd.destroy();
+
     }
     );
 
     console.log(tableContainer);
-    
-    /*// agregar nueva columna
-    const columnName = nombreValue //nombre del atributo
-    const columnType = tipoValue //tipo del atributo
-    if (columnName != null && columnType != null) {
-      graph.getModel().beginUpdate()
-      try {
-        const v1 = graph.getModel().cloneCell(column)
-        v1.value.name = columnName
-        v1.value.type = columnType
-        graph.addCell(v1, evt2.properties.cell)
-        overlayForDelete(v1, graph, 'images/delete2.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
-        overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
-      } finally {
-        graph.getModel().endUpdate()
-      }
-    }*/
     console.log('add prop clicked')
     
   })
