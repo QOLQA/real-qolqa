@@ -113,10 +113,13 @@ function createTextField( graph,form, cell)
   
   var applyHandler = function()
   {
+    const clone = cell.value.clone();
     var newValue = input.value;
     if (cell.value.type){
       var newValue2 = input2.value;
     }
+    clone.name = newValue;
+    clone.type = newValue2;
 
     var oldValue = cell.getAttribute(cell.value.name, '');
     var oldValue2 = cell.getAttribute(cell.value.type, '');
@@ -129,9 +132,10 @@ function createTextField( graph,form, cell)
                   
         try
         {
-          if (newValue != oldValue){cell.value.name = newValue;}
-          if (newValue2 != oldValue2){cell.value.type = newValue2;}
-          graph.updateCellSize(cell);
+          // if (newValue != oldValue){cell.value.name = newValue;}
+          // if (newValue2 != oldValue2){cell.value.type = newValue2;}
+          // graph.updateCellSize(cell);
+          graph.model.setValue(cell, clone);
         }
         finally
         {
