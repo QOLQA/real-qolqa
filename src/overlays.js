@@ -52,7 +52,7 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
               console.log(vertex.geometry.y)
             }
 
-      overlayForDelete(vertex, graph, 'images/delete3.png', { x:-10, y:15 }, 'Borrar documento', mx.mxConstants.ALIGN_TOP)
+      overlayForDelete(vertex, graph, 'images/cross.png', { x:-10, y:15 }, 'Borrar documento', mx.mxConstants.ALIGN_TOP)
       overlayForAddProp(vertex, graph, 'images/plus3.png', {x:-30, y:15}, 'Add property', mx.mxConstants.ALIGN_TOP)
       overlayForNestDoc(vertex, graph, 'images/add4.png', {x:-50, y:15}, 'Add document', mx.mxConstants.ALIGN_TOP)
       vertex.setConnectable(false)
@@ -67,7 +67,7 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
       overlayForDelete(
         v1,
         graph,
-        "images/delete3.png",
+        "images/cross.png",
         { x: -10, y: -25 },
         "Borrar atributo"
       );
@@ -196,7 +196,7 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
           v1.value.name = columnName
           v1.value.type = columnType
           graph.addCell(v1, evt2.properties.cell)
-          overlayForDelete(v1, graph, 'images/delete3.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
+          overlayForDelete(v1, graph, 'images/cross.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
           overlayForEdit(v1, graph, 'examples/editors/images/overlays/pencil.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
 
            // Find the last child in the parent cell and position the new cell after it
