@@ -124,7 +124,7 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       overlayForDelete(
         vertex,
         graph,
-        "images/delete2.png",
+        "images/cross_.png",
         { x: -10, y: 15 },
         "Borrar documento",
         mx.mxConstants.ALIGN_TOP
@@ -132,7 +132,7 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       overlayForAddProp(
         vertex,
         graph,
-        "images/add.png",
+        "images/plus_.png",
         { x: -30, y: 15 },
         "Add property",
         mx.mxConstants.ALIGN_TOP
@@ -140,7 +140,7 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       overlayForNestDoc(
         vertex,
         graph,
-        "images/handle-connect.png",
+        "images/add_.png",
         { x: -50, y: 15 },
         "Add document",
         mx.mxConstants.ALIGN_TOP
@@ -156,14 +156,14 @@ function addToolbarItem(graph, toolbar, prototype, image) {
       overlayForDelete(
         v1,
         graph,
-        "images/delete2.png",
+        "images/cross_.png",
         { x: -10, y: -25 },
         "Borrar atributo"
       );
       overlayForEdit(
         v1,
         graph,
-        "examples/editors/images/overlays/pencil.png",
+        "images/edit_.png",
         { x: -30, y: -25 },
         "Editar atributo"
       );
