@@ -2,10 +2,9 @@ import { table } from "./cells";
 import createGraph from "./graph";
 import createLayout from "./layout";
 import { selectionChanged }from "./userobjects";
-import { overlayForAddProp, overlayForDelete, overlayForEdit, overlayForNestDoc } from "./overlays";
 import mx from "./util";
 import moveContainedSwimlanesToBack from './swimbottom';
-import { addDefaultVertex, createDataOverlay } from "./helpers";
+import { addActionsForDocs, addDefaultVertex } from "./cells_actions";
 
 let container = document.querySelector("#container");
 
@@ -77,7 +76,6 @@ if (!mx.mxClient.isBrowserSupported()) {
       cells.forEach(function(cell) {
         if (graph.isSwimlane(cell)) {
           // Realiza acciones específicas cuando se agrega o se selecciona y arrastra una swimlane
-          console.log('Swimlane event:', cell.getValue());
   
           if (swimlanes.indexOf(cell) === -1) {
             // Agrega la swimlane al arreglo si no está duplicada
@@ -120,21 +118,8 @@ function addToolbarItem(graph, toolbar, prototype, image) {
         vertex.geometry.width,
         vertex.geometry.height
       );
-      overlayForDelete(
-        createDataOverlay('cross_.png', -10, 15, 'Delete document', mx.mxConstants.ALIGN_TOP),
-        vertex,
-        graph
-      );
-      overlayForAddProp(
-        createDataOverlay('plus_.png', -30, 15, 'Add property', mx.mxConstants.ALIGN_TOP),
-        vertex,
-        graph
-      );
-      overlayForNestDoc(
-        createDataOverlay('add_.png', -50, 15, 'Add document', mx.mxConstants.ALIGN_TOP),
-        vertex,
-        graph
-      );
+      
+      addActionsForDocs(vertex, graph);
 
       vertex.setConnectable(true)
       
@@ -148,3 +133,4 @@ function addToolbarItem(graph, toolbar, prototype, image) {
   let img = toolbar.addMode(null, image, funct);
   mx.mxUtils.makeDraggable(img, graph, funct);
 }
+

@@ -4,7 +4,9 @@ import mx from "./util"
 import showModalWindow from "./modal"
 import { wnd } from './modal';
 import moveContainedSwimlanesToBack from './swimbottom';
-import { addDefaultVertex, createDataOverlay } from "./helpers";
+import { createDataOverlay } from "./helpers";
+import { addDefaultVertex } from "./cells_actions";
+import { addActionsForDocs } from "./cells_actions";
 
 
 export function overlayForDelete(data, cell, graph) {
@@ -36,7 +38,6 @@ export function overlayForNestDoc(data, cell, graph) {
       const parent = evt2.properties.cell
       var lastChild = null
       const childCount = graph.model.getChildCount(parent)
-      console.log(childCount)
       if (childCount > 0) {
         lastChild = graph.model.getChildAt(parent, childCount)
       }
@@ -45,26 +46,10 @@ export function overlayForNestDoc(data, cell, graph) {
         const lastGeometry = graph.model.getGeometry(lastChild)
         const newX = lastGeometry.x + lastGeometry.width + 20 // You can adjust the horizontal spacing here
         vertex.geometry.x = newX
-        vertex.geometry.y = lastGeometry.y        
-        console.log(vertex.geometry.x)
-        console.log(vertex.geometry.y)
+        vertex.geometry.y = lastGeometry.y
       }
 
-      overlayForDelete(
-        createDataOverlay('cross_.png', -10, 15, 'Delete document', mx.mxConstants.ALIGN_TOP),
-        vertex,
-        graph
-      )
-      overlayForAddProp(
-        createDataOverlay('plus_.png', -30, 15, 'Add property', mx.mxConstants.ALIGN_TOP),
-        vertex,
-        graph
-      )
-      overlayForNestDoc(
-        createDataOverlay('add_.png', -50, 15, 'Add document', mx.mxConstants.ALIGN_TOP),
-        vertex,
-        graph
-      )
+      addActionsForDocs(vertex, graph)
       vertex.setConnectable(false)
 
       // Agregar atributo por defecto
