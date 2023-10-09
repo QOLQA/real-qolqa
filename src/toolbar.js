@@ -4,8 +4,8 @@ import createLayout from "./layout";
 import { selectionChanged }from "./userobjects";
 import { overlayForAddProp, overlayForDelete, overlayForEdit, overlayForNestDoc } from "./overlays";
 import mx from "./util";
-import { column } from "./cells";
 import moveContainedSwimlanesToBack from './swimbottom';
+import { addDefaultVertex, createDataOverlay } from "./helpers";
 
 let container = document.querySelector("#container");
 
@@ -51,8 +51,6 @@ if (!mx.mxClient.isBrowserSupported()) {
   let rubberband = new mx.mxRubberband(graph);
 
   let addVertex = function (icon, w, h, style) {
-    // let vertex = new mx.mxCell(null, new mx.mxGeometry(0, 0, w, h), style);
-    // vertex.setVertex(true);
     let vertex = graph.getModel().cloneCell(table);
     addToolbarItem(graph, toolbar, vertex, icon);
   };
@@ -106,6 +104,7 @@ if (!mx.mxClient.isBrowserSupported()) {
 function addToolbarItem(graph, toolbar, prototype, image) {
   let funct = function (graph, evt, cell) {
     graph.stopEditing(false);
+    graph.clearSelection()
 
     var name = mx.mxUtils.prompt("Enter name for new document");
 
@@ -122,51 +121,24 @@ function addToolbarItem(graph, toolbar, prototype, image) {
         vertex.geometry.height
       );
       overlayForDelete(
+        createDataOverlay('cross_.png', -10, 15, 'Delete document', mx.mxConstants.ALIGN_TOP),
         vertex,
-        graph,
-        "images/cross_.png",
-        { x: -10, y: 15 },
-        "Borrar documento",
-        mx.mxConstants.ALIGN_TOP
+        graph
       );
       overlayForAddProp(
+        createDataOverlay('plus_.png', -30, 15, 'Add property', mx.mxConstants.ALIGN_TOP),
         vertex,
-        graph,
-        "images/plus_.png",
-        { x: -30, y: 15 },
-        "Add property",
-        mx.mxConstants.ALIGN_TOP
+        graph
       );
       overlayForNestDoc(
+        createDataOverlay('add_.png', -50, 15, 'Add document', mx.mxConstants.ALIGN_TOP),
         vertex,
-        graph,
-        "images/add_.png",
-        { x: -50, y: 15 },
-        "Add document",
-        mx.mxConstants.ALIGN_TOP
+        graph
       );
 
-      // Agregar atributo por defecto
-      let v1 = graph.getModel().cloneCell(column);
-      v1.value.name = "id_column1";
-
-      vertex.insert(v1, 0);
-
-      // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
-      overlayForDelete(
-        v1,
-        graph,
-        "images/cross_.png",
-        { x: -10, y: -25 },
-        "Borrar atributo"
-      );
-      overlayForEdit(
-        v1,
-        graph,
-        "images/edit_.png",
-        { x: -30, y: -25 },
-        "Editar atributo"
-      );
+      vertex.setConnectable(true)
+      
+      addDefaultVertex(graph, vertex)
 
       graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
     }
@@ -175,39 +147,4 @@ function addToolbarItem(graph, toolbar, prototype, image) {
   // crea la imagen que es usada para el arrastre
   let img = toolbar.addMode(null, image, funct);
   mx.mxUtils.makeDraggable(img, graph, funct);
-}
-
-export function addTableChildren(graph) {
-  let selectedCell = graph.getSelectionCell();
-
-  if (selectedCell) {
-    var name = mx.mxUtils.prompt("Enter name for new table");
-
-    if (name != null && name.trim() != "") {
-      let childTable = graph.getModel().cloneCell(table);
-      childTable.value.name = name;
-
-      // estilos de la tabla hijo
-      let childStyle = childTable.getStyle();
-      childStyle += ";fillColor=#81B9FF";
-      childStyle += ";gradientColor=#5F98FF";
-      childStyle += ";strokeColor=#81B9FF";
-      childStyle += ";strokeWidth=1";
-      childTable.setStyle(childStyle);
-
-      childTable.geometry.alternateBounds = new mx.mxRectangle(
-        0,
-        0,
-        childTable.geometry.width,
-        childTable.geometry.height
-      );
-
-      graph.getModel().beginUpdate();
-      try {
-        graph.addCell(childTable, selectedCell);
-      } finally {
-        graph.getModel().endUpdate();
-      }
-    }
-  }
 }

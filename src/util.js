@@ -15,4 +15,6 @@ function factory(mxBasePath) {
 
 const mx = factory('../../node_modules/@aire-ux/mxgraph/javascript/src');
 
+export const overlaysPath = '/assets/images/overlays/'
+
 export default mx;

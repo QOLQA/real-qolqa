@@ -4,14 +4,13 @@ import mx from "./util"
 import showModalWindow from "./modal"
 import { wnd } from './modal';
 import moveContainedSwimlanesToBack from './swimbottom';
+import { addDefaultVertex, createDataOverlay } from "./helpers";
 
 
-export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignment) {
-  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
+export function overlayForDelete(data, cell, graph) {
+  const overlay = addOverlay(data, graph)
   
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
-    console.log('sender', sender)
-    console.log('evt2', evt2.properties.cell)
     graph.clearSelection()
     graph.getModel().beginUpdate()
     const r = graph.removeCells([evt2.properties.cell])
@@ -21,12 +20,11 @@ export function overlayForDelete(cell, graph, pathImage, offset, tooltip, alignm
   graph.addCellOverlay(cell, overlay)
 }
 
-
-
-export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, alignment) {
-  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
+export function overlayForNestDoc(data, cell, graph) {
+  const overlay = addOverlay(data, graph)
 
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
+    graph.stopEditing(false)
     graph.clearSelection()
     // Add a new document inside cell (evt2.properties.cell)
     const name = mx.mxUtils.prompt('Enter name for new document')
@@ -34,50 +32,43 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
       const vertex = graph.getModel().cloneCell(table)
       vertex.value.name = name
       
-            // Find the last child in the parent cell and position the new cell after it
-            const parent = evt2.properties.cell
-            var lastChild = null
-            const childCount = graph.model.getChildCount(parent)
-            console.log(childCount)
-            if (childCount > 0) {
-              lastChild = graph.model.getChildAt(parent, childCount)
-            }
-            
-            if (lastChild != null) {
-              const lastGeometry = graph.model.getGeometry(lastChild)
-              const newX = lastGeometry.x + lastGeometry.width + 20 // You can adjust the horizontal spacing here
-              vertex.geometry.x = newX
-              vertex.geometry.y = lastGeometry.y        
-              console.log(vertex.geometry.x)
-              console.log(vertex.geometry.y)
-            }
+      // Find the last child in the parent cell and position the new cell after it
+      const parent = evt2.properties.cell
+      var lastChild = null
+      const childCount = graph.model.getChildCount(parent)
+      console.log(childCount)
+      if (childCount > 0) {
+        lastChild = graph.model.getChildAt(parent, childCount)
+      }
+      
+      if (lastChild != null) {
+        const lastGeometry = graph.model.getGeometry(lastChild)
+        const newX = lastGeometry.x + lastGeometry.width + 20 // You can adjust the horizontal spacing here
+        vertex.geometry.x = newX
+        vertex.geometry.y = lastGeometry.y        
+        console.log(vertex.geometry.x)
+        console.log(vertex.geometry.y)
+      }
 
-      overlayForDelete(vertex, graph, 'images/cross_.png', { x:-10, y:15 }, 'Borrar documento', mx.mxConstants.ALIGN_TOP)
-      overlayForAddProp(vertex, graph, 'images/plus_.png', {x:-30, y:15}, 'Add property', mx.mxConstants.ALIGN_TOP)
-      overlayForNestDoc(vertex, graph, 'images/add_.png', {x:-50, y:15}, 'Add document', mx.mxConstants.ALIGN_TOP)
+      overlayForDelete(
+        createDataOverlay('cross_.png', -10, 15, 'Delete document', mx.mxConstants.ALIGN_TOP),
+        vertex,
+        graph
+      )
+      overlayForAddProp(
+        createDataOverlay('plus_.png', -30, 15, 'Add property', mx.mxConstants.ALIGN_TOP),
+        vertex,
+        graph
+      )
+      overlayForNestDoc(
+        createDataOverlay('add_.png', -50, 15, 'Add document', mx.mxConstants.ALIGN_TOP),
+        vertex,
+        graph
+      )
       vertex.setConnectable(false)
 
       // Agregar atributo por defecto
-      let v1 = graph.getModel().cloneCell(column);
-      v1.value.name = "id_column1";
-
-      vertex.insert(v1, 0);
-
-      // addOverlay(v1, 'images/add.png', graph, {x:-20, y:0}, 'que fue')
-      overlayForDelete(
-        v1,
-        graph,
-        "images/cross_.png",
-        { x: -10, y: -25 },
-        "Borrar atributo"
-      );
-      overlayForEdit(
-        v1,
-        graph,
-        "images/edit_.png",
-        { x: -30, y: -25 },
-        "Editar atributo"
-      );
+      addDefaultVertex(graph, vertex);
       
       graph.setSelectionCells(graph.importCells([vertex], 0, 0, evt2.properties.cell))
     }
@@ -86,17 +77,11 @@ export function overlayForNestDoc(cell, graph, pathImage, offset, tooltip, align
   graph.addCellOverlay(cell, overlay)
 }
 
+export function overlayForAddProp(data, cell, graph) {
 
-
-
-
-export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, alignment) {
-
-  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
+  const overlay = addOverlay(data, graph)
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
-    // ---------- aqui empieza el DOM ---------------
-    // Creates the form from the attributes of the user object
     // Crear un contenedor div para la tabla
     var tableContainer = document.createElement('div');
     // Crear la tabla HTML
@@ -169,10 +154,6 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
     
     // Agregar la tabla al contenedor
     tableContainer.appendChild(table);
-    // ---------- hasta aqui llega el DOM ---------------
-    // Declarar las variables en un ámbito más amplio, por ejemplo, en el ámbito global
-    // var nombreValue;
-    //var tipoValue;
 
     showModalWindow(graph, 'Properties', tableContainer, 250, 100);
 
@@ -181,10 +162,6 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
       // Obtener los valores de los campos de entrada
       var nombreValue = document.getElementById('exampleInputName').value;
       var tipoValue = document.getElementById('tipoValueTable').value;
-
-      // Hacer algo con los valores, por ejemplo, mostrarlos en la consola
-      console.log('Nombre:', nombreValue);
-      console.log('Tipo:', tipoValue);
 
       // agregar nueva columna
       const columnName = nombreValue //nombre del atributo
@@ -196,13 +173,21 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
           v1.value.name = columnName
           v1.value.type = columnType
           graph.addCell(v1, evt2.properties.cell)
-          overlayForDelete(v1, graph, 'images/cross_.png', {x:-10, y:0}, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE)
-          overlayForEdit(v1, graph, 'images/edit_.png', {x:-30, y:0}, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE)
 
            // Find the last child in the parent cell and position the new cell after it
-           const parent = evt2.properties.cell
-           moveContainedSwimlanesToBack(graph, parent);
-           
+          const parent = evt2.properties.cell
+          moveContainedSwimlanesToBack(graph, parent);
+          
+          overlayForDelete(
+            createDataOverlay('cross_.png', -10, 0, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE),
+            v1,
+            graph
+          )
+          overlayForEdit(
+            createDataOverlay('edit_.png', -30, 0, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE),
+            v1,
+            graph
+          )
         } finally {
           graph.getModel().endUpdate()
         }
@@ -212,18 +197,14 @@ export function overlayForAddProp(cell, graph, pathImage, offset, tooltip, align
 
     }
     );
-
-    console.log(tableContainer);
-    console.log('add prop clicked')
-    
   })
 
   graph.addCellOverlay(cell, overlay)
 }
 
 
-export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignment) {
-  const overlay = addOverlay(pathImage, graph, offset, tooltip, alignment)
+export function overlayForEdit(data, cell, graph) {
+  const overlay = addOverlay(data, graph)
 
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
     graph.clearSelection()
@@ -239,11 +220,11 @@ export function overlayForEdit(cell, graph, pathImage, offset, tooltip, alignmen
   graph.addCellOverlay(cell, overlay)
 }
 
-export const addOverlay = (pathImage, graph, offset, tooltip, alignment) => {
-  let overlay = new mx.mxCellOverlay(new mx.mxImage(pathImage, 15, 15), tooltip)
+const addOverlay = (data, graph) => {
+  let overlay = new mx.mxCellOverlay(new mx.mxImage(data.pathImage, 15, 15), data.tooltip)
   overlay.cursor = 'hand'
-  overlay.verticalAlign = alignment
-  overlay.offset = new mx.mxPoint(offset.x, offset.y)
+  overlay.verticalAlign = data.alignment
+  overlay.offset = new mx.mxPoint(data.offset.x, data.offset.y)
 
   overlay.addListener('pointerdown', (sender, eo) => {
     let evt2 = eo.getProperty('event')
@@ -266,4 +247,3 @@ export const addOverlay = (pathImage, graph, offset, tooltip, alignment) => {
 
   return overlay
 }
-

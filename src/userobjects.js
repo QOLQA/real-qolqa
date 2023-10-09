@@ -52,8 +52,6 @@ export function selectionChanged(graph, cell)
 
     // var attrs = cell.value.attributes;
     // //Se obtienen los atributos del objeto cell.value. Estos atributos se asumen como los datos que se mostrarán en el panel de propiedades.
-    
-    // console.log("Si corre hasta aqui");
 
 
     // for (var i = 0; i < attrs.length; i++)
