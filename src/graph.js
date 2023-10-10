@@ -168,7 +168,7 @@ function createGraph() {
   new Image().src = touchHandle.src;
 
   // Adds connect icon to selected vertex
-  var connectorSrc = 'images/connector.gif';
+  var connectorSrc = 'images/arrow-right-solid-2.svg';
 
   var vertexHandlerInit = mx.mxVertexHandler.prototype.init;
   mx.mxVertexHandler.prototype.init = function()
