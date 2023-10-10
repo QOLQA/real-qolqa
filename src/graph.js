@@ -3,12 +3,6 @@ import mx from "./util";
 
 function createGraph() {
 
-  mx.mxConnectionHandler.prototype.connectImage = new mx.mxImage(
-    "/images/connector.gif",
-    16,
-    16
-  );
-
   let editor = new mx.mxEditor();
   let graph = editor.graph;
 
@@ -126,5 +120,167 @@ function createGraph() {
 
   return { graph, editor };
 }
+
+
+(function()
+{
+  // Enables rotation handle
+  mx.mxVertexHandler.prototype.rotationEnabled = false;
+  
+  // Enables managing of sizers
+  mx.mxVertexHandler.prototype.manageSizers = true;
+  
+  // Enables live preview
+  mx.mxVertexHandler.prototype.livePreview = true;
+
+  // One finger pans (no rubberband selection) must start regardless of mouse button
+  mx.mxPanningHandler.prototype.isPanningTrigger = function(me)
+  {
+    var evt = me.getEvent();
+    
+    return (me.getState() == null && !mx.mxEvent.isMouseEvent(evt)) ||
+      (mx.mxEvent.isPopupTrigger(evt) && (me.getState() == null ||
+      mx.mxEvent.isControlDown(evt) || mx.mxEvent.isShiftDown(evt)));
+  };
+
+  // On connect the target is selected and we clone the cell of the preview edge for insert
+  mx.mxConnectionHandler.prototype.selectCells = function(edge, target)
+  {
+    if (target != null)
+    {
+      this.graph.setSelectionCell(target);
+    }
+    else
+    {
+      this.graph.setSelectionCell(edge);
+    }
+  };
+
+
+
+  // Rounded edge and vertex handles
+  var touchHandle = new mx.mxImage('images/handle-main.png', 17, 17);
+  mx.mxVertexHandler.prototype.handleImage = touchHandle;
+  mx.mxEdgeHandler.prototype.handleImage = touchHandle;
+  mx.mxOutline.prototype.sizerImage = touchHandle;
+  
+  // Pre-fetches touch handle
+  new Image().src = touchHandle.src;
+
+  // Adds connect icon to selected vertex
+  var connectorSrc = 'images/connector.gif';
+
+  var vertexHandlerInit = mx.mxVertexHandler.prototype.init;
+  mx.mxVertexHandler.prototype.init = function()
+  {
+    // TODO: Use 4 sizers, move outside of shape
+    //this.singleSizer = this.state.width < 30 && this.state.height < 30;
+    vertexHandlerInit.apply(this, arguments);
+
+    // Only show connector image on one cell and do not show on containers
+    if (this.graph.connectionHandler.isEnabled() &&
+      this.graph.isCellConnectable(this.state.cell) &&
+      this.graph.getSelectionCount() == 1)
+    {
+      this.connectorImg = mx.mxUtils.createImage(connectorSrc);
+      this.connectorImg.style.cursor = 'pointer';
+      this.connectorImg.style.width = '16px';
+      this.connectorImg.style.height = '16px';
+      this.connectorImg.style.position = 'absolute';
+      
+      if (!mx.mxClient.IS_TOUCH)
+      {
+        this.connectorImg.setAttribute('title', mx.mxResources.get('connect'));
+        mx.mxEvent.redirectMouseEvents(this.connectorImg, this.graph, this.state);
+      }
+
+      // Starts connecting on touch/mouse down
+      mx.mxEvent.addGestureListeners(this.connectorImg,
+        mx.mxUtils.bind(this, function(evt)
+        {
+          this.graph.popupMenuHandler.hideMenu();
+          this.graph.stopEditing(false);
+          
+          var pt = mx.mxUtils.convertPoint(this.graph.container,
+              mx.mxEvent.getClientX(evt), mx.mxEvent.getClientY(evt));
+          this.graph.connectionHandler.start(this.state, pt.x, pt.y);
+          this.graph.isMouseDown = true;
+          this.graph.isMouseTrigger = mx.mxEvent.isMouseEvent(evt);
+          mx.mxEvent.consume(evt);
+        })
+      );
+
+      this.graph.container.appendChild(this.connectorImg);
+    }
+
+    this.redrawHandles();
+  };
+  
+  var vertexHandlerHideSizers = mx.mxVertexHandler.prototype.hideSizers;
+  mx.mxVertexHandler.prototype.hideSizers = function()
+  {
+    vertexHandlerHideSizers.apply(this, arguments);
+    
+    if (this.connectorImg != null)
+    {
+      this.connectorImg.style.visibility = 'hidden';
+    }
+  };
+  
+  var vertexHandlerReset = mx.mxVertexHandler.prototype.reset;
+  mx.mxVertexHandler.prototype.reset = function()
+  {
+    vertexHandlerReset.apply(this, arguments);
+    
+    if (this.connectorImg != null)
+    {
+      this.connectorImg.style.visibility = '';
+    }
+  };
+  
+  var vertexHandlerRedrawHandles = mx.mxVertexHandler.prototype.redrawHandles;
+  mx.mxVertexHandler.prototype.redrawHandles = function()
+  {
+    vertexHandlerRedrawHandles.apply(this);
+
+    if (this.state != null && this.connectorImg != null)
+    {
+      var pt = new mx.mxPoint();
+      var s = this.state;
+      
+      // Top right for single-sizer
+      if (mx.mxVertexHandler.prototype.singleSizer)
+      {
+        pt.x = s.x + s.width - this.connectorImg.offsetWidth / 2;
+        pt.y = s.y - this.connectorImg.offsetHeight / 2;
+      }
+      else
+      {
+        pt.x = s.x + s.width + mx.mxConstants.HANDLE_SIZE / 2 + 4 + this.connectorImg.offsetWidth / 2;
+        pt.y = s.y + s.height / 2;
+      }
+      
+      
+      this.connectorImg.style.left = (pt.x - this.connectorImg.offsetWidth / 2 + 8) + 'px';
+      this.connectorImg.style.top = (pt.y - this.connectorImg.offsetHeight / 2 ) + 'px';
+    }
+  };
+  
+  var vertexHandlerDestroy = mx.mxVertexHandler.prototype.destroy;
+  mx.mxVertexHandler.prototype.destroy = function(sender, me)
+  {
+    vertexHandlerDestroy.apply(this, arguments);
+
+    if (this.connectorImg != null)
+    {
+      this.connectorImg.parentNode.removeChild(this.connectorImg);
+      this.connectorImg = null;
+    }
+  };
+  
+  // Pre-fetches touch connector
+  new Image().src = connectorSrc;
+})();
+  
 
 export default createGraph;
