@@ -29,7 +29,7 @@ export function configureTableStyle(graph) {
   style = new Object();
   style[mx.mxConstants.STYLE_SHAPE] = mx.mxConstants.SHAPE_RECTANGLE;
   style[mx.mxConstants.STYLE_PERIMETER] = mx.mxPerimeter.RectanglePerimeter;
-  style[mx.mxConstants.STYLE_ALIGN] = mx.mxConstants.ALIGN_MIDDLE;
+  style[mx.mxConstants.STYLE_ALIGN] = mx.mxConstants.ALIGN_LEFT;
   style[mx.mxConstants.STYLE_VERTICAL_ALIGN] = mx.mxConstants.ALIGN_MIDDLE;
   style[mx.mxConstants.STYLE_FONTCOLOR] = "#000000"; //color de fuente A
   style[mx.mxConstants.STYLE_FONTSIZE] = "11"; //tamanio
