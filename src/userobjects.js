@@ -82,7 +82,7 @@ function createTextField( graph,form, cell)
   
   if (cell.value.type){
     // Crear el elemento select
-    var valores = ['String', 'Integer', 'Boolean', 'Double', 'Arrays', 'Timestamp', 'Object', 'Null', 'Symbol',  'Date'];
+    var valores = ['String', 'Integer', 'Boolean', 'Double', 'Arrays', 'Timestamp', 'Null', 'Symbol',  'Date'];
 
     // Crear el elemento select
     var select = document.createElement('select');

@@ -110,7 +110,6 @@ export function overlayForAddProp(data, cell, graph) {
       'Double',
       'Arrays',
       'Timestamp',
-      'Object',
       'Null',
       'Symbol',
       'Date'
