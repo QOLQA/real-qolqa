@@ -13,10 +13,45 @@ export function overlayForDelete(data, cell, graph) {
   const overlay = addOverlay(data, graph)
   
   overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
-    graph.clearSelection()
-    graph.getModel().beginUpdate()
-    const r = graph.removeCells([evt2.properties.cell])
-    graph.getModel().endUpdate()
+    //console.log('sender', sender)
+    //console.log('evt2', evt2.properties.cell)
+    //-----DOM container -----------
+    // Crear el contenedor div
+      var deleteContainer = document.createElement('div');
+      deleteContainer.classList.add('delete-confirmation'); // Agregar una clase para dar estilo
+
+      // Crear el mensaje de confirmación
+      var confirmationMessage = document.createElement('p');
+      confirmationMessage.textContent = '¿Seguro que quieres eliminar?';
+
+      // Crear los botones
+      var continueButton = document.createElement('button');
+      continueButton.textContent = 'Continuar';
+      continueButton.classList.add('btn-continue'); // Agregar una clase para dar estilo
+
+      var cancelButton = document.createElement('button');
+      cancelButton.textContent = 'Cancelar';
+      cancelButton.classList.add('btn-cancel'); // Agregar una clase para dar estilo
+
+      // Agregar los elementos al contenedor
+      deleteContainer.appendChild(confirmationMessage);
+      deleteContainer.appendChild(continueButton);
+      deleteContainer.appendChild(cancelButton);
+    // ----- ends DOM---------------
+    showModalWindow(graph, 'Properties', deleteContainer, 250, 100);
+    
+      // Agregar eventos a los botones
+      continueButton.addEventListener('click', function() {
+        graph.clearSelection()
+        graph.getModel().beginUpdate()
+        const r = graph.removeCells([evt2.properties.cell])
+        graph.getModel().endUpdate()
+        wnd.destroy();
+      });
+
+      cancelButton.addEventListener('click', function() {
+        wnd.destroy();
+      });
   })
   
   graph.addCellOverlay(cell, overlay)
