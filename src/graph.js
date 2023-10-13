@@ -1,5 +1,9 @@
-import { configureTableStyle } from "./configureTableStyle";
+import {configureTableStyle} from "./configureTableStyle";
 import mx from "./util";
+import {table} from "./cells.js";
+import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
+import moveContainedSwimlanesToBack from "./swimbottom.js";
+import {selectionChanged} from "./userobjects.js";
 
 function createGraph() {
 
@@ -74,7 +78,7 @@ function createGraph() {
     mouseMove: function (sender, me) {
       if (
         this.currentState != null &&
-        (me.getState() == this.currentState || me.getState() == null)
+        (me.getState() === this.currentState || me.getState() == null)
       ) {
         let tol = iconTolerance;
         let tmp = new mx.mxRectangle(
@@ -94,7 +98,7 @@ function createGraph() {
         tmp = null;
       }
 
-      if (tmp != this.currentState) {
+      if (tmp !== this.currentState) {
         if (this.currentState != null) {
           this.dragLeave(me.getEvent(), this.currentState);
         }
@@ -284,3 +288,111 @@ function createGraph() {
   
 
 export default createGraph;
+export const container = document.querySelector("#container");
+export const editorImagesPath = "../../examples/editors/images/";
+
+export class Graph {
+  constructor(graph) {
+    this._graph = graph;
+    this._configSwimlaneToBack();
+    this._configAttributesEdition();
+  }
+
+  get graph() {
+    return this._graph;
+  }
+
+  addToolbarItem(toolbar, image) {
+    // crea la imagen que es usada para el arrastre
+    let img = toolbar.addMode(null, image, this._bindCreateDocument);
+    mx.mxUtils.makeDraggable(img, this.graph, this._bindCreateDocument);
+  }
+
+  _bindCreateDocument(graph, evt, cell) {
+    // en este contexto no podemos usar this
+    graph.stopEditing(false);
+    graph.clearSelection();
+
+    const prototype = graph.getModel().cloneCell(table);
+    modalCreateDoc(graph, evt, prototype, cell);
+  }
+
+  _configSwimlaneToBack() {
+    // Registra un oyente de eventos para detectar cuando se agregan celdas al grafo
+    this.graph.addListener(
+      mx.mxEvent.CELLS_ADDED,
+      handleSwinlane(this.graph, moveContainedSwimlanesToBack)
+    );
+    this.graph.addListener(
+      mx.mxEvent.MOVE_CELLS,
+      handleSwinlane(this.graph, moveContainedSwimlanesToBack)
+    );
+  }
+
+  _configAttributesEdition() {
+    this.graph.getSelectionModel().addListener(
+      // parametros de la segunda funcion sender, evt
+      mx.mxEvent.CHANGE, (_, __) => {
+        selectionChanged(this.graph, null);
+      }
+    )
+  }
+}
+
+function createDoc(graph, prototype, name, pt) {
+  let vertex = graph.getModel().cloneCell(prototype);
+  vertex.value.name = name;
+  vertex.geometry.x = pt.x;
+  vertex.geometry.y = pt.y;
+  vertex.geometry.alternateBounds = new mx.mxRectangle(
+    0,
+    0,
+    vertex.geometry.width,
+    vertex.geometry.height
+  );
+  return vertex;
+}
+
+function modalCreateDoc(graph, evt, prototype, cell) {
+  var name = mx.mxUtils.prompt("Enter name for new document");
+
+  if (name != null && name.trim() !== "") {
+    let pt = graph.getPointForEvent(evt);
+    let vertex = createDoc(graph, prototype, name, pt);
+
+    addActionsForDocs(vertex, graph);
+
+    vertex.setConnectable(true)
+
+    addDefaultVertex(graph, vertex)
+
+    graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
+  }
+}
+
+function handleSwinlane(graph, moveFunction) {
+  const swimlanes = [];
+
+  return function (sender, evt) {
+    const cells = evt.getProperty('cells'); // Obtiene las celdas que se agregaron o se están moviendo
+
+    // Verifica si alguna de las celdas es un swimlane
+    cells.forEach(function (cell) {
+      if (graph.isSwimlane(cell)) {
+        // Realiza acciones específicas cuando se agrega o se selecciona y arrastra una swimlane
+
+        if (swimlanes.indexOf(cell) === -1) {
+          // Agrega la swimlane al arreglo si no está duplicada
+          swimlanes.push(cell);
+        }
+
+        if (swimlanes.length > 0) {
+          // Itera sobre todas las swimlanes en el arreglo y aplica la función moveFunction a cada swimlane
+          swimlanes.forEach(function (swimlane) {
+            moveFunction(graph, swimlane);
+          });
+        }
+      }
+    });
+  };
+}
