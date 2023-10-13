@@ -28,12 +28,12 @@ export function addDefaultVertex(graph, vertex) {
   vertex.insert(v1, 0);
 
   overlayForDelete(
-    createDataOverlay('cross_.png', -10, -25, 'Borrar atributo'),
+    createDataOverlay('cross_.png', -10, -7, 'Borrar atributo'),
     v1,
     graph
   );
   overlayForEdit(
-    createDataOverlay('edit_.png', -30, -25, 'Editar atributo'),
+    createDataOverlay('edit_.png', -30, -7, 'Editar atributo'),
     v1,
     graph
   );

@@ -27,7 +27,7 @@ table.setVertex(true);
 // logica de sidebar icon
 
 let columnObject = new Column('COLUMNAME');
-export const column = new mx.mxCell(columnObject, new mx.mxGeometry(0, 0, 0, 50));
+export const column = new mx.mxCell(columnObject, new mx.mxGeometry(0, 0, 0, 15));
 
 column.setVertex(true);
 column.setConnectable(false);
