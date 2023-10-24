@@ -72,7 +72,6 @@ export class DeleteAction extends Action {
 
   _setupProcess() {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
-      // Crear el contenedor div
       var deleteContainer = document.createElement('div');
       deleteContainer.classList.add('delete-confirmation'); // Agregar una clase para dar estilo
 
@@ -94,16 +93,54 @@ export class DeleteAction extends Action {
       deleteContainer.appendChild(continueButton);
       deleteContainer.appendChild(cancelButton);
       // ----- ends DOM---------------
-      showModalWindow(this.graph, 'Properties', deleteContainer, 250, 100);
-      
-      const removeCell = function(graph) {
-        graph.getModel().beginUpdate();
-        const r = graph.removeCells([evt2.properties.cell]);
-        graph.getModel().endUpdate();
+      showModalWindow(this._graph, 'Properties', deleteContainer, 250, 100);
+
+      const removeRelation = (graph) => {
+        var cellToRemove = evt2.properties.cell; //celda a remover 
+        graph.clearSelection()
+        graph.getModel().beginUpdate()
+        //recoger los contenedores enlazados
+        var  edges = graph.getModel().getIncomingEdges(cellToRemove); 
+        //comprueba si es viene de un contenedor o un atributo        
+        if( cellToRemove.style !='table'){
+          var parent = graph.model.getParent(cellToRemove);
+          edges = graph.getModel().getIncomingEdges(parent); //obtiene celdas conectadas (origen, destino)
+          cellToRemove =  parent  
+        }
+        //comprueba si hay conexiones
+        if (edges.length > 0) {
+        var targetCells = [];
+        edges.forEach(function(edge) {
+          // Encuentra la celda de destino de cada arista
+          var targetCell = graph.getModel().getTerminal(edge, true); //obtiene celdas conectadas (solo detino)
+          targetCells.push(targetCell);
+        });
+        var AtEliminar = []; //lista del celdas a eliminar
+        //itera sobre cada targetcell y busca coinciencias en la referencia del nombre
+        targetCells.forEach(function(targetCell){
+          var childCount = graph.getModel().getChildCount(targetCell);
+          for (var i = 0; i < childCount; i++) {
+            var child = targetCell.getChildAt(i);
+            var name = child.value.name;
+            var parts = name.split('.');
+            var docname = parts[0];
+            // Verifica si el nombre del hijo coincide con el patrón de referencia
+            if (docname == cellToRemove.value.name) {
+              // Coincide con el patrón, lo que significa que está referenciando
+              AtEliminar.push(child);
+            }}
+        });
+        //eliminar celdas
+        AtEliminar.forEach(function(child){
+          graph.getModel().remove(child);
+        });}
+        const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
+        graph.getModel().endUpdate()
         wnd.destroy();
       }
+    
       // Agregar eventos a los botones
-      continueButton.addEventListener('click', () => removeCell(this.graph));
+      continueButton.addEventListener('click', () => removeRelation(this._graph));
 
       cancelButton.addEventListener('click', function() {
         wnd.destroy();

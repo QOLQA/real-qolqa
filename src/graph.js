@@ -1,6 +1,6 @@
 import {configureTableStyle} from "./configureTableStyle";
 import mx from "./util";
-import {table} from "./cells.js";
+import {table, column} from "./cells.js";
 import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
 import {selectionChanged} from "./userobjects.js";
@@ -119,6 +119,33 @@ function createGraph() {
       }
     },
   });
+
+  graph.addEdge = function(edge, parent, source, target, index)
+  {
+      // Finds the primary key child of the target table
+      var child = this.model.getChildAt(target, 0);
+
+      this.model.beginUpdate();
+      try
+      {
+        var col1 = this.model.cloneCell(column);
+
+        col1.value.name = target.value.name + '.' + child.value.name;
+        col1.value.type = child.value.type;
+
+        this.addCell(col1, source);
+        source = col1;				
+        target = child;
+        
+        return mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+      }
+      finally
+      {
+        this.model.endUpdate();
+      }
+      
+      return null;
+  };
 
   configureTableStyle(graph);
 

@@ -111,7 +111,8 @@ function createTextField( graph,form, cell)
   
   var applyHandler = function()
   {
-    const clone = cell.value.clone();
+    const clone = cell.value.clone(); //para el grafo
+    const clone2 = cell.value.clone(); //para la referencia (si existe)
     var newValue = input.value;
     if (cell.value.type){
       var newValue2 = input2.value;
@@ -127,7 +128,39 @@ function createTextField( graph,form, cell)
     if (newValue != oldValue || newValue2 != oldValue2)
     {
       graph.getModel().beginUpdate();
-                  
+      // Verifica si hay conexiones salientes desde este contenedor
+      var parent = graph.model.getParent(cell);
+      var edges = graph.getModel().getIncomingEdges(parent);
+      //comprueba si hay conexiones
+      if (edges.length > 0) {
+        clone2.name = parent.value.name + '.' + newValue 
+        clone2.type = newValue2;
+        var targetCells = [];
+        edges.forEach(function(edge) {
+          // Encuentra la celda de destino de cada arista
+          var targetCell = graph.getModel().getTerminal(edge, true); //obtiene celdas conectadas (solo detino)
+          targetCells.push(targetCell);
+        });
+        var Modi = []; //lista del celdas a modificar
+        //itera sobre cada targetcell y busca coinciencias en la referencia del nombre
+        targetCells.forEach(function(targetCell){
+          var childCount = graph.getModel().getChildCount(targetCell);
+          for (var i = 0; i < childCount; i++) {
+            var child = targetCell.getChildAt(i);
+            var name = child.value.name; //hallar la manera de que la parye referenciada se quede igual, ejemplo b.
+            var parts = name.split('.');
+            var docname = parts[0];
+            // Verifica si el nombre del hijo coincide con el patrón de referencia
+            if (docname == parent.value.name) {
+              // Coincide con el patrón, lo que significa que está referenciando
+              Modi.push(child);
+            }}
+        });
+        
+        Modi.forEach(function(child){
+          graph.model.setValue(child, clone2);
+        });
+      }       
         try
         {
           // if (newValue != oldValue){cell.value.name = newValue;}

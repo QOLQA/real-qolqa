@@ -45,4 +45,5 @@ export function configureTableStyle(graph) {
   style[mx.mxConstants.STYLE_STROKEWIDTH] = "2";
   style[mx.mxConstants.STYLE_ROUNDED] = true; //redondeado
   style[mx.mxConstants.STYLE_EDGE] = mx.mxEdgeStyle.SideToSide; //estilo?
+  style[mx.mxConstants.STYLE_ENDARROW] = mx.mxConstants.NONE; //final de la flecha (sin triangulo)
 }
