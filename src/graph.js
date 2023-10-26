@@ -123,7 +123,7 @@ function createGraph() {
   graph.addEdge = function(edge, parent, source, target, index)
   {
       // Finds the primary key child of the target table
-      var child = this.model.getChildAt(target, 0);
+      var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
 
       this.model.beginUpdate();
       try
@@ -141,6 +141,8 @@ function createGraph() {
       }
       finally
       {
+        console.log(source)
+        moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
       }
       

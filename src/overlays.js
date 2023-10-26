@@ -24,4 +24,3 @@ export function overlayForEdit(data, cell, graph) {
   const overlay = new EditAction(data, graph);
   graph.addCellOverlay(cell, overlay.overlay);
 }
-
