@@ -338,3 +338,60 @@ export class EditAction extends Action {
     });
   }
 }
+
+export function generarJSON(graph) {
+  // Inicializa la estructura base del JSON
+  var jsonData = { submodels: [] };
+
+  // Obtén el modelo del gráfico
+  var model = graph.getModel();
+
+  // Itera sobre todas las celdas en el modelo
+  var cells = model.cells;
+  for (var cellId in cells) {
+    var cell = cells[cellId];
+
+    // Verifica si la celda es un contenedor
+    if (cell.isVertex()) {
+      var nombreDocumento = cell.value.name; // Nombre del documento del contenedor
+      var atributosDocumento = [];
+
+      // Itera sobre los hijos de la celda (atributos)
+      var childCount = cell.getChildCount();
+      for (var i = 0; i < childCount; i++) {
+        var atributo = cell.getChildAt(i);
+        var nombreAtributo = atributo.value.name; // Nombre del atributo
+        var tipoAtributo = atributo.value.type; // Tipo del atributo
+        // Agrega el atributo al arreglo de atributos del documento
+        atributosDocumento.push({ [nombreAtributo]: tipoAtributo });
+      }
+
+      // Verifica si la celda está conectada a otra (verifica las aristas)
+      var relaciones = [];
+      var edges = model.getEdges(cell);
+      for (var edge of edges) {
+        var terminal = edge.getTerminal(true); // Verifica el contenedor de origen de la arista
+        var destino = edge.getTerminal(false); // Verifica el destino de la arista
+        if (terminal !== cell) {
+          // Agrega la relación al arreglo de relaciones
+          relaciones.push(destino.value.name);
+        }
+      }
+
+      // Crea el objeto de documento
+      var documento = {
+        name: nombreDocumento,
+        fields: atributosDocumento,
+        relations: relaciones.length > 0 ? relaciones : null
+      };
+
+      // Agrega el documento al submodelo correspondiente
+      jsonData.submodels.push({ documents: [documento] });
+    }
+  }
+
+  // Convierte el objeto JSON en una cadena JSON
+  var jsonString = JSON.stringify(jsonData);
+
+  return jsonString;
+}

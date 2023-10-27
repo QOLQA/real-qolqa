@@ -120,7 +120,7 @@ function createGraph() {
     },
   });
 
-  graph.addEdge = function(edge, parent, source, target, index)
+  graph.addEdge = function(edge, parent, source, target, index) //agregar conexiones 
   {
       // Finds the primary key child of the target table
       var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
