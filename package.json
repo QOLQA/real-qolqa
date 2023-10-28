@@ -12,6 +12,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
-    "@aire-ux/mxgraph": "^4.2.6"
+    "@aire-ux/mxgraph": "^4.2.6",
+    "axios": "^1.6.0"
   }
 }

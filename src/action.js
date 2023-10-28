@@ -350,9 +350,8 @@ export function generarJSON(graph) {
   var cells = model.cells;
   for (var cellId in cells) {
     var cell = cells[cellId];
-
     // Verifica si la celda es un contenedor
-    if (cell.isVertex()) {
+    if (cell.style == "table") {
       var nombreDocumento = cell.value.name; // Nombre del documento del contenedor
       var atributosDocumento = [];
 
@@ -366,17 +365,8 @@ export function generarJSON(graph) {
         atributosDocumento.push({ [nombreAtributo]: tipoAtributo });
       }
 
-      // Verifica si la celda está conectada a otra (verifica las aristas)
-      var relaciones = [];
-      var edges = model.getEdges(cell);
-      for (var edge of edges) {
-        var terminal = edge.getTerminal(true); // Verifica el contenedor de origen de la arista
-        var destino = edge.getTerminal(false); // Verifica el destino de la arista
-        if (terminal !== cell) {
-          // Agrega la relación al arreglo de relaciones
-          relaciones.push(destino.value.name);
-        }
-      }
+      //relaciones 
+      var relaciones = []; //----preguntar que va aqui
 
       // Crea el objeto de documento
       var documento = {
@@ -384,11 +374,21 @@ export function generarJSON(graph) {
         fields: atributosDocumento,
         relations: relaciones.length > 0 ? relaciones : null
       };
+       
+      var docs =[]
+      docs.push(documento)
 
       // Agrega el documento al submodelo correspondiente
       jsonData.submodels.push({ documents: [documento] });
+
     }
   }
+  
+        
+  // Agrega el documento al submodelo correspondiente
+  //jsonData.submodels.push({ documents: [docs] });
+  //verficar si los docs estan conectados
+  //hacer submodels de los docs conectados y de los no 
 
   // Convierte el objeto JSON en una cadena JSON
   var jsonString = JSON.stringify(jsonData);

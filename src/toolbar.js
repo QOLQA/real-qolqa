@@ -1,6 +1,8 @@
 import createGraph, {container, editorImagesPath, Graph} from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
+import {generarJSON} from "./action"
+import axios from 'axios';
 
 if (!mx.mxClient.isBrowserSupported()) {
   mx.mxUtils.error("Browser is not supported!", 200, false);
@@ -23,6 +25,26 @@ if (!mx.mxClient.isBrowserSupported()) {
   let { graph, editor } = createGraph();
   graph.dropEnabled = true;
   editor.setGraphContainer(container);
+
+  //boton guardar
+  // Obtén el botón por su ID
+  var BotonSave = document.getElementById("saveButton");
+
+  // Agrega un manejador de eventos al botón
+  BotonSave.addEventListener("click", function() {
+    console.log(generarJSON(graph))
+
+    // Realizar la solicitud POST al backend de Firebase
+    axios.post('http://127.0.0.1:4000/firestore/data', generarJSON(graph))
+    .then(function (response) {
+      // Manejar la respuesta exitosa del servidor si es necesario
+      console.log(response);
+    })
+    .catch(function (error) {
+      // Manejar errores, como validación fallida o problemas en el servidor
+      console.log(error);
+    });
+  });
 
   createLayout(editor);
 
