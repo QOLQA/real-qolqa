@@ -35,7 +35,7 @@ if (!mx.mxClient.isBrowserSupported()) {
     console.log(generarJSON(graph))
 
     // Realizar la solicitud POST al backend de Firebase
-    axios.post('http://127.0.0.1:4000/firestore/data', generarJSON(graph))
+    axios.post('http://127.0.0.1:8000/models', generarJSON(graph))
     .then(function (response) {
       // Manejar la respuesta exitosa del servidor si es necesario
       console.log(response);

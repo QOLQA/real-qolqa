@@ -132,6 +132,7 @@ function createGraph() {
 
         col1.value.name = target.value.name + '.' + child.value.name;
         col1.value.type = child.value.type;
+        col1.value.isForeignKey = true;//setea  como "clave foranea"
 
         this.addCell(col1, source);
         source = col1;				

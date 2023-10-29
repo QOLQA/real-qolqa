@@ -391,7 +391,7 @@ export function generarJSON(graph) {
   //hacer submodels de los docs conectados y de los no 
 
   // Convierte el objeto JSON en una cadena JSON
-  var jsonString = JSON.stringify(jsonData);
+  //var jsonString = JSON.stringify(jsonData);
 
-  return jsonString;
+  return jsonData;
 }
