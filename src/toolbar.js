@@ -1,7 +1,7 @@
 import createGraph, {container, editorImagesPath, Graph} from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
-import {generarJSON} from "./action"
+import {generarJSON} from "./docjson"
 import axios from 'axios';
 
 if (!mx.mxClient.isBrowserSupported()) {
@@ -32,8 +32,9 @@ if (!mx.mxClient.isBrowserSupported()) {
 
   // Agrega un manejador de eventos al botón
   BotonSave.addEventListener("click", function() {
-    console.log(generarJSON(graph))
-
+    //generarJSON(graph)
+    console.log(JSON.stringify(generarJSON(graph)))
+    
     // Realizar la solicitud POST al backend de Firebase
     axios.post('http://127.0.0.1:8000/models', generarJSON(graph))
     .then(function (response) {
