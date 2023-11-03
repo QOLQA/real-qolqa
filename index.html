@@ -9,54 +9,90 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div id="toolbar">
-      <i class="fa fa-file-text-o" id="doc-icon"> </i>
-      <hr size="1" style="margin-right: 6px;">
-    </div>
-
-    <div id = "container"></div>
-
-    <button id = "importButton" >IMPORT</button>
-    <button id = "querieButton" >QUERIES</button>
-    <button id = "saveButton" >SAVE</button>
-    <button id="btnAtras">
-      <i class="fa fa-arrow-left"></i>
-    </button>
-    <div id="ContainerSUP">{QOLQA} | Logical model of: </div>
+    <div id="app">
+      <div id="view1">
+        <h1>Primera Vista</h1>
+        <button id="button1">Vista 1</button>
+        <button id="button2">Vista 2</button>
+      </div>
     
-    <div  id="toolbar1" class="btn-toolbar" role="toolbar">
-      <div class="btn-group">
-        <button type="button"> <i class="fa fa-undo"></i></button>
-        <button type="button"> <i class="fa fa-repeat"></i></button>
-      </div>
-    </div>
-    <div id="toolbar2" class="btn-toolbar" role="toolbar">
-      <div class="btn-group">
-          <button type="button"><i class="fa fa-search-plus"></i></button>
-          <button type="button"><i class="fa fa-search"></i></button>
-          <button type="button"><i class="fa fa-search-minus"></i></button>
-      </div>
-    </div>
-    <div id="toolbar3" class="btn-toolbar" role="toolbar">
-      <div class="btn-group">
-          <button type="button" class="fa fa-files-o"></button>
-          <button type="button" class="fa fa-table"></button>
-      </div>
-    </div>
-    <div id="toolbar4" class="btn-toolbar" role="toolbar">
-      <div class="btn-group">
-          <button type="button" class="fa fa-print"></button>
-      </div>
-    </div>
-    <table style="position:relative;width: 100% ; margin: auto;">
-      <tr>
-        <td valign="top">
-          <div id="properties"
-            style="display:none;border: solid 1px black; padding: 10px;position: absolute; right:0;top: 50px">
+      <div id="view2" style="display: none;">
+        <div id="toolbar">
+          <i class="fa fa-file-text-o" id="doc-icon"> </i>
+          <hr size="1" style="margin-right: 6px;">
+        </div>
+        
+        <div id="container"></div>
+        
+        <button id="importButton">IMPORT</button>
+        <button id="querieButton">QUERIES</button>
+        <button id="saveButton">SAVE</button>
+        <button id="btnAtras">
+          <i class="fa fa-arrow-left"></i>
+        </button>
+        <div id="ContainerSUP">{QOLQA} | Logical model of: </div>
+        
+        <div id="toolbar1" class="btn-toolbar" role="toolbar">
+          <div class="btn-group">
+            <button type="button"> <i class="fa fa-undo"></i></button>
+            <button type="button"> <i class="fa fa-repeat"></i></button>
           </div>
-        </td>
-      </tr>
-    </table>
-    <script type="module" src="./src/toolbar.js"></script>
+        </div>
+        <div id="toolbar2" class="btn-toolbar" role="toolbar">
+          <div class="btn-group">
+            <button type="button"><i class="fa fa-search-plus"></i></button>
+            <button type="button"><i class="fa fa-search"></i></button>
+            <button type="button"><i class="fa fa-search-minus"></i></button>
+          </div>
+        </div>
+        <div id="toolbar3" class="btn-toolbar" role="toolbar">
+          <div class="btn-group">
+            <button type="button" class="fa fa-files-o"></button>
+            <button type="button" class="fa fa-table"></button>
+          </div>
+        </div>
+        <div id="toolbar4" class="btn-toolbar" role="toolbar">
+          <div class="btn-group">
+            <button type="button" class="fa fa-print"></button>
+          </div>
+        </div>
+        <table style="position:relative;width: 100% ; margin: auto;">
+          <tr>
+            <td valign="top">
+              <div id="properties"
+                style="display:none;border: solid 1px black; padding: 10px;position: absolute; right:0;top: 50px">
+              </div>
+            </td>
+          </tr>
+        </table>
+        <script type="module" src="./src/toolbar.js"></script>
+      </div>
+    </div>
+    
+    <script>
+      const app = document.getElementById('app');
+      const view1 = document.getElementById('view1');
+      const view2 = document.getElementById('view2');
+      const button1 = document.getElementById('button1');
+      const button2 = document.getElementById('button2');
+      const backButton = document.getElementById('btnAtras');
+
+      // Eventos para mostrar la segunda vista
+      button1.addEventListener('click', () => {
+        view1.style.display = 'none';
+        view2.style.display = 'block';
+      });
+
+      button2.addEventListener('click', () => {
+        view1.style.display = 'none';
+        view2.style.display = 'block';
+      });
+
+      // Evento para volver a la primera vista
+      backButton.addEventListener('click', () => {
+        view2.style.display = 'none';
+        view1.style.display = 'block';
+      });
+    </script>
   </body>
 </html>
