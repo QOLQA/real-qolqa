@@ -32,8 +32,8 @@ if (!mx.mxClient.isBrowserSupported()) {
 
   // Agrega un manejador de eventos al botón
   BotonSave.addEventListener("click", function() {
-    //generarJSON(graph)
-    console.log(JSON.stringify(generarJSON(graph)))
+    // generarJSON(graph)
+    //console.log(JSON.stringify(generarJSON(graph)))
     
     // Realizar la solicitud POST al backend de Firebase
     axios.post('http://127.0.0.1:8000/models', generarJSON(graph))

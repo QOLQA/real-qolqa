@@ -142,7 +142,7 @@ function createGraph() {
       }
       finally
       {
-        console.log(source)
+        //console.log(source)
         moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
       }
