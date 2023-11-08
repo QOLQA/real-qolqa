@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Model</title>
+</head>
+<body>
+    <div id="view2">
+        <div id="toolbar">
+            <i class="fa fa-file-text-o" id="doc-icon"> </i>
+            <hr size="1" style="margin-right: 6px;">
+        </div>
+    
+        <div id="container"></div>
+    
+        <button id="importButton">IMPORT</button>
+        <button id="querieButton">QUERIES</button>
+        <button id="saveButton">SAVE</button>
+        <a href="/">
+            <button id="btnAtras">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+        </a>
+        <div id="ContainerSUP">{QOLQA} | Logical model of: </div>
+    
+        <div id="toolbar1" class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <button type="button"> <i class="fa fa-undo"></i></button>
+                <button type="button"> <i class="fa fa-repeat"></i></button>
+            </div>
+        </div>
+        <div id="toolbar2" class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <button type="button"><i class="fa fa-search-plus"></i></button>
+                <button type="button"><i class="fa fa-search"></i></button>
+                <button type="button"><i class="fa fa-search-minus"></i></button>
+            </div>
+        </div>
+        <div id="toolbar3" class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <button type="button" class="fa fa-files-o"></button>
+                <button type="button" class="fa fa-table"></button>
+            </div>
+        </div>
+        <div id="toolbar4" class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <button type="button" class="fa fa-print"></button>
+            </div>
+        </div>
+        <table style="position:relative;width: 100% ; margin: auto;">
+            <tr>
+                <td valign="top">
+                    <div id="properties"
+                        style="display:none;border: solid 1px black; padding: 10px;position: absolute; right:0;top: 50px">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <script type="module" src="../src/toolbar.js"></script>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        console.log('model id', id);
+    </script>
+</body>
+</html>
