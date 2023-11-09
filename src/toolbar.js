@@ -1,8 +1,8 @@
 import createGraph, {container, editorImagesPath, Graph} from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
-import {generarJSON} from "./docjson"
-import axios from 'axios';
+import LoopConversor from "./classes/loop_conversor";
+import Axios from "./classes/axios";
 
 if (!mx.mxClient.isBrowserSupported()) {
   mx.mxUtils.error("Browser is not supported!", 200, false);
@@ -30,21 +30,18 @@ if (!mx.mxClient.isBrowserSupported()) {
   // Obtén el botón por su ID
   var BotonSave = document.getElementById("saveButton");
 
+  // Conversor de mxgraph a json
+  const loopConversor = new LoopConversor();
+
+  // Servicio de api
+  const axios = new Axios('http://127.0.0.1:8000/models');
+
   // Agrega un manejador de eventos al botón
   BotonSave.addEventListener("click", function() {
-    // generarJSON(graph)
-    //console.log(JSON.stringify(generarJSON(graph)))
+    console.log(loopConversor.fromGraphToJson(graph));
     
     // Realizar la solicitud POST al backend de Firebase
-    axios.post('http://127.0.0.1:8000/models', generarJSON(graph))
-    .then(function (response) {
-      // Manejar la respuesta exitosa del servidor si es necesario
-      console.log(response);
-    })
-    .catch(function (error) {
-      // Manejar errores, como validación fallida o problemas en el servidor
-      console.log(error);
-    });
+    axios.create(loopConversor.fromGraphToJson(graph));
   });
 
   createLayout(editor);

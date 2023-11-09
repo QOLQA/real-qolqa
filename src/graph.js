@@ -322,10 +322,11 @@ export const container = document.querySelector("#container");
 export const editorImagesPath = "../../examples/editors/images/";
 
 export class Graph {
-  constructor(graph) {
+  constructor(graph, conversor) {
     this._graph = graph;
     this._configSwimlaneToBack();
     this._configAttributesEdition();
+    this.conversor = conversor;
   }
 
   get graph() {
