@@ -120,10 +120,10 @@ function createGraph() {
     },
   });
 
-  graph.addEdge = function(edge, parent, source, target, index)
+  graph.addEdge = function(edge, parent, source, target, index) //agregar conexiones 
   {
       // Finds the primary key child of the target table
-      var child = this.model.getChildAt(target, 0);
+      var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
 
       this.model.beginUpdate();
       try
@@ -132,6 +132,7 @@ function createGraph() {
 
         col1.value.name = target.value.name + '.' + child.value.name;
         col1.value.type = child.value.type;
+        col1.value.isForeignKey = true;//setea  como "clave foranea"
 
         this.addCell(col1, source);
         source = col1;				
@@ -141,6 +142,8 @@ function createGraph() {
       }
       finally
       {
+        //console.log(source)
+        moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
       }
       

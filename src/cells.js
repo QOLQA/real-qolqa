@@ -7,6 +7,7 @@ export function Column(name) {
 
 Column.prototype.type = 'String';
 Column.prototype.primaryKey = false;
+Column.prototype.isForeignKey = false;
 Column.prototype.clone = function() {
   return mx.mxUtils.clone(this);
 }
