@@ -370,7 +370,7 @@ export class Graph {
   }
 }
 
-function createDoc(graph, prototype, name, pt) {
+export function createDoc(graph, prototype, name, pt) {
   let vertex = graph.getModel().cloneCell(prototype);
   vertex.value.name = name;
   vertex.geometry.x = pt.x;
@@ -389,6 +389,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
   if (name != null && name.trim() !== "") {
     let pt = graph.getPointForEvent(evt);
+    console.log('punto', pt);
     let vertex = createDoc(graph, prototype, name, pt);
 
     addActionsForDocs(vertex, graph);

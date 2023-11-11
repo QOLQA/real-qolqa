@@ -4,6 +4,37 @@ import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
 import Axios from "./classes/axios";
 
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+console.log('model id', id);
+
+// recuperar datos del backend
+const miModelo = {
+  submodels: [
+    {
+      documents: [
+        {
+          name: 'person',
+          fields: [
+            { id_column1: 'String' },
+            { name: 'String' },
+            { last_name: 'String' },
+            { nacimiento: 'Date' },
+          ],
+          relations: {
+            inner_relations: null,
+            outer_relations: null,
+          },
+          pt: {
+            x: 230,
+            y: 180,
+          }
+        }
+      ]
+    }
+  ]
+}
+
 if (!mx.mxClient.isBrowserSupported()) {
   mx.mxUtils.error("Browser is not supported!", 200, false);
 } else {
@@ -63,5 +94,11 @@ if (!mx.mxClient.isBrowserSupported()) {
 
   const myGraph = new Graph(graph);
   myGraph.addToolbarItem(toolbar, editorImagesPath + 'swimlane.gif');
+
+  // Genera un grafico a partir de datos
+  graph.model.beginUpdate();
+  loopConversor.fromJsonToGraph(miModelo, myGraph.graph);
+  console.log('terminado de graficar');
+  graph.model.endUpdate();
 }
 

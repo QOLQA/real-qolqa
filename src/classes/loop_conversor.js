@@ -1,4 +1,8 @@
+import { table } from "../cells";
+import { addActionsForDocs, addDefaultVertex } from "../cells_actions";
+import { createDoc } from "../graph";
 import ConversorJson from "../services/coversor_json";
+import mx from "../util";
 
 export default class LoopConversor extends ConversorJson {
     constructor () { super() }
@@ -42,7 +46,95 @@ export default class LoopConversor extends ConversorJson {
         return jsonData; 
     }
 
-    fromJsonToGraph(jsonModel, graph) {}
+    fromJsonToGraph(jsonModel, graph) {
+        const miModelo = {
+            submodels: [
+                {
+                    documents: [
+                        {
+                            name: 'person',
+                            fields: [
+                                { 'id_column1': 'String' },
+                                { name: 'id_column1', type: 'String' },
+                                { name: 'name', type: 'String' },
+                                { name:'last_name', type: 'String' },
+                                { name: 'nacimiento', type: 'Date' },
+                            ],
+                            relations: {
+                                inner_relations: null,
+                                outer_relations: null,
+                            },
+                            pt: {
+                                x: 230,
+                                y: 180,
+                            }
+                        },
+                    ]
+                }
+            ]
+        };
+
+        const { submodels } = miModelo
+
+        for (let submodel in submodels) {
+            const { documents } = submodel
+            for (let document in documents) {
+                let pt = new mx.mxPoint(document.pt.x, document.pt.y);
+                const prototype = graph.getModel().cloneCell(table);
+                let vertex = createDoc(graph, prototype, document.name, pt);
+                addActionsForDocs(vertex, graph);
+                vertex.setConnectable(true);
+                addDefaultVertex(graph, vertex);
+                graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
+
+                const { fields } = document;
+                for (let field in fields) {
+                    addProp(graph, vertex, field);
+                }
+            }
+        }
+    }
+}
+
+const addProp = function (graph, cell, objectProp) {
+    // Obtener los valores de los campos de entrada
+    const { nombreValue, tipoValue } = objectProp;
+
+    // agregar nueva columna
+    const columnName = nombreValue; //nombre del atributo
+    const columnType = tipoValue; //tipo del atributo
+    if (columnName != null && columnType != null) {
+        graph.getModel().beginUpdate();
+        try {
+            const v1 = graph.getModel().cloneCell(column);
+            v1.value.name = columnName;
+            v1.value.type = columnType;
+            graph.addCell(v1, cell);
+
+            // Find the last child in the parent cell and position the new cell after it
+            const parent = cell;
+            moveContainedSwimlanesToBack(graph, parent);
+
+            overlayForDelete(
+                createDataOverlay('cross_.png', -10, 0, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE),
+                v1,
+                graph
+            );
+            overlayForEdit(
+                createDataOverlay('edit_.png', -30, 0, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE),
+                v1,
+                graph
+            );
+        } finally {
+            graph.getModel().endUpdate();
+        }
+    }
+    // Cerrar el modal cuando se hace clic en el botón
+    wnd.destroy();
+}
+
+function processDocument(document, graph) {
+    
 }
 
 function findConnectedCells(graph, startCell) {
