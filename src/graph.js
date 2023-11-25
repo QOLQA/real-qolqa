@@ -345,6 +345,7 @@ export class Graph {
     graph.clearSelection();
 
     const prototype = graph.getModel().cloneCell(table);
+    console.log(cell);
     modalCreateDoc(graph, evt, prototype, cell);
   }
 
@@ -389,7 +390,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
   if (name != null && name.trim() !== "") {
     let pt = graph.getPointForEvent(evt);
-    console.log('punto', pt);
+    console.log('putno para evento', pt);
     let vertex = createDoc(graph, prototype, name, pt);
 
     addActionsForDocs(vertex, graph);
