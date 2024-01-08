@@ -69,6 +69,7 @@ export default class LoopConversor extends ConversorJson {
             documents.forEach(document => processDocument(document, graph, prototype, counter++));
             // agregar las relaciones
             const sources = Object.keys(relations);
+            var parent = graph.getDefaultParent();
             sources.forEach(sourceId => {
                 // source vertex
                 const sourceVertex = model.cells[sourceId];
@@ -77,8 +78,8 @@ export default class LoopConversor extends ConversorJson {
                 const targetVertex = model.cells[targetId];
                 const edge = new mx.mxCell();
                 edge.edge = true;
-                // graph.insertEdge(parent, null, '', sourceVertex, targetVertex);
-                graph.addEdge(edge, parent, sourceVertex, targetVertex);
+                graph.insertEdge(parent, null, '', sourceVertex, targetVertex);
+                //graph.addEdge(edge, parent, sourceVertex, targetVertex);
             })
         });
 
