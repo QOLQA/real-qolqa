@@ -251,6 +251,7 @@ export class AddPropAction extends Action {
 
             // Find the last child in the parent cell and position the new cell after it
             const parent = evt2.properties.cell;
+            console.log('with actions', parent);
             moveContainedSwimlanesToBack(graph, parent);
 
             overlayForDelete(

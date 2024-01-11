@@ -4,6 +4,10 @@ import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
 import Axios from "./classes/axios";
 
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('model_id');
+console.log('model id', id);
+
 if (!mx.mxClient.isBrowserSupported()) {
   mx.mxUtils.error("Browser is not supported!", 200, false);
 } else {
@@ -34,14 +38,14 @@ if (!mx.mxClient.isBrowserSupported()) {
   const loopConversor = new LoopConversor();
 
   // Servicio de api
-  const axios = new Axios('http://127.0.0.1:8000/models');
+  const api = new Axios('http://127.0.0.1:8000/models');
 
   // Agrega un manejador de eventos al botón
   BotonSave.addEventListener("click", function() {
     console.log(loopConversor.fromGraphToJson(graph));
     
     // Realizar la solicitud POST al backend de Firebase
-    axios.create(loopConversor.fromGraphToJson(graph));
+    api.create(loopConversor.fromGraphToJson(graph));
   });
 
   createLayout(editor);
@@ -63,5 +67,9 @@ if (!mx.mxClient.isBrowserSupported()) {
 
   const myGraph = new Graph(graph);
   myGraph.addToolbarItem(toolbar, editorImagesPath + 'swimlane.gif');
+
+  // Genera un grafico a partir de datos
+  const modeloActual = await api.read(id);
+  loopConversor.fromJsonToGraph(modeloActual, myGraph.graph);
 }
 

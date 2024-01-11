@@ -1,4 +1,11 @@
+import { column, table } from "../cells";
+import { addActionsForDocs, addDefaultVertex } from "../cells_actions";
+import { createDoc } from "../graph";
+import { createDataOverlay } from "../helpers";
+import { overlayForDelete, overlayForEdit } from "../overlays";
 import ConversorJson from "../services/coversor_json";
+import moveContainedSwimlanesToBack from "../swimbottom";
+import mx from "../util";
 
 export default class LoopConversor extends ConversorJson {
     constructor () { super() }
@@ -42,7 +49,123 @@ export default class LoopConversor extends ConversorJson {
         return jsonData; 
     }
 
-    fromJsonToGraph(jsonModel, graph) {}
+    fromJsonToGraph(jsonModel, graph) {
+        console.log('mostrando model', jsonModel);
+        const { submodels } = jsonModel;
+        const prototype = graph.getModel().cloneCell(table);
+
+        let counter = 100;
+        const model = graph.getModel();
+        model.createId = (cell) => {
+            if (graph.isSwimlane(cell)) {
+                return cell.value.id;
+            }
+            return counter++;
+        }
+
+        submodels.forEach(submodel => {
+            const { documents, relations } = submodel;
+            // agregar los documentos
+            documents.forEach(document => processDocument(document, graph, prototype, counter++));
+            // agregar las relaciones
+            const sources = Object.keys(relations);
+            var parent = graph.getDefaultParent();
+            sources.forEach(sourceId => {
+                // source vertex
+                const sourceVertex = model.cells[sourceId];
+                // target vertex
+                const targetId = relations[sourceId];
+                const targetVertex = model.cells[targetId];
+                const edge = new mx.mxCell();
+                edge.edge = true;
+                graph.insertEdge(parent, null, '', sourceVertex, targetVertex);
+                //graph.addEdge(edge, parent, sourceVertex, targetVertex);
+            })
+        });
+
+        const cellsIndex = model.cells;
+        console.log('cells', cellsIndex);
+
+    }
+}
+
+const addProp = function (graph, cell, nombreValue, tipoValue) {
+
+    // agregar nueva columna
+    const columnName = nombreValue; //nombre del atributo
+    const columnType = tipoValue; //tipo del atributo
+    const v1 = graph.getModel().cloneCell(column);
+    v1.value.name = columnName;
+    v1.value.type = columnType;
+    moveContainedSwimlanesToBack(graph, cell);
+    overlayForDelete(
+        createDataOverlay('cross_.png', -10, 0, 'Borrar atributo', mx.mxConstants.ALIGN_MIDDLE),
+        v1,
+        graph
+    );
+    overlayForEdit(
+        createDataOverlay('edit_.png', -30, 0, 'Editar atributo', mx.mxConstants.ALIGN_MIDDLE),
+        v1,
+        graph
+    );
+    return v1;
+}
+
+
+
+function processDocument(document, graph, prototype, counter) {
+    const {
+        fields, position, nested_docs, id, name
+    } = document;
+
+    const parent = graph.getDefaultParent();
+    const pt = new mx.mxPoint(position.x, position.y);
+    const vertex = createDoc(graph, prototype, name, pt);
+    vertex.value.id = id;
+    addActionsForDocs(vertex, graph);
+    vertex.setConnectable(true);
+
+    const attributeNames = Object.keys(fields);
+    const columns = attributeNames.map(name => addProp(graph, vertex, name, fields[name]));
+    
+    const model = graph.getModel();
+
+    columns.forEach(column => {
+        model.add(vertex, column);
+    });
+
+    // relaciones internas (documentos anidados)
+    nested_docs.forEach(({ fields, name, nested_docs }) => {
+        const nestedVertex = model.cloneCell(table);
+        nestedVertex.value.name = name;
+        let lastChild = null;
+        const childCount = model.getChildCount(vertex);
+        if (childCount > 0) {
+            lastChild = columns[columns.length - 1];
+        }
+
+        if (lastChild !== null) {
+            const lastGeometry = model.getGeometry(lastChild);
+            const newX = lastGeometry.x + lastGeometry.width + 20;
+            nestedVertex.geometry.x = newX;
+            nestedVertex.geometry.y = lastGeometry.y;
+        }
+
+        addActionsForDocs(nestedVertex, graph);
+        // addDefaultVertex(graph, nestedVertex);
+
+        const attributeNames1 = Object.keys(fields);
+        const columns1 = attributeNames1.map(name => addProp(graph, vertex, name, fields[name]));
+
+        columns1.forEach(column => {
+            model.add(nestedVertex, column);
+        });
+
+        model.add(vertex, nestedVertex);        
+    })
+
+    model.add(parent, vertex);
+    // graph.importCells([vertex], 0, 0, null);
 }
 
 function findConnectedCells(graph, startCell) {

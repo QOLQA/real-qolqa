@@ -10,6 +10,16 @@ export default class Axios extends Api {
     async create(jsonModel) {
         const resp = await axios.post(this.endpoint, jsonModel);
         // resp se retorna del backend
-        console.log('Respuesta de create', resp);
+        return resp.data;
+    }
+
+    async readAll() {
+        const resp = await axios.get(this.endpoint);
+        return resp.data;
+    }
+
+    async read(idModel) {
+        const resp = await axios.get(`${this.endpoint}/${idModel}`);
+        return resp.data;
     }
 }
