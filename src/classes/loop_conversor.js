@@ -30,17 +30,31 @@ export default class LoopConversor extends ConversorJson {
             if ((cell.style == "table") && (parentCell.style != "table")) {
 
                 var connectedCells = findConnectedCells(graph, cell);
-
+                var relaciones = [];
                 // Comprueba si esta lista de cell esta en connected cells
                 if (!reviewedDocs.includes(cell)) {
+
                     // Genera el documento a partir de las celdas conectadas
                     var documento = generardocs(graph, connectedCells);
 
-                    // Agrega el documento al submodelo correspondiente
-                    jsonData.submodels.push({ documents: documento });
-
                     // Agrega las celdas conectadas a la lista de reviewedDocs
                     reviewedDocs.push(...connectedCells);
+
+                    //busca relations
+                    var childCount = cell.getChildCount();
+                    for (var i = 0; i < childCount; i++) {
+                        var atributo = cell.getChildAt(i);
+                        // Agrega el atributo al arreglo de atributos del documento
+                        if (atributo.value.isForeignKey) {
+
+                            relaciones.push({ [cellId] : cell.edges[0].target.id.toString()});
+                        }
+                    }
+
+                    // Agrega el documento y la relacion al submodelo correspondiente
+                    jsonData.submodels.push({ documents: documento,
+                     relations: relaciones.length > 0 ? relaciones : null});
+
                 }
             }
         }
@@ -206,7 +220,10 @@ function generardocs(graph, cells) {
             var atributosDocumento = [];
             //var relaciones = [];
             var relacionesInternas = [];
-            var relacionesExternas = [];
+            
+            //obtiene la posicion de la tabla pricipal
+            var cellX = graph.model.getGeometry(cell).x;
+            var cellY = graph.model.getGeometry(cell).y;
 
             // Itera sobre los hijos de la celda (atributos)
             var childCount = cell.getChildCount();
@@ -214,19 +231,14 @@ function generardocs(graph, cells) {
                 var atributo = cell.getChildAt(i);
                 var nombreAtributo = atributo.value.name; // Nombre del atributo
                 var tipoAtributo = atributo.value.type; // Tipo del atributo
-                // Agrega el atributo al arreglo de atributos del documento
-                if (atributo.value.isForeignKey) {
-                    relacionesExternas.push({ [nombreAtributo]: tipoAtributo });
+                // verifica si es un contenedor interno (doc)
+                if (atributo.style === "table") {
+                    //reviewedDocs.push(atributo)
+                    var documentoInterno = generardocs(graph, [atributo]);
+                    relacionesInternas.push(documentoInterno[0]);
                 } else {
-                    // Si no es una clave foránea, verifica si es un contenedor interno (doc)
-                    if (atributo.style === "table") {
-                        //reviewedDocs.push(atributo)
-                        var documentoInterno = generardocs(graph, [atributo]);
-                        relacionesInternas.push(documentoInterno[0]);
-                    } else {
-                        // Si no es una clave foránea ni un contenedor interno, es un atributo normal
-                        atributosDocumento.push({ [nombreAtributo]: tipoAtributo });
-                    }
+                    // Si no es una clave foránea ni un contenedor interno, es un atributo normal
+                    atributosDocumento.push({ [nombreAtributo]: tipoAtributo });
                 }
             }
             // Crea el objeto de documento
@@ -234,11 +246,13 @@ function generardocs(graph, cells) {
             if (parentCell.style != "table") {
                 var documento = {
                     name: nombreDocumento,
+                    id: cell.id,
                     fields: atributosDocumento,
-                    relations: {
-                        inner_relations: relacionesInternas.length > 0 ? relacionesInternas : null,
-                        outer_relations: relacionesExternas.length > 0 ? relacionesExternas : null
-                    }
+                    position: {
+                        x: cellX,
+                        y: cellY
+                      },
+                    nested_docs: relacionesInternas.length > 0 ? relacionesInternas : null,
                 };
             }
             else {
@@ -251,5 +265,7 @@ function generardocs(graph, cells) {
             docs.push(documento)
         }
     }
+    
+      
     return docs;
 }
