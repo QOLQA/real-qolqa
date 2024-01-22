@@ -4,11 +4,13 @@ import {table, column} from "./cells.js";
 import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
 import {selectionChanged} from "./userobjects.js";
+import { SimpleRegex } from "./classes/simple_regex.js";
 
 function createGraph() {
 
   let editor = new mx.mxEditor();
   let graph = editor.graph;
+  const regex = new SimpleRegex();
 
   graph.setConnectable(true);
   graph.setCellsDisconnectable(true); //desconectar y pasar a otrp
@@ -46,6 +48,8 @@ function createGraph() {
       return `${cell.value.name}:\t${cell.value.type}`;
     } else if (this.isSwimlane(cell)) {
       return cell.value.name;
+    } else if (cell.isEdge()) {
+      return cell.value;
     }
   };
   //reemplaza la propiedad name del valor de la celda con un nuevo valor proporcionado,
@@ -56,10 +60,31 @@ function createGraph() {
         this,
         arguments
       );
+    } else if (cell.isEdge()) {
+      if (!regex.isValidCardinality(value)) {
+        alert('Escriba un formato valido de cardinaliad');
+        return cell.value;
+      } else {
+        let old = cell.value;
+        cell.value = value;
+        return old;
+      }
     } else {
-      let old = cell.value.name;
-      cell.value.name = value;
-      return old;
+      if (!cell.value.forCardinality) {
+        let old = cell.value.name;
+        cell.value.name = value;
+        return old;
+      } else {
+        if (!regex.isValidCardinality(value)) {
+          alert('Escriba un formato valid de cardinalidad');
+          return cell.value.name;
+        } else {
+          let old = cell.value.name;
+          cell.value.name = value;
+          return old;
+        }
+      }
+      
     }
   };
 

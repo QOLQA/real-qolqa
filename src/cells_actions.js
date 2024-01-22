@@ -39,3 +39,12 @@ export function addDefaultVertex(graph, vertex) {
   );
 }
 
+export function addCardinalityVertex(graph, tableVertex) {
+  const cardinality = graph.getModel().cloneCell(column);
+  cardinality.value.name = '1..1';
+  cardinality.value.forCardinality = true;
+  cardinality.value.type = ' Cardinality'
+
+  tableVertex.insert(cardinality, 0);
+}
+
