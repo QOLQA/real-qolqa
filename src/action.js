@@ -1,5 +1,5 @@
 import { column, table } from "./cells";
-import { addActionsForDocs, addDefaultVertex } from "./cells_actions";
+import { addActionsForDocs, addCardinalityVertex, addDefaultVertex } from "./cells_actions";
 import { createDataOverlay } from "./helpers";
 import showModalWindow, { wnd } from "./modal";
 import { overlayForDelete, overlayForEdit } from "./overlays";
@@ -313,6 +313,8 @@ export class NestDocumentAction extends Action {
 
         // Agregar atributo por defecto
         addDefaultVertex(this.graph, vertex);
+        // Agregar atributo para la cardinalidad
+        addCardinalityVertex(this.graph, vertex);
 
         this.graph.setSelectionCells(
           this.graph.importCells([vertex], 0, 0, evt2.properties.cell)

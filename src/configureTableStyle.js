@@ -41,7 +41,7 @@ export function configureTableStyle(graph) {
   graph.getStylesheet().putDefaultVertexStyle(style);
   //--Estilo de la flecha
   style = graph.stylesheet.getDefaultEdgeStyle();
-  style[mx.mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = "#FFFFF ";
+  style[mx.mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = "#FFFFFF";
   style[mx.mxConstants.STYLE_STROKEWIDTH] = "2";
   style[mx.mxConstants.STYLE_ROUNDED] = true; //redondeado
   style[mx.mxConstants.STYLE_EDGE] = mx.mxEdgeStyle.SideToSide; //estilo?
