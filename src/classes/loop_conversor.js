@@ -30,7 +30,7 @@ export default class LoopConversor extends ConversorJson {
             if ((cell.style == "table") && (parentCell.style != "table")) {
 
                 var connectedCells = findConnectedCells(graph, cell);
-                var relaciones = [];
+                var relaciones = {};
                 // Comprueba si esta lista de cell esta en connected cells
                 if (!reviewedDocs.includes(cell)) {
 
@@ -47,7 +47,7 @@ export default class LoopConversor extends ConversorJson {
                         // Agrega el atributo al arreglo de atributos del documento
                         if (atributo.value.isForeignKey) {
 
-                            relaciones.push({ [cellId] : cell.edges[0].target.id.toString()});
+                            relaciones[cellId] = cell.edges[0].target.id;
                         }
                     }
 
@@ -217,7 +217,7 @@ function generardocs(graph, cells) {
         if (cell.style == "table") {
             var parentCell = model.getParent(cell)
             var nombreDocumento = cell.value.name; // Nombre del documento del contenedor
-            var atributosDocumento = [];
+            var atributosDocumento = {};
             //var relaciones = [];
             var relacionesInternas = [];
             
@@ -238,7 +238,7 @@ function generardocs(graph, cells) {
                     relacionesInternas.push(documentoInterno[0]);
                 } else {
                     // Si no es una clave foránea ni un contenedor interno, es un atributo normal
-                    atributosDocumento.push({ [nombreAtributo]: tipoAtributo });
+                    atributosDocumento[nombreAtributo] = tipoAtributo;
                 }
             }
             // Crea el objeto de documento

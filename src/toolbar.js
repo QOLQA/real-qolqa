@@ -41,11 +41,50 @@ if (!mx.mxClient.isBrowserSupported()) {
   const api = new Axios('http://127.0.0.1:8000/models');
 
   // Agrega un manejador de eventos al botón
-  BotonSave.addEventListener("click", function() {
+  BotonSave.addEventListener("click", function() { //async
+    var json = {
+      "submodels": [
+        {
+          "documents": [
+            {
+              "name": "string",
+              "id": "string",
+              "fields": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+              },
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "nested_docs": [
+                {
+                  "name": "string",
+                  "fields": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                  },
+                  "nested_docs": [
+                    "string"
+                  ]
+                }
+              ]
+            }
+          ],
+          "relations": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        }
+      ]
+    }
     console.log(loopConversor.fromGraphToJson(graph));
     
     // Realizar la solicitud POST al backend de Firebase
-    api.create(loopConversor.fromGraphToJson(graph));
+    api.create(loopConversor.fromGraphToJson(graph)); //update
   });
 
   createLayout(editor);
