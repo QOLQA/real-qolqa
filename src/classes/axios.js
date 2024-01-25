@@ -22,4 +22,11 @@ export default class Axios extends Api {
         const resp = await axios.get(`${this.endpoint}/${idModel}`);
         return resp.data;
     }
+
+    async update(id, jsonModel) {
+        const resp = await axios.patch(`${this.endpoint}/${id}`, jsonModel);
+        // resp se retorna del backend
+        return resp.data;
+    }
+    
 }
