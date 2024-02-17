@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import {configureTableStyle} from "./configureTableStyle";
 import mx from "./util";
 import {table, column} from "./cells.js";
@@ -417,6 +418,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
     let pt = graph.getPointForEvent(evt);
     console.log('putno para evento', pt);
     let vertex = createDoc(graph, prototype, name, pt);
+    vertex.value.id = uuidv4();
 
     addActionsForDocs(vertex, graph);
 

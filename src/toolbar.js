@@ -41,11 +41,67 @@ if (!mx.mxClient.isBrowserSupported()) {
   const api = new Axios('http://127.0.0.1:8000/models');
 
   // Agrega un manejador de eventos al botón
-  BotonSave.addEventListener("click", function() {
+  BotonSave.addEventListener("click", async function() { //async
+    var json = {
+      "submodels": [
+        {
+          "documents": [
+            {
+              "name": "string",
+              "id": "string",
+              "fields": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+              },
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "nested_docs": [
+                {
+                  "name": "string",
+                  "fields": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                  },
+                  "nested_docs": [
+                    "string"
+                  ]
+                }
+              ]
+            }
+          ],
+          "relations": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        }
+      ]
+    }
     console.log(loopConversor.fromGraphToJson(graph));
-    
+    //console.log(graph.getModel())
     // Realizar la solicitud POST al backend de Firebase
-    api.create(loopConversor.fromGraphToJson(graph));
+    //api.create(loopConversor.fromGraphToJson(graph)); //update
+    
+    try {
+      if (id) {
+          // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
+          await api.update(id, loopConversor.fromGraphToJson(graph));
+          console.log('actualizado: ',graph.getModel())
+
+      } else {
+          // Si no tiene id, es un nuevo modelo y debes crearlo
+          const newModel = await api.create(loopConversor.fromGraphToJson(graph));
+          // Actualiza el id del modelo con el id devuelto por el backend
+          id = newModel.id;
+      }
+      console.log("Guardado exitoso");
+    } catch (error) {
+        console.error("Error al guardar:", error);
+    }
   });
 
   createLayout(editor);
@@ -72,4 +128,3 @@ if (!mx.mxClient.isBrowserSupported()) {
   const modeloActual = await api.read(id);
   loopConversor.fromJsonToGraph(modeloActual, myGraph.graph);
 }
-
