@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@aire-ux/mxgraph": "^4.2.6",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "uuid": "^9.0.1"
   }
 }

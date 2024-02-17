@@ -44,16 +44,17 @@ export default class LoopConversor extends ConversorJson {
                     var childCount = cell.getChildCount();
                     for (var i = 0; i < childCount; i++) {
                         var atributo = cell.getChildAt(i);
+                        console.log('atributo num', i, atributo);
                         // Agrega el atributo al arreglo de atributos del documento
                         if (atributo.value.isForeignKey) {
-
+                            console.log('entra aca');
                             relaciones[cellId] = cell.edges[0].target.id;
                         }
                     }
 
                     // Agrega el documento y la relacion al submodelo correspondiente
                     jsonData.submodels.push({ documents: documento,
-                     relations: relaciones.length > 0 ? relaciones : null});
+                     relations: Object.keys(relaciones).length > 0 ? relaciones : null});
 
                 }
             }
@@ -64,7 +65,6 @@ export default class LoopConversor extends ConversorJson {
     }
 
     fromJsonToGraph(jsonModel, graph) {
-        console.log('mostrando model', jsonModel);
         const { submodels } = jsonModel;
         const prototype = graph.getModel().cloneCell(table);
 
@@ -81,20 +81,22 @@ export default class LoopConversor extends ConversorJson {
             const { documents, relations } = submodel;
             // agregar los documentos
             documents.forEach(document => processDocument(document, graph, prototype, counter++));
-            // agregar las relaciones
-            const sources = Object.keys(relations);
-            var parent = graph.getDefaultParent();
-            sources.forEach(sourceId => {
-                // source vertex
-                const sourceVertex = model.cells[sourceId];
-                // target vertex
-                const targetId = relations[sourceId];
-                const targetVertex = model.cells[targetId];
-                const edge = new mx.mxCell();
-                edge.edge = true;
-                graph.insertEdge(parent, null, '', sourceVertex, targetVertex);
-                //graph.addEdge(edge, parent, sourceVertex, targetVertex);
-            })
+            if (relations !== null) {
+                // agregar las relaciones
+                const sources = Object.keys(relations);
+                var parent = graph.getDefaultParent();
+                sources.forEach(sourceId => {
+                    // source vertex
+                    const sourceVertex = model.cells[sourceId];
+                    // target vertex
+                    const targetId = relations[sourceId];
+                    const targetVertex = model.cells[targetId];
+                    const edge = new mx.mxCell();
+                    edge.edge = true;
+                    graph.insertEdge(parent, null, '', sourceVertex, targetVertex);
+                    //graph.addEdge(edge, parent, sourceVertex, targetVertex);
+                })
+            }
         });
 
         const cellsIndex = model.cells;
@@ -148,35 +150,73 @@ function processDocument(document, graph, prototype, counter) {
         model.add(vertex, column);
     });
 
-    // relaciones internas (documentos anidados)
-    nested_docs.forEach(({ fields, name, nested_docs }) => {
-        const nestedVertex = model.cloneCell(table);
-        nestedVertex.value.name = name;
-        let lastChild = null;
-        const childCount = model.getChildCount(vertex);
+    function processNestedDocs(vertexParent, nestedDocs, columns) {
+        if (nestedDocs === null) return
+
+        const { fields, name, nested_docs } = nestedDocs
+        const nestedVertex = model.cloneCell(table)
+        nestedVertex.value.name = name
+        let lastChild = null
+        const childCount = model.getChildCount(vertexParent)
+        
         if (childCount > 0) {
-            lastChild = columns[columns.length - 1];
+            lastChild = columns[columns.length - 1]
         }
 
         if (lastChild !== null) {
-            const lastGeometry = model.getGeometry(lastChild);
-            const newX = lastGeometry.x + lastGeometry.width + 20;
-            nestedVertex.geometry.x = newX;
-            nestedVertex.geometry.y = lastGeometry.y;
+            const lastGeometry = model.getGeometry(lastChild)
+            const newX = lastGeometry.x + lastGeometry.width + 20
+            nestedVertex.geometry.x = newX
+            nestedVertex.geometry.y = lastGeometry.y
         }
 
-        addActionsForDocs(nestedVertex, graph);
-        // addDefaultVertex(graph, nestedVertex);
+        addActionsForDocs(nestedVertex, graph)
 
-        const attributeNames1 = Object.keys(fields);
-        const columns1 = attributeNames1.map(name => addProp(graph, vertex, name, fields[name]));
+        const attributeNames = Object.keys(fields)
+        const columns1 = attributeNames.map(
+            name => addProp(graph, vertexParent, name, fields[name])
+        )
 
-        columns1.forEach(column => {
-            model.add(nestedVertex, column);
-        });
+        columns1.forEach(
+            column => model.add(nestedVertex, column)
+        )
 
-        model.add(vertex, nestedVertex);        
-    })
+        model.add(vertexParent, nestedVertex)
+    }
+
+    if (nested_docs !== null) {
+        // relaciones internas (documentos anidados)
+        nested_docs.forEach(({ fields, name, nested_docs }) => {
+            // processNestedDocs(vertex, nested_docs, columns)
+            console.log({ fields, name, nested_docs })
+            const nestedVertex = model.cloneCell(table);
+            nestedVertex.value.name = name;
+            let lastChild = null;
+            const childCount = model.getChildCount(vertex);
+            if (childCount > 0) {
+                lastChild = columns[columns.length - 1];
+            }
+
+            if (lastChild !== null) {
+                const lastGeometry = model.getGeometry(lastChild);
+                const newX = lastGeometry.x + lastGeometry.width + 20;
+                nestedVertex.geometry.x = newX;
+                nestedVertex.geometry.y = lastGeometry.y;
+            }
+
+            addActionsForDocs(nestedVertex, graph);
+            // addDefaultVertex(graph, nestedVertex);
+
+            const attributeNames1 = Object.keys(fields);
+            const columns1 = attributeNames1.map(name => addProp(graph, vertex, name, fields[name]));
+
+            columns1.forEach(column => {
+                model.add(nestedVertex, column);
+            });
+
+            model.add(vertex, nestedVertex);
+        })
+    }
 
     model.add(parent, vertex);
     // graph.importCells([vertex], 0, 0, null);

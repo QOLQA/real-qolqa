@@ -99,9 +99,9 @@ if (!mx.mxClient.isBrowserSupported()) {
           id = newModel.id;
       }
       console.log("Guardado exitoso");
-  } catch (error) {
-      console.error("Error al guardar:", error);
-  }
+    } catch (error) {
+        console.error("Error al guardar:", error);
+    }
   });
 
   createLayout(editor);
