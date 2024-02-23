@@ -6,7 +6,6 @@ import Axios from "./classes/axios";
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('model_id');
-console.log('model id', id);
 
 if (!mx.mxClient.isBrowserSupported()) {
   mx.mxUtils.error("Browser is not supported!", 200, false);
@@ -81,8 +80,6 @@ if (!mx.mxClient.isBrowserSupported()) {
         }
       ]
     }
-    console.log(loopConversor.fromGraphToJson(graph));
-    //console.log(graph.getModel())
     // Realizar la solicitud POST al backend de Firebase
     //api.create(loopConversor.fromGraphToJson(graph)); //update
     
@@ -90,7 +87,6 @@ if (!mx.mxClient.isBrowserSupported()) {
       if (id) {
           // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
           await api.update(id, loopConversor.fromGraphToJson(graph));
-          console.log('actualizado: ',graph.getModel())
 
       } else {
           // Si no tiene id, es un nuevo modelo y debes crearlo
@@ -98,7 +94,6 @@ if (!mx.mxClient.isBrowserSupported()) {
           // Actualiza el id del modelo con el id devuelto por el backend
           id = newModel.id;
       }
-      console.log("Guardado exitoso");
     } catch (error) {
         console.error("Error al guardar:", error);
     }

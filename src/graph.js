@@ -161,18 +161,17 @@ function createGraph() {
         col1.value.isForeignKey = true;//setea  como "clave foranea"
 
         this.addCell(col1, source);
-        source = col1;				
+        source = col1;
         target = child;
-        
+
         return mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
       }
       finally
       {
-        //console.log(source)
         moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
       }
-      
+
       return null;
   };
 
@@ -371,7 +370,6 @@ export class Graph {
     graph.clearSelection();
 
     const prototype = graph.getModel().cloneCell(table);
-    console.log(cell);
     modalCreateDoc(graph, evt, prototype, cell);
   }
 
@@ -416,7 +414,6 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
   if (name != null && name.trim() !== "") {
     let pt = graph.getPointForEvent(evt);
-    console.log('putno para evento', pt);
     let vertex = createDoc(graph, prototype, name, pt);
     vertex.value.id = uuidv4();
 
