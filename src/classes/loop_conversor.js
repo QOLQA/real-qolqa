@@ -27,8 +27,8 @@ export default class LoopConversor extends ConversorJson {
             var cell = cells[cellId];
             var parentCell = model.getParent(cell)
             // Verifica si la celda es un contenedor .... y si no es un hijo contenido..
-            if ((cell.style == "table") && (parentCell.style != "table")) {
-
+            if ((!reviewedDocs.includes(cell)) && (cell.style == "table") && (parentCell.style != "table")) {
+                // Add same cell and other connected's
                 var connectedCells = findConnectedCells(graph, cell);
                 var relaciones = [];
                 // Comprueba si esta lista de cell esta en connected cells
@@ -40,27 +40,29 @@ export default class LoopConversor extends ConversorJson {
                     // Agrega las celdas conectadas a la lista de reviewedDocs
                     reviewedDocs.push(...connectedCells);
 
-                    //busca relations
-                    var childCount = cell.getChildCount();
-                    for (var i = 0; i < childCount; i++) {
-                        var atributo = cell.getChildAt(i);
-                        // Agrega el atributo al arreglo de atributos del documento
-                        if (atributo.value.isForeignKey) {
-                            // relaciones[cellId] = cell.edges[0].target.id;
-                            relaciones.push({id_source: cellId, id_target: cell.edges[0].target.id})
+                    for (const cell of connectedCells) {
+                        const childCount = cell.getChildCount()
+                        for (let i = 0; i < childCount; i++) {
+                            const attribute = cell.getChildAt(i)
+                            if (attribute.value.isForeignKey) {
+                                relaciones.push({
+                                    id_source: cell.value.id,
+                                    id_target: attribute.value.to,
+                                    cardinality: '1..1',
+                                })
+                            }
                         }
                     }
 
                     // Agrega el documento y la relacion al submodelo correspondiente
                     jsonData.submodels.push({ collections: documento,
                      relations: relaciones.length > 0 ? relaciones : null});
-
                 }
             }
         }
 
         // Devuelve el JSON resultante
-        return jsonData; 
+        return jsonData;
     }
 
     fromJsonToGraph(jsonModel, graph) {
@@ -87,25 +89,12 @@ export default class LoopConversor extends ConversorJson {
                     const targetVertex = model.cells[id_target]
                     const edge = new mx.mxCell()
                     edge.edge = true
+                    // this code ensure that "new" attribute is added in document
+                    // without actions
                     graph.insertEdge(parent, null, '', sourceVertex, targetVertex)
                 }
-                // // agregar las relaciones
-                // const sources = Object.keys(relations);
-                // sources.forEach(sourceId => {
-                //     // source vertex
-                //     const sourceVertex = model.cells[sourceId];
-                //     // target vertex
-                //     const targetId = relations[sourceId];
-                //     const targetVertex = model.cells[targetId];
-                //     const edge = new mx.mxCell();
-                //     edge.edge = true;
-                //     graph.insertEdge(parent, null, '', sourceVertex, targetVertex);
-                //     //graph.addEdge(edge, parent, sourceVertex, targetVertex);
-                // })
             }
         });
-
-        const cellsIndex = model.cells;
     }
 }
 
@@ -190,10 +179,11 @@ function processDocument(collection, graph, prototype, counter) {
 
     if (nested_docs !== null) {
         // relaciones internas (documentos anidados)
-        nested_docs.forEach(({ fields, name, nested_docs }) => {
+        nested_docs.forEach(({ fields, name, nested_docs, id }) => {
             // processNestedDocs(vertex, nested_docs, columns)
             const nestedVertex = model.cloneCell(table);
             nestedVertex.value.name = name;
+            nestedVertex.value.id = id
             let lastChild = null;
             const childCount = model.getChildCount(vertex);
             if (childCount > 0) {
@@ -226,29 +216,38 @@ function processDocument(collection, graph, prototype, counter) {
 }
 
 function findConnectedCells(graph, startCell) {
-    var visited = new Set();
-    var connectedCells = [];
-
-    // Función recursiva para realizar la búsqueda en profundidad
-    function dfs(currentCell) {
-        visited.add(currentCell);
-        connectedCells.push(currentCell);
-
-        // Obtenemos todas las aristas salientes de la celda actual
-        var edges = graph.model.getOutgoingEdges(currentCell);
-
-        for (var i = 0; i < edges.length; i++) {
-            var targetCell = graph.model.getTerminal(edges[i], false); // Obtenemos la celda de destino
-            if (!visited.has(targetCell)) {
-                dfs(targetCell);
-            }
+    function getNeighbors(cell, graph) {
+        const neighbors = []
+        for (let to of cell.value.to) {
+            neighbors.push(graph.model.cells[to])
         }
+        const outerEdges = graph.model.getOutgoingEdges(cell)
+        const terminals = outerEdges.map(edge => {
+            return graph.model.getTerminal(edge, false)
+        })
+        neighbors.push(...terminals)
+        return neighbors
     }
 
-    // Iniciar la búsqueda desde la celda de inicio
-    dfs(startCell);
+    function bfs(cell) {
+        const visited = new Set()
+        visited.add(cell)
+        const queue = [cell]
+        while (queue.length > 0) {
+            const vertex = queue.shift()
+            const neighbors = getNeighbors(vertex, graph)
+            for (let neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor)
+                    queue.push(neighbor)
+                }
+            }
+        }
+        return visited
+    }
 
-    return connectedCells;
+    const bfs_result = [...bfs(startCell)]
+    return bfs_result;
 }
 
 function generardocs(graph, cells) {
@@ -278,10 +277,15 @@ function generardocs(graph, cells) {
                 if (atributo.style === "table") {
                     //reviewedDocs.push(atributo)
                     var documentoInterno = generardocs(graph, [atributo]);
-                    relacionesInternas.push(documentoInterno[0]);
+                    relacionesInternas.push({
+                        ...documentoInterno[0],
+                        cardinality: '1..1'
+                    });
                 } else {
-                    // Si no es una clave foránea ni un contenedor interno, es un atributo normal
-                    atributosDocumento[nombreAtributo] = tipoAtributo;
+                    if (!atributo.value.isForeignKey) {
+                        // Si no es una clave foránea ni un contenedor interno, es un atributo normal
+                        atributosDocumento[nombreAtributo] = tipoAtributo;
+                    }
                 }
             }
             // Crea el objeto de documento
@@ -301,6 +305,7 @@ function generardocs(graph, cells) {
             else {
                 documento = {
                     name: nombreDocumento,
+                    id: cell.id,
                     fields: atributosDocumento,
                     nested_docs: relacionesInternas.length > 0 ? relacionesInternas : null,
                 };
