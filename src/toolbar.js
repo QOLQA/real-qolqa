@@ -41,52 +41,14 @@ if (!mx.mxClient.isBrowserSupported()) {
 
   // Agrega un manejador de eventos al botón
   BotonSave.addEventListener("click", async function() { //async
-    var json = {
-      "submodels": [
-        {
-          "documents": [
-            {
-              "name": "string",
-              "id": "string",
-              "fields": {
-                "additionalProp1": "string",
-                "additionalProp2": "string",
-                "additionalProp3": "string"
-              },
-              "position": {
-                "x": 0,
-                "y": 0
-              },
-              "nested_docs": [
-                {
-                  "name": "string",
-                  "fields": {
-                    "additionalProp1": "string",
-                    "additionalProp2": "string",
-                    "additionalProp3": "string"
-                  },
-                  "nested_docs": [
-                    "string"
-                  ]
-                }
-              ]
-            }
-          ],
-          "relations": {
-            "additionalProp1": "string",
-            "additionalProp2": "string",
-            "additionalProp3": "string"
-          }
-        }
-      ]
-    }
     // Realizar la solicitud POST al backend de Firebase
     //api.create(loopConversor.fromGraphToJson(graph)); //update
     
     try {
       if (id) {
+        const json = loopConversor.fromGraphToJson(graph)
           // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
-          await api.update(id, loopConversor.fromGraphToJson(graph));
+          await api.update(id, json);
 
       } else {
           // Si no tiene id, es un nuevo modelo y debes crearlo

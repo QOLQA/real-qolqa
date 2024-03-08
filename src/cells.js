@@ -9,6 +9,7 @@ Column.prototype.type = 'String';
 Column.prototype.primaryKey = false;
 Column.prototype.isForeignKey = false;
 Column.prototype.forCardinality = false;
+Column.prototype.to = ''
 Column.prototype.clone = function() {
   return mx.mxUtils.clone(this);
 }
@@ -17,6 +18,8 @@ export function Table(name) {
   this.name = name;
 }
 
+Table.prototype.isTarget = false
+Table.prototype.to = []
 Table.prototype.clone = function() {
   return mx.mxUtils.clone(this);
 }
