@@ -153,15 +153,12 @@ function processDocument(collection, graph, prototype, counter) {
 
 function processNestedDocs(vertex, nested_docs, columns, graph) {
     const model = graph.getModel();
-    console.log("fff")
     if (nested_docs !== null) {
-        console.log("ddd")
         // relaciones internas (documentos anidados)
-        nested_docs.forEach(({ fields, name, nested_docs, id }) => {
+        nested_docs.forEach(({ fields, name, nested_docs, id, cardinality }) => {
             // processNestedDocs(vertex, nested_docs, columns)
-            console.log(name)
             const nestedVertex = model.cloneCell(table);
-            nestedVertex.value.name = name;
+            nestedVertex.value.name = name + " (" + cardinality + " )";
             nestedVertex.value.id = id
             let lastChild = null;
             const childCount = model.getChildCount(vertex);
@@ -257,8 +254,7 @@ function generardocs(graph, cells) {
                     //reviewedDocs.push(atributo)
                     var documentoInterno = generardocs(graph, [atributo]);
                     relacionesInternas.push({
-                        ...documentoInterno[0],
-                        cardinality: '1..1'
+                        ...documentoInterno[0]
                     });
                 } else {
                     if (!atributo.value.isForeignKey) {
@@ -282,11 +278,18 @@ function generardocs(graph, cells) {
                 };
             }
             else {
+                const regex = /([^()]+) \(([^)]+)\)/;
+                const match = nombreDocumento.match(regex);
+
+                const name = match[1].trim();
+                const cardinality = match[2].trim();
+
                 documento = {
-                    name: nombreDocumento,
+                    name: name,
                     id: cell.id,
                     fields: atributosDocumento,
                     nested_docs: relacionesInternas.length > 0 ? relacionesInternas : null,
+                    cardinality: cardinality
                 };
             }
             docs.push(documento)
