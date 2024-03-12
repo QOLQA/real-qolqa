@@ -86,14 +86,14 @@ export default class LoopConversor extends ConversorJson {
             collections.forEach(collection => processDocument(collection, graph, prototype, counter++));
             if (relations !== null) {
                 var parent = graph.getDefaultParent();
-                for (const { id_source, id_target } of relations) {
+                for (const { id_source, id_target, cardinality } of relations) {
                     const sourceVertex = model.cells[id_source]
                     const targetVertex = model.cells[id_target]
                     const edge = new mx.mxCell()
                     edge.edge = true
                     // this code ensure that "new" attribute is added in document
                     // without actions
-                    graph.insertEdge(parent, null, '', sourceVertex, targetVertex)
+                    graph.insertEdge(parent, null, cardinality, sourceVertex, targetVertex)
                 }
             }
         });
@@ -254,7 +254,8 @@ function generardocs(graph, cells) {
                     //reviewedDocs.push(atributo)
                     var documentoInterno = generardocs(graph, [atributo]);
                     relacionesInternas.push({
-                        ...documentoInterno[0]
+                        ...documentoInterno[0],
+                        cardinality: '1..1'
                     });
                 } else {
                     if (!atributo.value.isForeignKey) {
