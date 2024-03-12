@@ -4,7 +4,7 @@ import mx from "./util";
 import {table, column} from "./cells.js";
 import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
-import {selectionChanged} from "./userobjects.js";
+import {selectionChanged, selectionChangedForConnections} from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
 
 function createGraph() {
@@ -391,8 +391,15 @@ export class Graph {
   _configAttributesEdition() {
     this.graph.getSelectionModel().addListener(
       // parametros de la segunda funcion sender, evt
-      mx.mxEvent.CHANGE, (_, __) => {
+      mx.mxEvent.CHANGE, (_, evt) => {
+       // console.log('smth happened', evt.properties.removed[0].edge)
+        if (evt.properties.removed[0].edge){
+          console.log('es un conector')
+          selectionChangedForConnections(this.graph, evt.properties.removed[0])
+        }
+        else{
         selectionChanged(this.graph, null);
+      }
       }
     )
   }

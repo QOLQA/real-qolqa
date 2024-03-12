@@ -204,3 +204,108 @@ function createTextField( graph,form, cell)
     });
   }
 }
+
+
+export function selectionChangedForConnections(graph, cell)
+//Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.
+{
+  console.log(cell)
+  var elemento = document.querySelector('#properties');
+
+  // Aplica el estilo CSS
+  if (elemento) {
+    elemento.style.display = 'block';
+  }
+  
+
+  var div = document.getElementById('properties');
+  //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
+
+  // Clears the DIV the non-DOM way
+  div.innerHTML = '';
+
+    //Se crea un nuevo formulario (mxForm) que se utilizará para mostrar las propiedades del elemento seleccionado
+    var form = new mx.mxForm();
+
+    createTextFieldForConnections( graph,form, cell);
+
+    div.appendChild(form.getTable());
+    //Se agrega el formulario al panel de propiedades.
+    mx.mxUtils.br(div);
+    //Se agrega una línea en blanco adicional al final del panel de propiedades.
+  
+}
+
+/**
+ * Creates the textfield for the given property.
+ */
+// function createTextField(graph, form, cell, attribute)
+function createTextFieldForConnections( graph,form, cell)
+{
+  if (cell.edge){
+    // Crear el elemento select
+    var valores = ['0..1', '1..1'];
+
+    // Crear el elemento select
+    var select = document.createElement('select');
+    select.id = 'tipoValue';
+
+    // Agregar las opciones al select usando un bucle for
+    for (var i = 0; i < valores.length; i++) {
+      var option = document.createElement('option');
+      option.text = valores[i];
+      select.add(option);
+    }
+
+    // Agregar un evento de cambio al elemento select
+    select.addEventListener('change', function () {
+      // Obtener y guardar el valor seleccionado en una variable
+      var selectedValue = select.value;
+      // Puedes usar selectedValue según tus necesidades
+    });
+
+    // Agregar el select al formulario
+    var input = form.addField('Tipo' + ': ', select);
+    // var input2 = form.addText('Tipo' + ': ', cell.value.type);
+
+  }
+  //
+  var applyHandler = function()
+  {
+    const clone = cell.value; //para el conector
+    var newValue = input.value;
+    //cell.value = newValue;
+    
+    console.log('newvalue', newValue, ' - oldvalue', clone)
+    if (newValue != clone )
+    { 
+        graph.getModel().beginUpdate();     
+        try
+        {
+          graph.model.setValue(cell, newValue);
+        }
+        finally
+        {
+          
+            graph.getModel().endUpdate();
+        }  
+  }
+  };
+
+  configurarEventosInput(input);
+
+  function configurarEventosInput(input) {
+    // Evento para Enter sin Shift
+    mx.mxEvent.addListener(input, 'keypress', function (evt) {
+      if (evt.keyCode == 13 && !mx.mxEvent.isShiftDown(evt)) {
+        input.blur();
+      }
+    });
+
+    // Evento para cambios en el input
+    mx.mxEvent.addListener(input, 'input', function () {
+      applyHandler();
+    });
+  }
+
+}
