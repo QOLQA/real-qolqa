@@ -7,6 +7,34 @@ import moveContainedSwimlanesToBack from "./swimbottom";
 import { selectionChanged } from "./userobjects";
 import mx from "./util";
 
+function getNeighbors(cell, graph) {
+  const neighbors = []
+  for (let to of cell.value.to) {
+      neighbors.push(graph.model.cells[to])
+  }
+  const outerEdges = graph.model.getOutgoingEdges(cell)
+  const terminals = outerEdges.map(edge => {
+      return graph.model.getTerminal(edge, false)
+  })
+  neighbors.push(...terminals)
+  return neighbors
+}
+
+function getOutgoingRelations(cell, graph) {
+  const outerEdges = graph.model.getOutgoingEdges(cell)
+  const relations = outerEdges.map(edge => {
+    return graph.model.getTerminal(edge, false)
+  })
+  return relations
+}
+
+function getIncomingRelations(cell, graph) {
+  const relations = cell.value.to.map(to => {
+    return graph.model.cells[to]
+  })
+  return relations
+}
+
 export class Action {
 
   constructor(data, graph) {
@@ -99,42 +127,40 @@ export class DeleteAction extends Action {
         var cellToRemove = evt2.properties.cell; //celda a remover 
         graph.clearSelection()
         graph.getModel().beginUpdate()
-        //recoger los contenedores enlazados
-        var  edges = graph.getModel().getIncomingEdges(cellToRemove); 
-        //comprueba si es viene de un contenedor o un atributo        
-        if( cellToRemove.style !='table'){
-          var parent = graph.model.getParent(cellToRemove);
-          edges = graph.getModel().getIncomingEdges(parent); //obtiene celdas conectadas (origen, destino)
-          cellToRemove =  parent  
+        if (cellToRemove.style === 'table') {
+          const neighbors = getNeighbors(cellToRemove, graph)
+          if (neighbors.length === 0) {
+            // cell to remove don't have any relations
+            const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
+          } else {
+            // remove incoming relations
+            const incoming = getIncomingRelations(cellToRemove, graph)
+            for (const inc of incoming) {
+              const childCount = graph.getModel().getChildCount(inc);
+              for (let i = 0; i < childCount; i++) {
+                const child = inc.getChildAt(i);
+                var name = child.value.name;
+                var parts = name.split('.');
+                var docname = parts[0];
+                // Verifica si el nombre del hijo coincide con el patrón de referencia
+                if (docname == cellToRemove.value.name) {
+                  // Coincide con el patrón, lo que significa que está referenciando
+                  graph.model.remove(child)
+                  break
+                }
+              }
+            }
+            // remove outgoing relations
+            const outgoing = getOutgoingRelations(cellToRemove, graph)
+            for (const out of outgoing) {
+              const index = out.value.to.indexOf(cellToRemove.value.id)
+              out.value.to.splice(index, 1)
+            }
+          }
+          const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
+        } else {
+          const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
         }
-        //comprueba si hay conexiones
-        if (edges.length > 0) {
-        var targetCells = [];
-        edges.forEach(function(edge) {
-          // Encuentra la celda de destino de cada arista
-          var targetCell = graph.getModel().getTerminal(edge, true); //obtiene celdas conectadas (solo detino)
-          targetCells.push(targetCell);
-        });
-        var AtEliminar = []; //lista del celdas a eliminar
-        //itera sobre cada targetcell y busca coinciencias en la referencia del nombre
-        targetCells.forEach(function(targetCell){
-          var childCount = graph.getModel().getChildCount(targetCell);
-          for (var i = 0; i < childCount; i++) {
-            var child = targetCell.getChildAt(i);
-            var name = child.value.name;
-            var parts = name.split('.');
-            var docname = parts[0];
-            // Verifica si el nombre del hijo coincide con el patrón de referencia
-            if (docname == cellToRemove.value.name) {
-              // Coincide con el patrón, lo que significa que está referenciando
-              AtEliminar.push(child);
-            }}
-        });
-        //eliminar celdas
-        AtEliminar.forEach(function(child){
-          graph.getModel().remove(child);
-        });}
-        const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
         graph.getModel().endUpdate()
         wnd.destroy();
       }

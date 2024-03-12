@@ -150,15 +150,19 @@ function createGraph() {
   {
       // Finds the primary key child of the target table
       var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
+      let cells = this.model.cells
 
       this.model.beginUpdate();
       try
       {
+        target.value.isTarget = true
+        target.value.to.push(source.value.id)
         var col1 = this.model.cloneCell(column);
 
         col1.value.name = target.value.name + '.' + child.value.name;
         col1.value.type = child.value.type;
         col1.value.isForeignKey = true;//setea  como "clave foranea"
+        col1.value.to = target.value.id
 
         this.addCell(col1, source);
         source = col1;
@@ -171,7 +175,6 @@ function createGraph() {
         moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
       }
-
       return null;
   };
 
