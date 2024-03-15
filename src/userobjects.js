@@ -33,7 +33,8 @@ export function selectionChanged(graph, cell)
   }
   else{
     // Writes the title
-    var center = document.createElement('center');
+    var center = document.createElement('div');
+    center.style.textAlign = 'center'
     //Se crea un elemento HTML <center> para centrar el contenido que se agregará al panel de propiedades.
 
     // mx.mxUtils.writeln(center, cell.value.name + ' (' + cell.id + ')');
@@ -43,7 +44,6 @@ export function selectionChanged(graph, cell)
     div.appendChild(center);
     //Se agrega el elemento <center> al elemento con el ID 'properties' para mostrar el título centrado.
 
-    mx.mxUtils.br(div);
     //Se agrega una línea en blanco al panel de propiedades utilizando 
 
     // Creates the form from the attributes of the user object
@@ -209,7 +209,6 @@ function createTextField( graph,form, cell)
 export function selectionChangedForConnections(graph, cell)
 //Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.
 {
-  console.log(cell)
   var elemento = document.querySelector('#properties');
 
   // Aplica el estilo CSS
@@ -276,7 +275,6 @@ function createTextFieldForConnections( graph,form, cell)
     var newValue = input.value;
     //cell.value = newValue;
     
-    console.log('newvalue', newValue, ' - oldvalue', clone)
     if (newValue != clone )
     { 
         graph.getModel().beginUpdate();     

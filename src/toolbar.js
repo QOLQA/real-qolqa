@@ -1,4 +1,4 @@
-import createGraph, {container, editorImagesPath, Graph} from "./graph";
+import createGraph, {container, Graph} from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
@@ -17,7 +17,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   let toolbar = new mx.mxToolbar(tbContainer);
   toolbar.enabled = false;
 
-  container.style.background = `url(${editorImagesPath}grid.gif)`;
+  container.style.background = `url(/assets/images/grid.gif)`;
 
   if (mx.mxClient.IS_QUIRKS) {
     document.body.style.overflow = "hidden";
@@ -79,7 +79,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   let rubberband = new mx.mxRubberband(graph);
 
   const myGraph = new Graph(graph);
-  myGraph.addToolbarItem(toolbar, editorImagesPath + 'swimlane.gif');
+  myGraph.addToolbarItem(toolbar, '/assets/images/icons/document.svg');
 
   // Genera un grafico a partir de datos
   const modeloActual = await api.read(id);
