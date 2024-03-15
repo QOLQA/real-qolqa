@@ -366,3 +366,22 @@ export class EditAction extends Action {
     });
   }
 }
+
+
+export class EditActionCardinality extends Action {
+  constructor(data, graph) {
+    super(data, graph);
+  }
+
+  _setupProcess() {
+    this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
+      this.graph.clearSelection();
+      // abrir menu Funcion
+      selectionChanged(this.graph, evt2.properties.cell);
+      if (document.getElementById('tipoValueTable')) {
+        var selectElement = document.getElementById('tipoValueTable');
+        selectElement.value = evt2.properties.cell.value.type;
+      }
+    });
+  }
+}
