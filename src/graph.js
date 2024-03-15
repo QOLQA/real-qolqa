@@ -347,7 +347,6 @@ function createGraph() {
 
 export default createGraph;
 export const container = document.querySelector("#container");
-export const editorImagesPath = "../../examples/editors/images/";
 
 export class Graph {
   constructor(graph, conversor) {
@@ -392,9 +391,7 @@ export class Graph {
     this.graph.getSelectionModel().addListener(
       // parametros de la segunda funcion sender, evt
       mx.mxEvent.CHANGE, (_, evt) => {
-       // console.log('smth happened', evt.properties.removed[0].edge)
         if (evt.properties.removed[0].edge){
-          console.log('es un conector')
           selectionChangedForConnections(this.graph, evt.properties.removed[0])
         }
         else{
