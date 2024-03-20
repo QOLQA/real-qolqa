@@ -3,62 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./src/styles/output.css" />
     <title>Model</title>
 </head>
 <body>
-    <div id="view2">
-        <div id="toolbar">
-            <i class="fa fa-file-text-o" id="doc-icon"> </i>
-            <hr size="1" style="margin-right: 6px;">
+    <div id="view2" class="p-4 space-y-4">
+        <div class="flex flex-row items-center justify-between">
+            <div class="flex flex-row items-center gap-2 p-1 border border-black border-solid rounded-md">
+                <h1>{QOLQA}</h1>
+                <div class="flex flex-col">
+                    <p>Conceptual model of: Name</p>
+                    <p>Last save 25/03/2023 at 13:24</p>
+                </div>
+            </div>
+            <div>
+                Icon user
+            </div>
         </div>
-    
-        <div id="container"></div>
-    
-        <button id="importButton">IMPORT</button>
-        <button id="querieButton">QUERIES</button>
-        <button id="saveButton">SAVE</button>
-        <a href="/">
-            <button id="btnAtras">
-                <i class="fa fa-arrow-left"></i>
-            </button>
-        </a>
-        <div id="ContainerSUP">{QOLQA} | Logical model of: </div>
-    
-        <div id="toolbar1" class="btn-toolbar" role="toolbar">
-            <div class="btn-group">
+
+        <div class="flex flex-row items-center gap-2">
+            <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
                 <button type="button"> <i class="fa fa-undo"></i></button>
                 <button type="button"> <i class="fa fa-repeat"></i></button>
             </div>
-        </div>
-        <div id="toolbar2" class="btn-toolbar" role="toolbar">
-            <div class="btn-group">
+            <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
                 <button type="button"><i class="fa fa-search-plus"></i></button>
                 <button type="button"><i class="fa fa-search"></i></button>
                 <button type="button"><i class="fa fa-search-minus"></i></button>
-            </div>
-        </div>
-        <div id="toolbar3" class="btn-toolbar" role="toolbar">
-            <div class="btn-group">
                 <button type="button" class="fa fa-files-o"></button>
                 <button type="button" class="fa fa-table"></button>
             </div>
-        </div>
-        <div id="toolbar4" class="btn-toolbar" role="toolbar">
-            <div class="btn-group">
-                <button type="button" class="fa fa-print"></button>
+            <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
+                <button id="importButton">IMPORT</button>
+                <button id="querieButton">QUERIES</button>
+                <!-- <button id="saveButton">SAVE</button> -->
+                <button id="saveButton" class="fa fa-print"></button>
             </div>
         </div>
-        <table style="position:relative;width: 100% ; margin: auto;">
-            <tr>
-                <td valign="top">
-                    <div id="properties"
-                        style="display:none;border: solid 1px black; padding: 10px;position: absolute; right:0;top: 50px">
-                    </div>
-                </td>
-            </tr>
-        </table>
+        
+        <div class="grid grid-cols-12 gap-2">
+            <div class="flex flex-col justify-center h-full col-span-1">
+                <div id="toolbar"></div>
+            </div>
+            <div id="container" class="col-span-8"></div>
+            <div class="flex flex-col col-span-3">
+                <div id="properties" class="hidden"></div>
+                <div class="grow-[1]">Query content</div>
+            </div>
+        </div>
+        <!-- <a href="/">
+            <button id="btnAtras">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+        </a> -->
         <script type="module" src="../src/toolbar.js"></script>
     </div>
 </body>

@@ -4,7 +4,7 @@
 import Axios from "./classes/axios"
 
 document.addEventListener('DOMContentLoaded', () => {
-    const axios = new Axios('http://127.0.0.1:8000/models');
+    const axios = new Axios(`${import.meta.env.VITE_URL_BACKEND}/models`);
     let models;
     const linksContainer = document.getElementById('linkModels');
     axios.readAll()
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let counter = 0;
             models.forEach(element => {
                 let linkModel = document.createElement('a');
-                linkModel.setAttribute('href', `http://localhost:5173/model.html?model_id=${element.id}`);
+                linkModel.setAttribute('href', `${import.meta.env.VITE_URL_FRONDEND}/model.html?model_id=${element.id}`);
                 linkModel.innerText = `Model ${++counter}`;
                 let item = document.createElement('li');
                 item.append(linkModel);

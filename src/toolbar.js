@@ -1,4 +1,4 @@
-import createGraph, {container, editorImagesPath, Graph} from "./graph";
+import createGraph, { container, Graph } from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
@@ -17,7 +17,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   let toolbar = new mx.mxToolbar(tbContainer);
   toolbar.enabled = false;
 
-  container.style.background = `url(${editorImagesPath}grid.gif)`;
+  container.style.background = `url(/assets/images/grid.gif)`;
 
   if (mx.mxClient.IS_QUIRKS) {
     document.body.style.overflow = "hidden";
@@ -37,27 +37,27 @@ if (!mx.mxClient.isBrowserSupported()) {
   const loopConversor = new LoopConversor();
 
   // Servicio de api
-  const api = new Axios('http://127.0.0.1:8000/models');
+  const api = new Axios(`${import.meta.env.VITE_URL_BACKEND}/models`);
 
   // Agrega un manejador de eventos al botón
-  BotonSave.addEventListener("click", async function() { //async
+  BotonSave.addEventListener("click", async function () { //async
     // Realizar la solicitud POST al backend de Firebase
     //api.create(loopConversor.fromGraphToJson(graph)); //update
-    
+
     try {
       if (id) {
         const json = loopConversor.fromGraphToJson(graph)
-          // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
-          await api.update(id, json);
+        // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
+        await api.update(id, json);
 
       } else {
-          // Si no tiene id, es un nuevo modelo y debes crearlo
-          const newModel = await api.create(loopConversor.fromGraphToJson(graph));
-          // Actualiza el id del modelo con el id devuelto por el backend
-          id = newModel.id;
+        // Si no tiene id, es un nuevo modelo y debes crearlo
+        const newModel = await api.create(loopConversor.fromGraphToJson(graph));
+        // Actualiza el id del modelo con el id devuelto por el backend
+        id = newModel.id;
       }
     } catch (error) {
-        console.error("Error al guardar:", error);
+      console.error("Error al guardar:", error);
     }
   });
 
@@ -79,7 +79,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   let rubberband = new mx.mxRubberband(graph);
 
   const myGraph = new Graph(graph);
-  myGraph.addToolbarItem(toolbar, editorImagesPath + 'swimlane.gif');
+  myGraph.addToolbarItem(toolbar, '/assets/images/icons/document.svg');
 
   // Genera un grafico a partir de datos
   const modeloActual = await api.read(id);
