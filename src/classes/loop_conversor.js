@@ -1,5 +1,5 @@
 import { column, table } from "../cells";
-import { addActionsForDocs, addDefaultVertex } from "../cells_actions";
+import { addActionsForDocs, addDefaultVertex, addActionsForNestedDocs } from "../cells_actions";
 import { createDoc } from "../graph";
 import { createDataOverlay } from "../helpers";
 import { overlayForDelete, overlayForEdit } from "../overlays";
@@ -161,6 +161,7 @@ function processNestedDocs(vertex, nested_docs, columns, graph) {
             nestedVertex.value.name = name + " (" + cardinality + " )";
             nestedVertex.value.id = id
             let lastChild = null;
+
             const childCount = model.getChildCount(vertex);
             if (childCount > 0) {
                 lastChild = columns[columns.length - 1];
@@ -173,7 +174,7 @@ function processNestedDocs(vertex, nested_docs, columns, graph) {
                 nestedVertex.geometry.y = lastGeometry.y;
             }
 
-            addActionsForDocs(nestedVertex, graph);
+            addActionsForNestedDocs(nestedVertex, graph);
             // addDefaultVertex(graph, nestedVertex);
 
             const attributeNames1 = Object.keys(fields);

@@ -1,4 +1,4 @@
-import { overlayForAddProp, overlayForDelete, overlayForEdit, overlayForNestDoc } from "./overlays";
+import { overlayForAddProp, overlayForDelete, overlayForEdit, overlayForNestDoc, overlayForEditCardinality } from "./overlays";
 import mx from "./util";
 import { createDataOverlay } from "./helpers";
 import { column } from "./cells";
@@ -16,6 +16,16 @@ export function addActionsForDocs(vertex, graph) {
   );
   overlayForNestDoc(
     createDataOverlay('add_.png', -50, 15, 'Add document', mx.mxConstants.ALIGN_TOP),
+    vertex,
+    graph
+  );
+}
+
+
+export function addActionsForNestedDocs(vertex, graph) {
+  addActionsForDocs(vertex, graph)
+  overlayForEditCardinality(
+    createDataOverlay('add_.png', -70, 15, 'Change carinality', mx.mxConstants.ALIGN_TOP),
     vertex,
     graph
   );
