@@ -4,17 +4,17 @@ import { createDataOverlay } from "./helpers";
 import showModalWindow, { wnd } from "./modal";
 import { overlayForDelete, overlayForEdit } from "./overlays";
 import moveContainedSwimlanesToBack from "./swimbottom";
-import { selectionChanged } from "./userobjects";
+import { selectionChanged, selectionChangedCardinality } from "./userobjects";
 import mx from "./util";
 
 function getNeighbors(cell, graph) {
   const neighbors = []
   for (let to of cell.value.to) {
-      neighbors.push(graph.model.cells[to])
+    neighbors.push(graph.model.cells[to])
   }
   const outerEdges = graph.model.getOutgoingEdges(cell)
   const terminals = outerEdges.map(edge => {
-      return graph.model.getTerminal(edge, false)
+    return graph.model.getTerminal(edge, false)
   })
   neighbors.push(...terminals)
   return neighbors
@@ -83,7 +83,7 @@ export class Action {
     this.overlay.offset = new mx.mxPoint(this.offset.x, this.offset.y);
   }
 
-  _setupProcess() {}
+  _setupProcess() { }
 
   get pathImage() { return this._pathImage; }
   get alignment() { return this._alignment; }
@@ -164,11 +164,11 @@ export class DeleteAction extends Action {
         graph.getModel().endUpdate()
         wnd.destroy();
       }
-    
+
       // Agregar eventos a los botones
       continueButton.addEventListener('click', () => removeRelation(this._graph));
 
-      cancelButton.addEventListener('click', function() {
+      cancelButton.addEventListener('click', function () {
         wnd.destroy();
       });
     })
@@ -299,7 +299,7 @@ export class AddPropAction extends Action {
 
       // Función para procesar los datos cuando se hace clic en el botón
       procesarBoton.addEventListener('click', () => addProp(this.graph));
-  });
+    });
   }
 }
 
@@ -360,7 +360,7 @@ export class EditAction extends Action {
       // abrir menu Funcion
       selectionChanged(this.graph, evt2.properties.cell);
       if (document.getElementById('tipoValueTable')) {
-        var selectElement = document.getElementById('tipoValueTable');
+        let selectElement = document.getElementById('tipoValueTable');
         selectElement.value = evt2.properties.cell.value.type;
       }
     });
@@ -377,11 +377,7 @@ export class EditActionCardinality extends Action {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
       this.graph.clearSelection();
       // abrir menu Funcion
-      selectionChanged(this.graph, evt2.properties.cell);
-      if (document.getElementById('tipoValueTable')) {
-        var selectElement = document.getElementById('tipoValueTable');
-        selectElement.value = evt2.properties.cell.value.type;
-      }
+      selectionChangedCardinality(this.graph, evt2.properties.cell);
     });
   }
 }
