@@ -1,7 +1,65 @@
 import mx from "./util";
 /**
-			 *  Actualiza el panel de propiedades
-			 */
+       *  Actualiza el panel de propiedades
+       */
+
+
+
+export function selectionChangedCardinality(graph, table) {
+  let div = document.querySelector('#properties');
+
+  if (div) {
+    div.style.display = 'block';
+  }
+
+  if (table == null) {
+    div.innerHTML = '';
+    return
+  }
+
+  const regex = /([^()]+) \(([^)]+)\)/;
+  const match = table.value.name.match(regex);
+
+  const name = match[1].trim();
+
+  div.innerHTML = `
+  <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
+    <h3 class="text-center font-bold text-lg">Table: ${name}</h3>
+    <div class="mb-6">
+        <label for="Cardinality" class="text-left">Cardinalidad</label>
+        <select name="Cardinalidad" id="Cardinality" class="
+            w-full
+            rounded
+            py-3
+            px-[14px]
+            text-body-color text-base
+            border border-[f0f0f0]
+            outline-none
+            focus-visible:shadow-none
+            focus:shadow-outline-blue 
+            focus:border-blue-300
+        ">
+            <option value="1..n">1..n</option>
+            <option value="1..1">1..1</option>
+            <option value="n..n">n..n</option>
+            <option value="0..n">0..n</option>
+        </select>
+    </div>
+  </div>
+  `
+
+
+  // Obtener referencia al elemento select
+  const selectElement = document.getElementById('Cardinality');
+
+
+  // Agregar event listener para detectar cambios en la selección
+  selectElement.addEventListener('change', function () {
+    const newCardinality = selectElement.value;
+    graph.model.setValue(table, `${name} (${newCardinality})`)
+  });
+}
+
 export function selectionChanged(graph, cell)
 //Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.
 {
@@ -11,7 +69,7 @@ export function selectionChanged(graph, cell)
   if (elemento) {
     elemento.style.display = 'block';
   }
-  
+
 
   var div = document.getElementById('properties');
   //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
@@ -27,18 +85,17 @@ export function selectionChanged(graph, cell)
   // Gets the selection cell
   // var cell = graph.getSelectionCell();
   // Se obtiene la celda actualmente seleccionada en el gráfico utilizando el método getSelectionCell() del objeto graph. Esto proporciona la celda que está actualmente seleccionada en el gráfico.
-  if (cell == null )
-  {
+  if (cell == null) {
     mx.mxUtils.writeln(div, 'Nothing selected.');
   }
-  else{
+  else {
     // Writes the title
     var center = document.createElement('div');
     center.style.textAlign = 'center'
     //Se crea un elemento HTML <center> para centrar el contenido que se agregará al panel de propiedades.
 
     // mx.mxUtils.writeln(center, cell.value.name + ' (' + cell.id + ')');
-    mx.mxUtils.writeln(center,'Celda: '+ cell.value.name);
+    mx.mxUtils.writeln(center, 'Celda: ' + cell.value.name);
     //Se utiliza mxUtils.writeln para escribir el nombre del nodo de cell.value y su ID entre paréntesis en el elemento <center>. Esto crea un título para la propiedad que se muestra en el centro del panel de propiedades.
 
     div.appendChild(center);
@@ -59,8 +116,8 @@ export function selectionChanged(graph, cell)
     //   createTextField(graph, form, cell, attrs[i]);
     // }
     //Un bucle for itera a través de los atributos y llama a la función createTextField(graph, form, cell, attrs[i]); para crear campos de texto para cada atributo en el formulario.
-    
-    createTextField( graph,form, cell);
+
+    createTextField(graph, form, cell);
 
     div.appendChild(form.getTable());
     //Se agrega el formulario al panel de propiedades.
@@ -74,15 +131,14 @@ export function selectionChanged(graph, cell)
  * Creates the textfield for the given property.
  */
 // function createTextField(graph, form, cell, attribute)
-function createTextField( graph,form, cell)
-{
+function createTextField(graph, form, cell) {
   // var input = form.addText(cell.value.name + ':', attribute.nodeValue);
   var input = form.addText('Nombre' + ': ', cell.value.name);
-  
-  
-  if (cell.value.type){
+
+
+  if (cell.value.type) {
     // Crear el elemento select
-    var valores = ['String', 'Integer', 'Boolean', 'Double', 'Arrays', 'Timestamp', 'Null', 'Symbol',  'Date'];
+    var valores = ['String', 'Integer', 'Boolean', 'Double', 'Arrays', 'Timestamp', 'Null', 'Symbol', 'Date'];
 
     // Crear el elemento select
     var select = document.createElement('select');
@@ -108,13 +164,12 @@ function createTextField( graph,form, cell)
   }
 
   // ####
-  
-  var applyHandler = function()
-  {
+
+  var applyHandler = function () {
     const clone = cell.value.clone(); //para el grafo
     const clone2 = cell.value.clone(); //para la referencia (si existe)
     var newValue = input.value;
-    if (cell.value.type){
+    if (cell.value.type) {
       var newValue2 = input2.value;
     }
     clone.name = newValue;
@@ -123,27 +178,26 @@ function createTextField( graph,form, cell)
     var oldValue = cell.getAttribute(cell.value.name, '');
     var oldValue2 = cell.getAttribute(cell.value.type, '');
 
-    
 
-    if (newValue != oldValue || newValue2 != oldValue2)
-    {
+
+    if (newValue != oldValue || newValue2 != oldValue2) {
       graph.getModel().beginUpdate();
       // Verifica si hay conexiones salientes desde este contenedor
       var parent = graph.model.getParent(cell);
       var edges = graph.getModel().getIncomingEdges(parent);
       //comprueba si hay conexiones
       if (edges.length > 0) {
-        clone2.name = parent.value.name + '.' + newValue 
+        clone2.name = parent.value.name + '.' + newValue
         clone2.type = newValue2;
         var targetCells = [];
-        edges.forEach(function(edge) {
+        edges.forEach(function (edge) {
           // Encuentra la celda de destino de cada arista
           var targetCell = graph.getModel().getTerminal(edge, true); //obtiene celdas conectadas (solo detino)
           targetCells.push(targetCell);
         });
         var Modi = []; //lista del celdas a modificar
         //itera sobre cada targetcell y busca coinciencias en la referencia del nombre
-        targetCells.forEach(function(targetCell){
+        targetCells.forEach(function (targetCell) {
           var childCount = graph.getModel().getChildCount(targetCell);
           for (var i = 0; i < childCount; i++) {
             var child = targetCell.getChildAt(i);
@@ -154,33 +208,32 @@ function createTextField( graph,form, cell)
             if (docname == parent.value.name) {
               // Coincide con el patrón, lo que significa que está referenciando
               Modi.push(child);
-            }}
+            }
+          }
         });
-        
-        Modi.forEach(function(child){
+
+        Modi.forEach(function (child) {
           graph.model.setValue(child, clone2);
         });
-      }       
-        try
-        {
-          // if (newValue != oldValue){cell.value.name = newValue;}
-          // if (newValue2 != oldValue2){cell.value.type = newValue2;}
-          // graph.updateCellSize(cell);
-          graph.model.setValue(cell, clone);
-        }
-        finally
-        {
-          
-            graph.getModel().endUpdate();
-        }  
-  }
+      }
+      try {
+        // if (newValue != oldValue){cell.value.name = newValue;}
+        // if (newValue2 != oldValue2){cell.value.type = newValue2;}
+        // graph.updateCellSize(cell);
+        graph.model.setValue(cell, clone);
+      }
+      finally {
+
+        graph.getModel().endUpdate();
+      }
+    }
   };
 
   configurarEventosInput(input);
-  if(input2){
+  if (input2) {
     configurarEventosInput(input2);
   }
-  
+
 
 
   function configurarEventosInput(input) {
@@ -190,7 +243,7 @@ function createTextField( graph,form, cell)
         input.blur();
       }
     });
-  
+
     // Evento de desenfoque
     // if (mx.mxClient.IS_IE) {
     //   mx.mxEvent.addListener(input, 'focusout', applyHandler);
@@ -215,7 +268,7 @@ export function selectionChangedForConnections(graph, cell)
   if (elemento) {
     elemento.style.display = 'block';
   }
-  
+
 
   var div = document.getElementById('properties');
   //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
@@ -223,25 +276,24 @@ export function selectionChangedForConnections(graph, cell)
   // Clears the DIV the non-DOM way
   div.innerHTML = '';
 
-    //Se crea un nuevo formulario (mxForm) que se utilizará para mostrar las propiedades del elemento seleccionado
-    var form = new mx.mxForm();
+  //Se crea un nuevo formulario (mxForm) que se utilizará para mostrar las propiedades del elemento seleccionado
+  var form = new mx.mxForm();
 
-    createTextFieldForConnections( graph,form, cell);
+  createTextFieldForConnections(graph, form, cell);
 
-    div.appendChild(form.getTable());
-    //Se agrega el formulario al panel de propiedades.
-    mx.mxUtils.br(div);
-    //Se agrega una línea en blanco adicional al final del panel de propiedades.
-  
+  div.appendChild(form.getTable());
+  //Se agrega el formulario al panel de propiedades.
+  mx.mxUtils.br(div);
+  //Se agrega una línea en blanco adicional al final del panel de propiedades.
+
 }
 
 /**
  * Creates the textfield for the given property.
  */
 // function createTextField(graph, form, cell, attribute)
-function createTextFieldForConnections( graph,form, cell)
-{
-  if (cell.edge){
+function createTextFieldForConnections(graph, form, cell) {
+  if (cell.edge) {
     // Crear el elemento select
     var valores = ['0..1', '1..1'];
 
@@ -269,25 +321,21 @@ function createTextFieldForConnections( graph,form, cell)
 
   }
   //
-  var applyHandler = function()
-  {
+  var applyHandler = function () {
     const clone = cell.value; //para el conector
     var newValue = input.value;
     //cell.value = newValue;
-    
-    if (newValue != clone )
-    { 
-        graph.getModel().beginUpdate();     
-        try
-        {
-          graph.model.setValue(cell, newValue);
-        }
-        finally
-        {
-          
-            graph.getModel().endUpdate();
-        }  
-  }
+
+    if (newValue != clone) {
+      graph.getModel().beginUpdate();
+      try {
+        graph.model.setValue(cell, newValue);
+      }
+      finally {
+
+        graph.getModel().endUpdate();
+      }
+    }
   };
 
   configurarEventosInput(input);

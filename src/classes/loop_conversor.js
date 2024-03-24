@@ -1,5 +1,5 @@
 import { column, table } from "../cells";
-import { addActionsForDocs, addDefaultVertex } from "../cells_actions";
+import { addActionsForDocs, addDefaultVertex, addActionsForNestedDocs } from "../cells_actions";
 import { createDoc } from "../graph";
 import { createDataOverlay } from "../helpers";
 import { overlayForDelete, overlayForEdit } from "../overlays";
@@ -8,7 +8,7 @@ import moveContainedSwimlanesToBack from "../swimbottom";
 import mx from "../util";
 
 export default class LoopConversor extends ConversorJson {
-    constructor () { super() }
+    constructor() { super() }
 
     fromGraphToJson(graph) {
         // Inicializa la estructura base del JSON
@@ -55,8 +55,10 @@ export default class LoopConversor extends ConversorJson {
                     }
 
                     // Agrega el documento y la relacion al submodelo correspondiente
-                    jsonData.submodels.push({ collections: documento,
-                     relations: relaciones.length > 0 ? relaciones : null});
+                    jsonData.submodels.push({
+                        collections: documento,
+                        relations: relaciones.length > 0 ? relaciones : null
+                    });
                 }
             }
         }
@@ -84,14 +86,14 @@ export default class LoopConversor extends ConversorJson {
             collections.forEach(collection => processDocument(collection, graph, prototype, counter++));
             if (relations !== null) {
                 var parent = graph.getDefaultParent();
-                for (const { id_source, id_target } of relations) {
+                for (const { id_source, id_target, cardinality } of relations) {
                     const sourceVertex = model.cells[id_source]
                     const targetVertex = model.cells[id_target]
                     const edge = new mx.mxCell()
                     edge.edge = true
                     // this code ensure that "new" attribute is added in document
                     // without actions
-                    graph.insertEdge(parent, null, '', sourceVertex, targetVertex)
+                    graph.insertEdge(parent, null, cardinality, sourceVertex, targetVertex)
                 }
             }
         });
@@ -136,55 +138,30 @@ function processDocument(collection, graph, prototype, counter) {
 
     const attributeNames = Object.keys(fields);
     const columns = attributeNames.map(name => addProp(graph, vertex, name, fields[name]));
-    
+
     const model = graph.getModel();
 
     columns.forEach(column => {
         model.add(vertex, column);
     });
+    processNestedDocs(vertex, nested_docs, columns, graph)
 
-    function processNestedDocs(vertexParent, nestedDocs, columns) {
-        if (nestedDocs === null) return
+    model.add(parent, vertex);
+    // graph.importCells([vertex], 0, 0, null);
+}
 
-        const { fields, name, nested_docs } = nestedDocs
-        const nestedVertex = model.cloneCell(table)
-        nestedVertex.value.name = name
-        let lastChild = null
-        const childCount = model.getChildCount(vertexParent)
-        
-        if (childCount > 0) {
-            lastChild = columns[columns.length - 1]
-        }
 
-        if (lastChild !== null) {
-            const lastGeometry = model.getGeometry(lastChild)
-            const newX = lastGeometry.x + lastGeometry.width + 20
-            nestedVertex.geometry.x = newX
-            nestedVertex.geometry.y = lastGeometry.y
-        }
-
-        addActionsForDocs(nestedVertex, graph)
-
-        const attributeNames = Object.keys(fields)
-        const columns1 = attributeNames.map(
-            name => addProp(graph, vertexParent, name, fields[name])
-        )
-
-        columns1.forEach(
-            column => model.add(nestedVertex, column)
-        )
-
-        model.add(vertexParent, nestedVertex)
-    }
-
+function processNestedDocs(vertex, nested_docs, columns, graph) {
+    const model = graph.getModel();
     if (nested_docs !== null) {
         // relaciones internas (documentos anidados)
-        nested_docs.forEach(({ fields, name, nested_docs, id }) => {
+        nested_docs.forEach(({ fields, name, nested_docs, id, cardinality }) => {
             // processNestedDocs(vertex, nested_docs, columns)
             const nestedVertex = model.cloneCell(table);
-            nestedVertex.value.name = name;
+            nestedVertex.value.name = name + " (" + cardinality + " )";
             nestedVertex.value.id = id
             let lastChild = null;
+
             const childCount = model.getChildCount(vertex);
             if (childCount > 0) {
                 lastChild = columns[columns.length - 1];
@@ -197,7 +174,7 @@ function processDocument(collection, graph, prototype, counter) {
                 nestedVertex.geometry.y = lastGeometry.y;
             }
 
-            addActionsForDocs(nestedVertex, graph);
+            addActionsForNestedDocs(nestedVertex, graph);
             // addDefaultVertex(graph, nestedVertex);
 
             const attributeNames1 = Object.keys(fields);
@@ -208,11 +185,11 @@ function processDocument(collection, graph, prototype, counter) {
             });
 
             model.add(vertex, nestedVertex);
+
+            processNestedDocs(nestedVertex, nested_docs, columns1, graph)
+
         })
     }
-
-    model.add(parent, vertex);
-    // graph.importCells([vertex], 0, 0, null);
 }
 
 function findConnectedCells(graph, startCell) {
@@ -262,7 +239,7 @@ function generardocs(graph, cells) {
             var atributosDocumento = {};
             //var relaciones = [];
             var relacionesInternas = [];
-            
+
             //obtiene la posicion de la tabla pricipal
             var cellX = graph.model.getGeometry(cell).x;
             var cellY = graph.model.getGeometry(cell).y;
@@ -298,22 +275,27 @@ function generardocs(graph, cells) {
                     position: {
                         x: cellX,
                         y: cellY
-                      },
+                    },
                     nested_docs: relacionesInternas.length > 0 ? relacionesInternas : null,
                 };
             }
             else {
+                const regex = /([^()]+) \(([^)]+)\)/;
+                const match = nombreDocumento.match(regex);
+
+                const name = match[1].trim();
+                const cardinality = match[2].trim();
+
                 documento = {
-                    name: nombreDocumento,
+                    name: name,
                     id: cell.id,
                     fields: atributosDocumento,
                     nested_docs: relacionesInternas.length > 0 ? relacionesInternas : null,
+                    cardinality: cardinality
                 };
             }
             docs.push(documento)
         }
     }
-    
-      
     return docs;
 }

@@ -10,7 +10,7 @@ Column.prototype.primaryKey = false;
 Column.prototype.isForeignKey = false;
 Column.prototype.forCardinality = false;
 Column.prototype.to = ''
-Column.prototype.clone = function() {
+Column.prototype.clone = function () {
   return mx.mxUtils.clone(this);
 }
 
@@ -20,12 +20,12 @@ export function Table(name) {
 
 Table.prototype.isTarget = false
 Table.prototype.to = []
-Table.prototype.clone = function() {
+Table.prototype.clone = function () {
   return mx.mxUtils.clone(this);
 }
 
 let tableObject = new Table('TABLENAME');
-export const table = new mx.mxCell(tableObject, new mx.mxGeometry(0, 0, 200, 28), 'table');
+export const table = new mx.mxCell(tableObject, new mx.mxGeometry(0, 0, 235, 28), 'table');
 // table.getChildCount = () => {
 //   return 1;
 // };

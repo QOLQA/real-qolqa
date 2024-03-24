@@ -3,6 +3,7 @@ import {
   DeleteAction,
   EditAction,
   NestDocumentAction,
+  EditActionCardinality
 } from "./action";
 
 export function overlayForDelete(data, cell, graph) {
@@ -22,5 +23,10 @@ export function overlayForAddProp(data, cell, graph) {
 
 export function overlayForEdit(data, cell, graph) {
   const overlay = new EditAction(data, graph);
+  graph.addCellOverlay(cell, overlay.overlay);
+}
+
+export function overlayForEditCardinality(data, cell, graph) {
+  const overlay = new EditActionCardinality(data, graph);
   graph.addCellOverlay(cell, overlay.overlay);
 }
