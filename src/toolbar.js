@@ -7,6 +7,12 @@ import Axios from "./classes/axios";
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('model_id');
 
+const GenerarGrafico = async (api, id, myGraph, loopConversor) => {
+  // Genera un grafico a partir de datos
+  const modeloActual = await api.read(id);
+  loopConversor.fromJsonToGraph(modeloActual, myGraph.graph);
+}
+
 if (!mx.mxClient.isBrowserSupported()) {
   mx.mxUtils.error("Browser is not supported!", 200, false);
 } else {
@@ -81,7 +87,5 @@ if (!mx.mxClient.isBrowserSupported()) {
   const myGraph = new Graph(graph);
   myGraph.addToolbarItem(toolbar, '/assets/images/icons/document.svg');
 
-  // Genera un grafico a partir de datos
-  const modeloActual = await api.read(id);
-  loopConversor.fromJsonToGraph(modeloActual, myGraph.graph);
+  GenerarGrafico(api, id, myGraph, loopConversor)
 }
