@@ -45,10 +45,19 @@ export default class LoopConversor extends ConversorJson {
                         for (let i = 0; i < childCount; i++) {
                             const attribute = cell.getChildAt(i)
                             if (attribute.value.isForeignKey) {
+                                // Obtener cardinalidad
+                                let cardinality;
+                                for (const edges of cell.edges) {
+                                    if (edges.target.id === attribute.value.to && edges.source.id === cell.value.id) {
+                                        cardinality = edges.value
+                                        break
+                                    }
+                                }
+                                
                                 relaciones.push({
                                     id_source: cell.value.id,
                                     id_target: attribute.value.to,
-                                    cardinality: '1..1',
+                                    cardinality: cardinality,
                                 })
                             }
                         }
@@ -256,7 +265,6 @@ function generardocs(graph, cells) {
                     var documentoInterno = generardocs(graph, [atributo]);
                     relacionesInternas.push({
                         ...documentoInterno[0],
-                        cardinality: '1..1'
                     });
                 } else {
                     if (!atributo.value.isForeignKey) {
