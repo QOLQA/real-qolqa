@@ -28,5 +28,9 @@ export default class Axios extends Api {
         // resp se retorna del backend
         return resp.data;
     }
-    
+    async delete(id) {
+        const resp = await axios.delete(`${this.endpoint}/${id}`);
+        // resp se retorna del backend
+        return resp.data;
+    }
 }
