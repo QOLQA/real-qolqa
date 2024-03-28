@@ -52,9 +52,13 @@ if (!mx.mxClient.isBrowserSupported()) {
 
     try {
       if (id) {
+        const modeloActual = await api.read(id)
         const json = loopConversor.fromGraphToJson(graph)
         // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
-        await api.update(id, json);
+        await api.update(id, {
+          submodels: json.submodels,
+          name: modeloActual.name,
+        });
 
       } else {
         // Si no tiene id, es un nuevo modelo y debes crearlo
