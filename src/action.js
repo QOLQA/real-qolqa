@@ -1,5 +1,5 @@
 import { column, table } from "./cells";
-import { addActionsForDocs, addCardinalityVertex, addDefaultVertex } from "./cells_actions";
+import { addActionsForNestedDocs, addDefaultVertex } from "./cells_actions";
 import { createDataOverlay } from "./helpers";
 import showModalWindow, { wnd } from "./modal";
 import { overlayForDelete, overlayForEdit } from "./overlays";
@@ -316,7 +316,7 @@ export class NestDocumentAction extends Action {
       const name = mx.mxUtils.prompt('Enter name for new document');
       if (name != null && name.trim() != '') {
         const vertex = this.graph.getModel().cloneCell(table);
-        vertex.value.name = name;
+        vertex.value.name = name + " (1..1)";
 
         // Find the last child in the parent cell and position the new cell after it
         const parent = evt2.properties.cell;
@@ -333,13 +333,11 @@ export class NestDocumentAction extends Action {
           vertex.geometry.y = lastGeometry.y;
         }
 
-        addActionsForDocs(vertex, this.graph);
+        addActionsForNestedDocs(vertex, this.graph);
         vertex.setConnectable(false);
 
         // Agregar atributo por defecto
         addDefaultVertex(this.graph, vertex);
-        // Agregar atributo para la cardinalidad
-        addCardinalityVertex(this.graph, vertex);
 
         this.graph.setSelectionCells(
           this.graph.importCells([vertex], 0, 0, evt2.properties.cell)

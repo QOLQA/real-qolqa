@@ -26,8 +26,8 @@ export function selectionChangedCardinality(graph, table) {
   <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
     <h3 class="text-center font-bold text-lg">Table: ${name}</h3>
     <div class="mb-6">
-        <label for="Cardinality" class="text-left">Cardinalidad</label>
-        <select name="Cardinalidad" id="Cardinality" class="
+        <label for="Cardinality" class="text-left">Cardinality</label>
+        <select name="Cardinality" id="Cardinality" class="
             w-full
             rounded
             py-3
