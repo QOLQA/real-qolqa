@@ -263,9 +263,9 @@ function generardocs(graph, cells) {
                 if (atributo.style === "table") {
                     //reviewedDocs.push(atributo)
                     var documentoInterno = generardocs(graph, [atributo]);
-                    relacionesInternas.push({
-                        ...documentoInterno[0],
-                    });
+                    relacionesInternas.push(
+                        ...documentoInterno,
+                    );
                 } else {
                     if (!atributo.value.isForeignKey) {
                         // Si no es una clave foránea ni un contenedor interno, es un atributo normal

@@ -1,4 +1,5 @@
 import { column, table } from "./cells";
+import { v4 as uuidv4 } from "uuid";
 import { addActionsForNestedDocs, addDefaultVertex } from "./cells_actions";
 import { createDataOverlay } from "./helpers";
 import showModalWindow, { wnd } from "./modal";
@@ -317,6 +318,7 @@ export class NestDocumentAction extends Action {
       if (name != null && name.trim() != '') {
         const vertex = this.graph.getModel().cloneCell(table);
         vertex.value.name = name + " (1..1)";
+        vertex.value.id = uuidv4();
 
         // Find the last child in the parent cell and position the new cell after it
         const parent = evt2.properties.cell;
