@@ -4,13 +4,69 @@ import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
 import Axios from "./classes/axios";
 
+
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('model_id');
+// Servicio de api
+const api = new Axios(`${import.meta.env.VITE_URL_BACKEND}/models`);
+// Conversor de mxgraph a json
+  const loopConversor = new LoopConversor();
 
-const GenerarGrafico = async (api, id, myGraph, loopConversor) => {
+async function showNosqlData(api, id, myGraph) {
+  const nosqlModel = await api.read(id)
+  GenerarGrafico(nosqlModel, myGraph)
+  showQueries(nosqlModel)
+}
+
+const GenerarGrafico = async (nosqlModel, myGraph) => {
   // Genera un grafico a partir de datos
-  const modeloActual = await api.read(id);
-  loopConversor.fromJsonToGraph(modeloActual, myGraph.graph);
+  // const modeloActual = await api.read(id);
+  loopConversor.fromJsonToGraph(nosqlModel, myGraph.graph);
+  // showQueries(modeloActual)
+}
+
+function showQueries(nosqlModel) {
+  const { queries } = nosqlModel
+  const queryList = document.getElementById('query-list')
+  queries.forEach(query => {
+    const queryDiv = generateQueryHTML(query)
+    queryList.appendChild(queryDiv)
+  })
+}
+
+function generateQueryHTML(query) {
+  const div = document.createElement('div')
+  const h1 = document.createElement('h1')
+  const ul = document.createElement('ul')
+  ul.classList.add('list-disc')
+  h1.textContent = query.full_query
+  query.collections.forEach(collection => {
+    const li = document.createElement('li')
+    li.textContent = collection
+    ul.appendChild(li)
+  })
+  div.appendChild(h1)
+  div.appendChild(ul)
+  return div
+}
+
+function getQueries() {
+  const queryList = document.getElementById('query-list')
+
+  const queries = []
+
+  queryList.querySelectorAll('div').forEach(div => {
+    const fullQuery = div.querySelector('h1').textContent.trim()
+    const collections = Array
+      .from(div.querySelectorAll('ul.list-disc li'))
+      .map(li => li.textContent.trim())
+    queries.push({
+      full_query: fullQuery,
+      collections: collections
+    })
+  })
+
+  return queries
 }
 
 if (!mx.mxClient.isBrowserSupported()) {
@@ -39,12 +95,6 @@ if (!mx.mxClient.isBrowserSupported()) {
   // Obtén el botón por su ID
   var BotonSave = document.getElementById("saveButton");
 
-  // Conversor de mxgraph a json
-  const loopConversor = new LoopConversor();
-
-  // Servicio de api
-  const api = new Axios(`${import.meta.env.VITE_URL_BACKEND}/models`);
-
   // Agrega un manejador de eventos al botón
   BotonSave.addEventListener("click", async function () { //async
     // Realizar la solicitud POST al backend de Firebase
@@ -54,10 +104,12 @@ if (!mx.mxClient.isBrowserSupported()) {
       if (id) {
         const modeloActual = await api.read(id)
         const json = loopConversor.fromGraphToJson(graph)
+        const queries = getQueries()
         // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
         await api.update(id, {
           submodels: json.submodels,
           name: modeloActual.name,
+          queries: queries,
         });
 
       } else {
@@ -91,5 +143,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   const myGraph = new Graph(graph);
   myGraph.addToolbarItem(toolbar, '/assets/images/icons/document.svg');
 
-  GenerarGrafico(api, id, myGraph, loopConversor)
+  // GenerarGrafico(api, id, myGraph, loopConversor)
+  showNosqlData(api, id, myGraph)
+
 }
