@@ -53,7 +53,7 @@ export default class LoopConversor extends ConversorJson {
                                         break
                                     }
                                 }
-                                
+
                                 relaciones.push({
                                     id_source: cell.value.id,
                                     id_target: attribute.value.to,
@@ -167,6 +167,7 @@ function processNestedDocs(vertex, nested_docs, columns, graph) {
         nested_docs.forEach(({ fields, name, nested_docs, id, cardinality }) => {
             // processNestedDocs(vertex, nested_docs, columns)
             const nestedVertex = model.cloneCell(table);
+            nestedVertex.connectable = false // La tabla ya no puede relacionarse a travez de aristas
             nestedVertex.value.name = name + " (" + cardinality + " )";
             nestedVertex.value.id = id
             let lastChild = null;
