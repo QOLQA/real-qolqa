@@ -23,12 +23,12 @@ export function addActionsForDocs(vertex, graph) {
 
 
 export function addActionsForNestedDocs(vertex, graph) {
-  addActionsForDocs(vertex, graph)
-  overlayForEditCardinality(
-    createDataOverlay('add_.png', -70, 15, 'Change carinality', mx.mxConstants.ALIGN_TOP),
-    vertex,
-    graph
-  );
+  addActionsForDocs(vertex, graph) //botones generales
+  // overlayForEditCardinality(   //bton para agregar cardinalidad
+  //   createDataOverlay('add_.png', -70, 15, 'Change carinality', mx.mxConstants.ALIGN_TOP),
+  //   vertex,
+  //   graph
+  // );
 }
 
 export function addDefaultVertex(graph, vertex) {

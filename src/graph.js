@@ -4,7 +4,7 @@ import mx from "./util";
 import {table, column} from "./cells.js";
 import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
-import {selectionChanged, selectionChangedForConnections} from "./userobjects.js";
+import {selectionChanged, selectionChangedCardinality, selectionChangedForConnections} from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
 
 function createGraph() {
@@ -395,7 +395,12 @@ export class Graph {
           selectionChangedForConnections(this.graph, evt.properties.removed[0])
         }
         else{
-        selectionChanged(this.graph, null);
+          if (evt.properties.removed[0].parent.style == 'table'){
+            selectionChangedCardinality(this.graph, evt.properties.removed[0])
+          }
+          else{
+            selectionChanged(this.graph, null);
+          }
       }
       }
     )

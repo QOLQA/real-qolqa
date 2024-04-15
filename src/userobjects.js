@@ -14,51 +14,75 @@ export function selectionChangedCardinality(graph, table) {
 
   if (table == null) {
     div.innerHTML = '';
-    return
+    return;
   }
 
   const regex = /([^()]+) \(([^)]+)\)/;
   const match = table.value.name.match(regex);
 
   const name = match[1].trim();
+  const currentCardinality = match[2].trim();
 
   div.innerHTML = `
   <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
-    <h3 class="text-center font-bold text-lg">Table: ${name}</h3>
+    <h3 class="text-center font-bold text-lg">Table</h3>
     <div class="mb-6">
-        <label for="Cardinality" class="text-left">Cardinality</label>
-        <select name="Cardinality" id="Cardinality" class="
-            w-full
-            rounded
-            py-3
-            px-[14px]
-            text-body-color text-base
-            border border-[f0f0f0]
-            outline-none
-            focus-visible:shadow-none
-            focus:shadow-outline-blue 
-            focus:border-blue-300
-        ">
-            <option value="1..n">1..n</option>
-            <option value="1..1">1..1</option>
-            <option value="n..n">n..n</option>
-            <option value="0..n">0..n</option>
-        </select>
+      <label for="TableName" class="text-left">Name</label>
+      <input type="text" name="TableName" id="TableName" value="${name}" class="
+        w-full
+        rounded
+        py-3
+        px-[14px]
+        text-body-color text-base
+        border border-[f0f0f0]
+        outline-none
+        focus-visible:shadow-none
+        focus:shadow-outline-blue 
+        focus:border-blue-300
+      ">
+    </div>
+    <div class="mb-6">
+      <label for="Cardinality" class="text-left">Cardinality</label>
+      <select name="Cardinality" id="Cardinality" class="
+        w-full
+        rounded
+        py-3
+        px-[14px]
+        text-body-color text-base
+        border border-[f0f0f0]
+        outline-none
+        focus-visible:shadow-none
+        focus:shadow-outline-blue 
+        focus:border-blue-300
+      ">
+        <option value="1..n" ${currentCardinality === '1..n' ? 'selected' : ''}>1..n</option>
+        <option value="1..1" ${currentCardinality === '1..1' ? 'selected' : ''}>1..1</option>
+        <option value="n..n" ${currentCardinality === 'n..n' ? 'selected' : ''}>n..n</option>
+        <option value="0..n" ${currentCardinality === '0..n' ? 'selected' : ''}>0..n</option>
+      </select>
     </div>
   </div>
-  `
+  `;
 
+  // Obtener referencia a los elementos
+  const tableNameElement = document.getElementById('TableName');
+  const cardinalityElement = document.getElementById('Cardinality');
 
-  // Obtener referencia al elemento select
-  const selectElement = document.getElementById('Cardinality');
+  // Agregar event listener para detectar cambios en el nombre de la tabla
+  tableNameElement.addEventListener('change', function () {
+    const newName = tableNameElement.value;
+    const newCardinality = cardinalityElement.value;
+    graph.model.setValue(table, `${newName} (${newCardinality})`);
+  });
 
-
-  // Agregar event listener para detectar cambios en la selección
-  selectElement.addEventListener('change', function () {
-    const newCardinality = selectElement.value;
-    graph.model.setValue(table, `${name} (${newCardinality})`)
+  // Agregar event listener para detectar cambios en la selección de cardinalidad
+  cardinalityElement.addEventListener('change', function () {
+    const newName = tableNameElement.value;
+    const newCardinality = cardinalityElement.value;
+    graph.model.setValue(table, `${newName} (${newCardinality})`);
   });
 }
+
 
 export function selectionChanged(graph, cell)
 //Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.

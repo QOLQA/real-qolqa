@@ -358,6 +358,7 @@ export class EditAction extends Action {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
       this.graph.clearSelection();
       // abrir menu Funcion
+      console.log(evt2.properties)
       selectionChanged(this.graph, evt2.properties.cell);
       if (document.getElementById('tipoValueTable')) {
         let selectElement = document.getElementById('tipoValueTable');
