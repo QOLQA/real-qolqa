@@ -22,29 +22,25 @@
                 <div>
                     <form id="step-one-form" class="block px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
                         <div class="mb-4">
-                          <label
-                            class="block mb-2 text-sm font-bold text-gray-700"
-                            for="query"
-                          >
-                            Consulta
-                          </label>
-                          <textarea
-                            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                            id="query"
-                            name="query"
-                            placeholder="Escribe tu consulta"
-                            type="text"
-                            cols="50"
-                            rows="5"
-                          ></textarea>
+                            <label class="block mb-2 text-sm font-bold text-gray-700" for="query">
+                                Consulta
+                            </label>
+                            <textarea
+                                class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                id="query" name="query" placeholder="Escribe tu consulta" type="text" cols="50"
+                                rows="5"></textarea>
                         </div>
                         <div class='flex flex-row gap-2'>
-                          <button id="cancel-button" class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline" type="button">
-                            Cancelar
-                          </button>
-                          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="submit">
-                            Siguiente
-                          </button>
+                            <button id="cancel-button"
+                                class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
+                                type="button">
+                                Cancelar
+                            </button>
+                            <button
+                                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                Siguiente
+                            </button>
                         </div>
                     </form>
                     <div id="step-two-container" class="hidden px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
@@ -52,12 +48,16 @@
                         <div id="words-buttons" class="flex flex-row gap-2 flex-wrap mb-4 w-[20ch]"></div>
                         <form id="step-two-form" class='flex flex-row gap-2'>
                             <input type="hidden" id="selected-words" name="selectedWords" />
-                          <button id="back-button" class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline" type="button">
-                            Atras
-                          </button>
-                          <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="submit">
-                            Siguiente
-                          </button>
+                            <button id="back-button"
+                                class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
+                                type="button">
+                                Atras
+                            </button>
+                            <button
+                                class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                Siguiente
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                     Icon user
                 </div>
             </div>
-    
+
             <div class="flex flex-row items-center gap-2">
                 <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
                     <button type="button"> <i class="fa fa-undo"></i></button>
@@ -96,7 +96,7 @@
                     <button id="saveButton" class="fa fa-print"></button>
                 </div>
             </div>
-            
+
             <div class="grid grid-cols-12 gap-2">
                 <div class="flex flex-col justify-center h-full col-span-1">
                     <div id="toolbar"></div>
@@ -141,8 +141,8 @@
             </a> -->
         </div>
     </div>
-    <script type="module" src="../src/toolbar.js"></script>
-    <script type="module" src="./src/features/queries.js"></script>
+    <script type="module" src="/src/toolbar.js"></script>
+    <script type="module" src="/src/features/queries.js"></script>
 </body>
 
 </html>
