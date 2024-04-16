@@ -162,6 +162,11 @@ function processDocument(collection, graph, prototype, counter) {
 
 function processNestedDocs(vertex, nested_docs, columns, graph) {
     const model = graph.getModel();
+    // this.graph.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
+    //     this.graph.clearSelection();
+    //     // abrir menu Funcion
+    //     selectionChangedCardinality(this.graph, evt2.properties.cell);
+    //   });
     if (nested_docs !== null) {
         // relaciones internas (documentos anidados)
         nested_docs.forEach(({ fields, name, nested_docs, id, cardinality }) => {
