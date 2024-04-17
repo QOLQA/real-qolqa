@@ -101,28 +101,8 @@ export class DeleteAction extends Action {
 
   _setupProcess() {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
-      var deleteContainer = document.createElement('div');
-      deleteContainer.classList.add('delete-confirmation'); // Agregar una clase para dar estilo
-
-      // Crear el mensaje de confirmación
-      var confirmationMessage = document.createElement('p');
-      confirmationMessage.textContent = '¿Seguro que quieres eliminar?';
-
-      // Crear los botones
-      var continueButton = document.createElement('button');
-      continueButton.textContent = 'Continuar';
-      continueButton.classList.add('btn-continue'); // Agregar una clase para dar estilo
-
-      var cancelButton = document.createElement('button');
-      cancelButton.textContent = 'Cancelar';
-      cancelButton.classList.add('btn-cancel'); // Agregar una clase para dar estilo
-
-      // Agregar los elementos al contenedor
-      deleteContainer.appendChild(confirmationMessage);
-      deleteContainer.appendChild(continueButton);
-      deleteContainer.appendChild(cancelButton);
-      // ----- ends DOM---------------
-      showModalWindow(this._graph, 'Properties', deleteContainer, 250, 100);
+      const dialogConfirmationMessage = document.getElementById('dialog-close')
+      dialogConfirmationMessage.classList.replace('hidden', 'flex')
 
       const removeRelation = (graph) => {
         var cellToRemove = evt2.properties.cell; //celda a remover 
@@ -140,9 +120,9 @@ export class DeleteAction extends Action {
               const childCount = graph.getModel().getChildCount(inc);
               for (let i = 0; i < childCount; i++) {
                 const child = inc.getChildAt(i);
-                var name = child.value.name;
-                var parts = name.split('.');
-                var docname = parts[0];
+                let name = child.value.name;
+                let parts = name.split('.');
+                let docname = parts[0];
                 // Verifica si el nombre del hijo coincide con el patrón de referencia
                 if (docname == cellToRemove.value.name) {
                   // Coincide con el patrón, lo que significa que está referenciando
@@ -163,15 +143,22 @@ export class DeleteAction extends Action {
           const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
         }
         graph.getModel().endUpdate()
-        wnd.destroy();
       }
 
-      // Agregar eventos a los botones
-      continueButton.addEventListener('click', () => removeRelation(this._graph));
+      const continueButton = document.getElementById('btnConfirmModel')
+      const cancelButton = document.getElementById('btnCancelModel')
 
-      cancelButton.addEventListener('click', function () {
-        wnd.destroy();
+      // Agregar eventos a los botones
+      cancelButton.addEventListener('click', () => {
+        dialogConfirmationMessage.classList.replace('flex', 'hidden')
+
       });
+
+      continueButton.addEventListener('click', () => {
+        dialogConfirmationMessage.classList.replace('flex', 'hidden')
+        removeRelation(this._graph)
+      });
+
     })
   }
 }
