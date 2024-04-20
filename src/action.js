@@ -102,10 +102,19 @@ export class DeleteAction extends Action {
   _setupProcess() {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
       const dialogConfirmationMessage = document.getElementById('dialog-close')
+      const textDialog = dialogConfirmationMessage.querySelector(".textDialog")
+
+      let cellToRemove = evt2.properties.cell; //celda seleccionada
+      if (cellToRemove.style === 'table') {
+        textDialog.textContent = "Are you sure you want to delete this table?"
+      } else {
+        textDialog.textContent = "Are you sure you want to delete this attribute?"
+      }
+
       dialogConfirmationMessage.classList.replace('hidden', 'flex')
 
       const removeRelation = (graph) => {
-        var cellToRemove = evt2.properties.cell; //celda a remover 
+        let cellToRemove = evt2.properties.cell; //celda a remover 
         graph.clearSelection()
         graph.getModel().beginUpdate()
         if (cellToRemove.style === 'table') {
@@ -147,6 +156,7 @@ export class DeleteAction extends Action {
 
       const continueButton = document.getElementById('btnConfirmModel')
       const cancelButton = document.getElementById('btnCancelModel')
+
 
       // Agregar eventos a los botones
       cancelButton.addEventListener('click', () => {
