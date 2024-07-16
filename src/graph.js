@@ -391,17 +391,19 @@ export class Graph {
     this.graph.getSelectionModel().addListener(
       // parametros de la segunda funcion sender, evt
       mx.mxEvent.CHANGE, (_, evt) => {
-        if (evt.properties.removed[0].edge){
-          selectionChangedForConnections(this.graph, evt.properties.removed[0])
+        if (evt.properties.removed !== undefined) {
+          if (evt.properties.removed[0].edge) {
+            selectionChangedForConnections(this.graph, evt.properties.removed[0])
+          }
+          else {
+            if (evt.properties.removed[0].parent.style == 'table') {
+              selectionChangedCardinality(this.graph, evt.properties.removed[0])
+            }
+            else {
+              selectionChanged(this.graph, null);
+            }
+          }
         }
-        else{
-          if (evt.properties.removed[0].parent.style == 'table'){
-            selectionChangedCardinality(this.graph, evt.properties.removed[0])
-          }
-          else{
-            selectionChanged(this.graph, null);
-          }
-      }
       }
     )
   }
