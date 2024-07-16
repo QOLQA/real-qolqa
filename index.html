@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <h1>Hola Mundo</h1>
-    <h2>hELLO WOLRD</h2>
-    <h3>Encabezado 3</h3>
-    <h4>Encabezado 4</h4>
-    <h5>Encabezado 5</h5>
-    <h6>Encabezado h6 agregado</h6>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./src/styles/output.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+</head>
+
+<body class="bg-gray-100">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4 text-red-500">Modelos</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <ul id="linkModels" class="divide-y divide-gray-200"></ul>
+    </div>
+    
+    <div class="mt-8">
+      <hr class="my-4">
+      <div>
+        <button id="show-create-model-form" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Crear Modelo
+        </button>
+      </div>
+      <div id="create-model-form-container" class="hidden mt-4">
+        <form id="new-model-form">
+          <div class="mb-4">
+            <label for="model-name" class="block text-sm font-medium leading-6 text-gray-900">Nombre del Modelo:</label>
+            <input type="text" id="model-name" name="model-name" class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full">
+          </div>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Crear
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+
 </html>

@@ -1,100 +1,239 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+#toolbar {
+  background-color: #f2f4f4;
+  border-radius: 5px;
+  bottom: 0px;
+  height: 100px;
+  left: 15px;
+  overflow: hidden;
+  padding: 4px;
+  position: absolute;
+  top: 100px;
+  width: 24px;
+}
+#container {
+  bottom: 0px;
+  left: 45px;
+  overflow: hidden;
+  position: absolute;
+  right: 0px;
+  top: 26px;
+}
+#importButton {
+  background-color: #00bfa6;
+  border: 2px dashed #00bfa6;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  left: 800px;
+  letter-spacing: 2px;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+#querieButton {
+  background-color: #00bfa6;
+  border: 2px dashed #00bfa6;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  left: 895px;
+  letter-spacing: 2px;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+#saveButton {
+  background-color: #9c2ba7;
+  border: 2px dashed #b500bf;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  left: 1000px;
+  letter-spacing: 2px;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
+}
+
+#btnAtras {
+  background-color: #f2f4f4;
+  border: 2px solid #f2f4f4;
+  border-radius: 5px;
+  bottom: 0px;
+  cursor: pointer;
+  height: 35px;
+  left: 15px;
+  overflow: hidden;
+  padding: 4px;
+  position: absolute;
+  top: 10px;
+  width: 35px;
+}
+
+#btnAtras i {
+  background-color: #f2f4f4;
+  color: #17202a;
+}
+
+#ContainerSUP {
+  background-color: #f2f4f4;
+  border-radius: 5px;
+  bottom: 0px;
+  font-family: Verdana;
+  height: 23px;
+  left: 55px;
+  overflow: hidden;
+  padding: 5px 10px;
+  position: absolute;
+  top: 10px;
+  width: 300px;
+}
+/*
+#buttons {
+  position: absolute;
+  border-radius: 0.5rem;
+  background-color: rgb(238, 238, 238);
+  padding: 0.25rem;
+  width: 55px;
+  left: 15px;
+  top: 50px;
+}*/
+.btn-toolbar {
+  background-color: rgb(238, 238, 238);
+  border-radius: 0.5rem;
+  left: 15px;
+  padding: 0.25rem;
+  position: absolute;
+  top: 50px;
+}
+/*
+.btn-toolbar{
+  position: absolute;
+  border-radius: 0.5rem;
+  background-color: rgb(238, 238, 238);
+  padding: 0.25rem;
+  left: 87px;
+  top: 50px;
+}*/
+#toolbar1 {
+  background-color: rgb(238, 238, 238);
+  border-radius: 0.5rem;
+  left: 15px;
+  padding: 0.25rem;
+  position: absolute;
+  top: 50px;
+}
+
+#toolbar2 {
+  background-color: rgb(238, 238, 238);
+  border-radius: 0.5rem;
+  left: 87px;
+  padding: 0.25rem;
+  position: absolute;
+  top: 50px;
+}
+
+#toolbar3 {
+  background-color: rgb(238, 238, 238);
+  border-radius: 0.5rem;
+  left: 190px;
+  padding: 0.25rem;
+  position: absolute;
+  top: 50px;
+}
+
+#toolbar4 {
+  background-color: rgb(238, 238, 238);
+  border-radius: 0.5rem;
+  left: 267px;
+  padding: 0.25rem;
+  position: absolute;
+  top: 50px;
+}
+#new-model{
+  display: inline-block;
+  padding: 10px 20px; /* Ajusta el padding según sea necesario */
+  background-color: #4CAF50; /* Color de fondo del botón */
+  color: white; /* Color del texto del botón */
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: background-color 0.3s; /* Efecto de transición para el color de fondo */
+}
+#view1 {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  color: #f9f9f9; /*h1 de color blanco*/
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
-  
 }
 
-.logo {
-  border: solid black 10px; /*agregue un borde negro de 10 px*/
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
+#newModel {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.card {
-  padding: 2em;
+#newModel a {
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
 }
 
-.read-the-docs {
-  color: #888;
+#newModel a:hover {
+  background-color: #0056b3;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+#newDocumentForm {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+#linkModels {
+  list-style: none;
+  padding: 0;
+}
+
+#linkModels li {
+  margin-bottom: 10px;
+}
+
+#linkModels li a {
+  text-decoration: none;
+  color: #333;
+  padding: 10px;
+  display: block;
+}
+
+#linkModels li a:hover {
+  background-color: #f0f0f0;
 }
