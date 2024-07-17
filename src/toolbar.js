@@ -11,9 +11,11 @@ const id = urlParams.get('model_id');
 const api = new Axios(`${import.meta.env.VITE_URL_BACKEND}/models`);
 // Conversor de mxgraph a json
   const loopConversor = new LoopConversor();
+const nameModel = document.querySelector('#nameModel')
 
 async function showNosqlData(api, id, myGraph) {
   const nosqlModel = await api.read(id)
+  nameModel.innerHTML = nosqlModel.name
   GenerarGrafico(nosqlModel, myGraph)
   showQueries(nosqlModel)
 }
@@ -141,7 +143,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   let rubberband = new mx.mxRubberband(graph);
 
   const myGraph = new Graph(graph);
-  myGraph.addToolbarItem(toolbar, '/assets/images/icons/document.svg');
+  myGraph.addToolbarItem(toolbar, '/assets/icons/document-icon.svg');
 
   // GenerarGrafico(api, id, myGraph, loopConversor)
   showNosqlData(api, id, myGraph)
