@@ -87,10 +87,12 @@
 
         <div id="view2" class="p-4 space-y-4">
             <div class="flex flex-row items-center justify-between">
-                <div class="flex flex-row items-center gap-2 p-1 border border-black border-solid rounded-md">
-                    <h1>{QOLQA}</h1>
+                <div class="flex flex-row items-center gap-2">
+                    <div>
+                        <img src="/assets/icons/back_to_models_icon.svg" />
+                    </div>
                     <div class="flex flex-col">
-                        <p id="nameModel">Conceptual model of: Name</p>
+                        <p id="nameModel"></p>
                         <p>Last save 25/03/2023 at 13:24</p>
                     </div>
                 </div>
@@ -99,68 +101,37 @@
                 </div>
             </div>
 
-            <div class="flex flex-row items-center gap-2">
-                <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
-                    <button type="button"> <i class="fa fa-undo"></i></button>
-                    <button type="button"> <i class="fa fa-repeat"></i></button>
+            <div class="flex flex-row">
+                <div class="flex flex-col gap-4">
+                    <img src="/assets/icons/edit-icon.svg" alt="Edit icon" />
+                    <img id="open-popup-button" src="/assets/icons/query-icon.svg" alt="Query icon" />
+                    <img src="/assets/icons/stats-icon.svg" alt="Stats icon" />
                 </div>
-                <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
-                    <button type="button"><i class="fa fa-search-plus"></i></button>
-                    <button type="button"><i class="fa fa-search"></i></button>
-                    <button type="button"><i class="fa fa-search-minus"></i></button>
-                    <button type="button" class="fa fa-files-o"></button>
-                    <button type="button" class="fa fa-table"></button>
-                </div>
-                <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
-                    <button id="importButton">IMPORT</button>
-                    <button id="open-popup-button">QUERIES</button>
-                    <!-- <button id="saveButton">SAVE</button> -->
-                    <button id="saveButton" class="fa fa-print"></button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-12 gap-2">
-                <div class="flex flex-col justify-center h-full col-span-1">
-                    <div id="toolbar"></div>
-                </div>
-                <div id="container" class="col-span-8"></div>
-                <div class="flex flex-col col-span-3">
-                    <div id="properties" class="hidden"></div>
-                    <div class="grow-[1] flex flex-col gap-2">
-                        <!-- <form id="query-form" class="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
-                            <div class="mb-4">
-                                <label
-                                    class="block mb-2 text-sm font-bold text-gray-700"
-                                    for="consulta"
-                                >
-                                    Consulta
-                                </label>
-                                <input
-                                    class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                                    id="consulta"
-                                    name="consulta"
-                                    placeholder="Escribe tu consulta"
-                                    type="text"
-                                >
+                <div class="grow-[1]">
+                    <div class="flex flex-row items-center gap-2">
+                        <div class="flex flex-row gap-2 p-1 border border-black border-solid rounded-md">
+                            <!-- <button id="open-popup-button">QUERIES</button> -->
+                            <button id="saveButton" class="fa fa-print"></button>
+                        </div>
+                        <div class="flex flex-col justify-center h-full col-span-1">
+                            <div id="toolbar"></div>
+                        </div>
+                    </div>
+                
+                    <div class="grid grid-cols-12 gap-2">
+                        <div id="container" class="col-span-8"></div>
+                        <div class="flex flex-col col-span-3">
+                            <div id="properties" class="hidden"></div>
+                            <div class="grow-[1] flex flex-col gap-2">
+                                <div>
+                                    <h1>Tus consultas</h1>
+                                    <div id="query-list"></div>
+                                </div>
                             </div>
-                            <div>
-                                <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="submit">
-                                    Agregar
-                                </button>
-                            </div>
-                        </form> -->
-                        <div>
-                            <h1>Tus consultas</h1>
-                            <div id="query-list"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- <a href="/">
-                <button id="btnAtras">
-                    <i class="fa fa-arrow-left"></i>
-                </button>
-            </a> -->
         </div>
     </div>
     <script type="module" src="/src/toolbar.js"></script>
