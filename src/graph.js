@@ -467,3 +467,6 @@ function handleSwinlane(graph, moveFunction) {
     });
   };
 }
+
+export const { graph, editor } = createGraph();
+export const myGraph = new Graph(graph);
