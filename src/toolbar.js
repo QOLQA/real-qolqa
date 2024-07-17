@@ -1,4 +1,4 @@
-import createGraph, { container, Graph } from "./graph";
+import { container, editor, graph, myGraph } from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
@@ -89,7 +89,7 @@ if (!mx.mxClient.isBrowserSupported()) {
     new mx.mxDivResizer(container);
   }
 
-  let { graph, editor } = createGraph();
+  // let { graph, editor } = createGraph();
   graph.dropEnabled = true;
   editor.setGraphContainer(container);
 
@@ -142,7 +142,7 @@ if (!mx.mxClient.isBrowserSupported()) {
   let keyHandler = new mx.mxKeyHandler(graph);
   let rubberband = new mx.mxRubberband(graph);
 
-  const myGraph = new Graph(graph);
+  // const myGraph = new Graph(graph);
   myGraph.addToolbarItem(toolbar, '/assets/icons/document-icon.svg');
 
   // GenerarGrafico(api, id, myGraph, loopConversor)
