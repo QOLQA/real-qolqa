@@ -1,4 +1,4 @@
-import createGraph, { container, Graph } from "./graph";
+import { container, editor, graph, myGraph } from "./graph";
 import createLayout from "./layout";
 import mx from "./util";
 import LoopConversor from "./classes/loop_conversor";
@@ -11,9 +11,11 @@ const id = urlParams.get('model_id');
 const api = new Axios(`${import.meta.env.VITE_URL_BACKEND}/models`);
 // Conversor de mxgraph a json
   const loopConversor = new LoopConversor();
+const nameModel = document.querySelector('#nameModel')
 
 async function showNosqlData(api, id, myGraph) {
   const nosqlModel = await api.read(id)
+  nameModel.innerHTML = nosqlModel.name
   GenerarGrafico(nosqlModel, myGraph)
   showQueries(nosqlModel)
 }
@@ -87,7 +89,7 @@ if (!mx.mxClient.isBrowserSupported()) {
     new mx.mxDivResizer(container);
   }
 
-  let { graph, editor } = createGraph();
+  // let { graph, editor } = createGraph();
   graph.dropEnabled = true;
   editor.setGraphContainer(container);
 
@@ -140,8 +142,8 @@ if (!mx.mxClient.isBrowserSupported()) {
   let keyHandler = new mx.mxKeyHandler(graph);
   let rubberband = new mx.mxRubberband(graph);
 
-  const myGraph = new Graph(graph);
-  myGraph.addToolbarItem(toolbar, '/assets/images/icons/document.svg');
+  // const myGraph = new Graph(graph);
+  myGraph.addToolbarItem(toolbar, '/assets/icons/document-icon.svg');
 
   // GenerarGrafico(api, id, myGraph, loopConversor)
   showNosqlData(api, id, myGraph)
