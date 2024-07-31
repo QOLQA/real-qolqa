@@ -314,7 +314,7 @@ export class NestDocumentAction extends Action {
       const name = mx.mxUtils.prompt('Enter name for new document');
       if (name != null && name.trim() != '') {
         const vertex = this.graph.getModel().cloneCell(table);
-        vertex.value.name = name + " (1..1)";
+        vertex.value.name = name;
         vertex.value.id = uuidv4();
 
         // Find the last child in the parent cell and position the new cell after it
@@ -354,6 +354,7 @@ export class EditAction extends Action {
   _setupProcess() {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
       this.graph.clearSelection();
+      console.log('se ejecuta este codigo al hacer click en editar atributo')
       // abrir menu Funcion
       selectionChanged(this.graph, evt2.properties.cell);
       if (document.getElementById('tipoValueTable')) {
