@@ -173,7 +173,8 @@ function processNestedDocs(vertex, nested_docs, columns, graph) {
             // processNestedDocs(vertex, nested_docs, columns)
             const nestedVertex = model.cloneCell(table);
             nestedVertex.connectable = false // La tabla ya no puede relacionarse a travez de aristas
-            nestedVertex.value.name = name + " (" + cardinality + " )";
+            nestedVertex.value.name = name;
+            nestedVertex.value.cardinality = cardinality;
             nestedVertex.value.id = id
             let lastChild = null;
 
@@ -294,11 +295,11 @@ function generardocs(graph, cells) {
                 };
             }
             else {
-                const regex = /([^()]+) \(([^)]+)\)/;
-                const match = nombreDocumento.match(regex);
+                // const regex = /([^()]+) \(([^)]+)\)/;
+                // const match = nombreDocumento.match(regex);
 
-                const name = match[1].trim();
-                const cardinality = match[2].trim();
+                const name = nombreDocumento;
+                const cardinality = cell.value.cardinality;
 
                 documento = {
                     name: name,
