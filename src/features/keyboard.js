@@ -1,5 +1,6 @@
 import { graph } from "../graph";
 import mx from "../util";
+import { updateChart } from "./update_chart";
 
 const keyhandler = new mx.mxKeyHandler(graph);
 
@@ -16,6 +17,7 @@ function deleteSelectedEdges() {
         if (edges.length > 0) {
             // Deletes the selected edges
             graph.removeCells(edges);
+            updateChart();
         }
     }
 }

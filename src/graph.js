@@ -176,7 +176,9 @@ function createGraph() {
         source = col1;
         target = child;
 
-        return mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+        const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+        graph.getModel().setValue(edgeAdded, '1..1');
+        return edgeAdded;
       }
       finally
       {
