@@ -1,3 +1,5 @@
+import { updateChart } from "./features/update_chart";
+
 /**
  * Actualiza el panel de propiedades para la cardinalidad.
  * @param {mxGraph} graph - Instancia del gráfico mxGraph.
@@ -65,6 +67,7 @@ export function selectionChangedCardinality(graph, table) {
     clone.name = newName;
     clone.cardinality = newCardinality;
     graph.model.setValue(table, clone);
+    updateChart();
   }
 
   document.getElementById('TableName').addEventListener('input', update);
@@ -133,17 +136,21 @@ export function selectionChanged(graph, cell) {
   </div>
   `;
 
-  const update = () => {
-    const newName = document.getElementById('AttributeName').value;
-    const newType = document.getElementById('Type').value;
+  const update = (id, property) => {
+    const newProperty = document.getElementById(id).value;
     const clone = cell.value.clone();
-    clone.name = newName;
-    clone.type = newType;
+    clone[property] = newProperty;
     graph.model.setValue(cell, clone);
   };
 
-  document.getElementById('AttributeName').addEventListener('input', update);
-  document.getElementById('Type').addEventListener('input', update);
+  document.getElementById('AttributeName').addEventListener('input', () => {
+    update('AttributeName', 'name')
+    updateChart();
+  });
+  document.getElementById('Type').addEventListener('input', () => {
+    update('Type', 'type');
+    updateChart();
+  });
 }
 
 export function selectionChangedForConnections(graph, cell)
@@ -192,6 +199,7 @@ export function selectionChangedForConnections(graph, cell)
   const update = () => {
     const newCardinality = document.getElementById('Cardinality').value;
     graph.getModel().setValue(cell, newCardinality);
+    updateChart();
   }
 
   document.getElementById('Cardinality').addEventListener('input', update)
@@ -241,6 +249,7 @@ export function selectionChangedForParents(graph, table) {
     const clone = table.value.clone();
     clone.name = newName;
     graph.getModel().setValue(table, clone);
+    updateChart();
   }
 
   document.getElementById('TableName').addEventListener('input', update);

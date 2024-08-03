@@ -7,6 +7,7 @@ import { overlayForDelete, overlayForEdit } from "./overlays";
 import moveContainedSwimlanesToBack from "./swimbottom";
 import { selectionChanged, selectionChangedCardinality } from "./userobjects";
 import mx from "./util";
+import { updateChart } from "./features/update_chart";
 
 function getNeighbors(cell, graph) {
   const neighbors = []
@@ -94,6 +95,103 @@ export class Action {
   get graph() { return this._graph; }
 }
 
+function createConfirmationDialog(graph, cellToRemove) {
+    // Crear el contenedor principal del diálogo
+    const dialog = document.createElement('div');
+    dialog.id = 'dialog-close';
+    dialog.className = 'absolute inset-0 z-[999] hidden h-screen w-screen place-items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm';
+
+    // Crear el contenido del diálogo
+    const content = document.createElement('div');
+    content.className = 'relative m-4 w-1/3 rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl';
+
+    // Crear el título del diálogo
+    const title = document.createElement('div');
+    title.className = 'flex shrink-0 items-center p-4 font-sans text-2xl font-semibold leading-snug text-blue-gray-900 antialiased justify-center textDialog';
+    title.textContent = 'Are you sure you want to delete this table?';
+
+    // Crear el contenedor de botones
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'flex shrink-0 flex-wrap items-center justify-end p-4 text-blue-gray-500';
+
+    // Crear el botón de cancelar
+    const cancelButton = document.createElement('button');
+    cancelButton.id = 'btnCancelModel';
+    cancelButton.className = 'middle none center mr-1 rounded-lg py-3 px-6 font-sans text-xs font-bold uppercase text-red-500 transition-all hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none';
+    cancelButton.textContent = 'Cancel';
+
+    // Crear el botón de confirmar
+    const confirmButton = document.createElement('button');
+    confirmButton.id = 'btnConfirmModel';
+    confirmButton.className = 'middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none';
+    confirmButton.textContent = 'Confirm';
+
+    // Añadir los elementos al DOM
+    buttonContainer.appendChild(cancelButton);
+    buttonContainer.appendChild(confirmButton);
+    content.appendChild(title);
+    content.appendChild(buttonContainer);
+    dialog.appendChild(content);
+
+    // Añadir el diálogo al cuerpo del documento
+    document.body.appendChild(dialog);
+
+    // Añadir manejadores de eventos
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(dialog); // Eliminar el diálogo
+    });
+
+    confirmButton.addEventListener('click', () => {
+        document.body.removeChild(dialog); // Eliminar el diálogo
+        removeRelation(graph, cellToRemove); // Ejecutar la lógica de eliminación
+        updateChart();
+    });
+
+    // Mostrar el diálogo
+    dialog.classList.replace('hidden', 'flex');
+}
+
+const removeRelation = (graph, cellToRemove) => {
+  // let cellToRemove = evt2.properties.cell; //celda a remover 
+  graph.clearSelection()
+  graph.getModel().beginUpdate()
+  if (cellToRemove.style === 'table') {
+    const neighbors = getNeighbors(cellToRemove, graph)
+    if (neighbors.length === 0) {
+      // cell to remove don't have any relations
+      const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
+    } else {
+      // remove incoming relations
+      const incoming = getIncomingRelations(cellToRemove, graph)
+      for (const inc of incoming) {
+        const childCount = graph.getModel().getChildCount(inc);
+        for (let i = 0; i < childCount; i++) {
+          const child = inc.getChildAt(i);
+          let name = child.value.name;
+          let parts = name.split('.');
+          let docname = parts[0];
+          // Verifica si el nombre del hijo coincide con el patrón de referencia
+          if (docname == cellToRemove.value.name) {
+            // Coincide con el patrón, lo que significa que está referenciando
+            graph.model.remove(child)
+            break
+          }
+        }
+      }
+      // remove outgoing relations
+      const outgoing = getOutgoingRelations(cellToRemove, graph)
+      for (const out of outgoing) {
+        const index = out.value.to.indexOf(cellToRemove.value.id)
+        out.value.to.splice(index, 1)
+      }
+    }
+    const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
+  } else {
+    const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
+  }
+  graph.getModel().endUpdate()
+}
+
 export class DeleteAction extends Action {
   constructor(data, graph) {
     super(data, graph);
@@ -101,74 +199,9 @@ export class DeleteAction extends Action {
 
   _setupProcess() {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
-      const dialogConfirmationMessage = document.getElementById('dialog-close')
-      const textDialog = dialogConfirmationMessage.querySelector(".textDialog")
-
       let cellToRemove = evt2.properties.cell; //celda seleccionada
-      if (cellToRemove.style === 'table') {
-        textDialog.textContent = "Are you sure you want to delete this table?"
-      } else {
-        textDialog.textContent = "Are you sure you want to delete this attribute?"
-      }
 
-      dialogConfirmationMessage.classList.replace('hidden', 'flex')
-
-      const removeRelation = (graph) => {
-        let cellToRemove = evt2.properties.cell; //celda a remover 
-        graph.clearSelection()
-        graph.getModel().beginUpdate()
-        if (cellToRemove.style === 'table') {
-          const neighbors = getNeighbors(cellToRemove, graph)
-          if (neighbors.length === 0) {
-            // cell to remove don't have any relations
-            const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
-          } else {
-            // remove incoming relations
-            const incoming = getIncomingRelations(cellToRemove, graph)
-            for (const inc of incoming) {
-              const childCount = graph.getModel().getChildCount(inc);
-              for (let i = 0; i < childCount; i++) {
-                const child = inc.getChildAt(i);
-                let name = child.value.name;
-                let parts = name.split('.');
-                let docname = parts[0];
-                // Verifica si el nombre del hijo coincide con el patrón de referencia
-                if (docname == cellToRemove.value.name) {
-                  // Coincide con el patrón, lo que significa que está referenciando
-                  graph.model.remove(child)
-                  break
-                }
-              }
-            }
-            // remove outgoing relations
-            const outgoing = getOutgoingRelations(cellToRemove, graph)
-            for (const out of outgoing) {
-              const index = out.value.to.indexOf(cellToRemove.value.id)
-              out.value.to.splice(index, 1)
-            }
-          }
-          const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
-        } else {
-          const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
-        }
-        graph.getModel().endUpdate()
-      }
-
-      const continueButton = document.getElementById('btnConfirmModel')
-      const cancelButton = document.getElementById('btnCancelModel')
-
-
-      // Agregar eventos a los botones
-      cancelButton.addEventListener('click', () => {
-        dialogConfirmationMessage.classList.replace('flex', 'hidden')
-
-      });
-
-      continueButton.addEventListener('click', () => {
-        dialogConfirmationMessage.classList.replace('flex', 'hidden')
-        removeRelation(this._graph)
-      });
-
+      createConfirmationDialog(this._graph, cellToRemove);
     })
   }
 }
@@ -296,7 +329,10 @@ export class AddPropAction extends Action {
       }
 
       // Función para procesar los datos cuando se hace clic en el botón
-      procesarBoton.addEventListener('click', () => addProp(this.graph));
+      procesarBoton.addEventListener('click', () => {
+        addProp(this.graph)
+        updateChart();
+      });
     });
   }
 }
@@ -341,6 +377,8 @@ export class NestDocumentAction extends Action {
         this.graph.setSelectionCells(
           this.graph.importCells([vertex], 0, 0, evt2.properties.cell)
         );
+
+        updateChart();
       }
     });
   }
