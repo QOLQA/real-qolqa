@@ -354,7 +354,6 @@ export class EditAction extends Action {
   _setupProcess() {
     this.overlay.addListener(mx.mxEvent.CLICK, (sender, evt2) => {
       this.graph.clearSelection();
-      console.log('se ejecuta este codigo al hacer click en editar atributo')
       // abrir menu Funcion
       selectionChanged(this.graph, evt2.properties.cell);
       if (document.getElementById('tipoValueTable')) {
