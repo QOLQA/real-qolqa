@@ -58,7 +58,7 @@ function createGraph() {
         return `${cell.value.name} (${cell.value.cardinality})`
       }
     } else if (cell.isEdge()) {
-      return cell.value;
+      return cell.value.cardinality;
     }
   };
   //reemplaza la propiedad name del valor de la celda con un nuevo valor proporcionado,
@@ -70,7 +70,8 @@ function createGraph() {
         arguments
       );
     } else if (cell.isEdge()) {
-      if (!regex.isValidCardinality(value)) {
+      // if (!regex.isValidCardinality(value)) {
+      if (false) {
         alert('Escriba un formato valido de cardinaliad');
         return cell.value;
       } else {
@@ -153,6 +154,7 @@ function createGraph() {
       }
     },
   });
+  
 
   graph.addEdge = function(edge, parent, source, target, index) //agregar conexiones 
   {
@@ -176,8 +178,9 @@ function createGraph() {
         source = col1;
         target = child;
 
+
         const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
-        graph.getModel().setValue(edgeAdded, '1..1');
+        graph.getModel().setValue(edgeAdded, {generatedAttr: col1.id, cardinality: '0..1'});
         return edgeAdded;
       }
       finally

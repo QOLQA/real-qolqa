@@ -170,7 +170,7 @@ export function selectionChangedForConnections(graph, cell)
   // Clears the DIV the non-DOM way
   div.innerHTML = '';
 
-  const cardinality = cell.value;
+  const cardinality = cell.value.cardinality;
 
   div.innerHTML = `
   <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
@@ -198,7 +198,7 @@ export function selectionChangedForConnections(graph, cell)
 
   const update = () => {
     const newCardinality = document.getElementById('Cardinality').value;
-    graph.getModel().setValue(cell, newCardinality);
+    graph.getModel().setValue(cell, {generatedAttr: cell.value.generatedAttr, cardinality: newCardinality});
     updateChart();
   }
 

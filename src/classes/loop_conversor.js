@@ -49,7 +49,7 @@ export default class LoopConversor extends ConversorJson {
                                 let cardinality;
                                 for (const edges of cell.edges) {
                                     if (edges.target.id === attribute.value.to && edges.source.id === cell.value.id) {
-                                        cardinality = edges.value
+                                        cardinality = edges.value.cardinality
                                         break
                                     }
                                 }
