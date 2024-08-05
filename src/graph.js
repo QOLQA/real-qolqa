@@ -6,6 +6,7 @@ import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
 import {selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents} from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
+import { updateChart } from "./features/update_chart.js";
 
 function createGraph() {
 
@@ -187,6 +188,7 @@ function createGraph() {
       {
         moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
+        updateChart();
       }
       return null;
   };
@@ -457,6 +459,8 @@ function modalCreateDoc(graph, evt, prototype, cell) {
     addDefaultVertex(graph, vertex)
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
+
+    updateChart();
   }
 }
 
