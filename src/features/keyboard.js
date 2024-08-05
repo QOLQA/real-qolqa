@@ -16,7 +16,9 @@ export default function setup() {
             });
 
             edges.forEach(({source, target}) => {
-                target.value.to.filter(id => id === target.id);
+                let targetUpdated = target.value.clone();
+                targetUpdated.to = targetUpdated.to.filter(id => id !== source.id);
+                graph.getModel().setValue(target, targetUpdated);
             })
 
             const relatedAttributes = edges.map(edge => graph.getModel().getCell(edge.value.generatedAttr));
@@ -25,6 +27,7 @@ export default function setup() {
                 // Deletes the selected edges
                 graph.removeCells([...edges, ...relatedAttributes]);
                 updateChart();
+                // console.log(graph.getModel().cells);
             }
         }
     }
