@@ -71,81 +71,84 @@ function getQueries() {
   return queries
 }
 
-if (!mx.mxClient.isBrowserSupported()) {
-  mx.mxUtils.error("Browser is not supported!", 200, false);
-} else {
 
-  let tbContainer = document.getElementById("toolbar");
 
-  // Crea un toolbar sin procesamiento de eventos
-  let toolbar = new mx.mxToolbar(tbContainer);
-  toolbar.enabled = false;
+export default function setup() {
+  if (!mx.mxClient.isBrowserSupported()) {
+    mx.mxUtils.error("Browser is not supported!", 200, false);
+  } else {
 
-  container.style.background = `url(/assets/images/grid.gif)`;
+    let tbContainer = document.getElementById("toolbar");
 
-  if (mx.mxClient.IS_QUIRKS) {
-    document.body.style.overflow = "hidden";
-    new mx.mxDivResizer(tbContainer);
-    new mx.mxDivResizer(container);
-  }
+    // Crea un toolbar sin procesamiento de eventos
+    let toolbar = new mx.mxToolbar(tbContainer);
+    toolbar.enabled = false;
 
-  // let { graph, editor } = createGraph();
-  graph.dropEnabled = true;
-  editor.setGraphContainer(container);
+    container.style.background = `url(/assets/images/grid.gif)`;
 
-  //boton guardar
-  // Obtén el botón por su ID
-  var BotonSave = document.getElementById("saveButton");
+    if (mx.mxClient.IS_QUIRKS) {
+      document.body.style.overflow = "hidden";
+      new mx.mxDivResizer(tbContainer);
+      new mx.mxDivResizer(container);
+    }
 
-  // Agrega un manejador de eventos al botón
-  BotonSave.addEventListener("click", async function () { //async
-    // Realizar la solicitud POST al backend de Firebase
-    //api.create(loopConversor.fromGraphToJson(graph)); //update
+    // let { graph, editor } = createGraph();
+    graph.dropEnabled = true;
+    editor.setGraphContainer(container);
 
-    try {
-      if (id) {
-        const modeloActual = await api.read(id)
-        const json = loopConversor.fromGraphToJson(graph)
-        const queries = getQueries()
-        // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
-        await api.update(id, {
-          submodels: json.submodels,
-          name: modeloActual.name,
-          queries: queries,
-        });
+    //boton guardar
+    // Obtén el botón por su ID
+    var BotonSave = document.getElementById("saveButton");
 
-      } else {
-        // Si no tiene id, es un nuevo modelo y debes crearlo
-        const newModel = await api.create(loopConversor.fromGraphToJson(graph));
-        // Actualiza el id del modelo con el id devuelto por el backend
-        id = newModel.id;
+    // Agrega un manejador de eventos al botón
+    BotonSave.addEventListener("click", async function () { //async
+      // Realizar la solicitud POST al backend de Firebase
+      //api.create(loopConversor.fromGraphToJson(graph)); //update
+
+      try {
+        if (id) {
+          const modeloActual = await api.read(id)
+          const json = loopConversor.fromGraphToJson(graph)
+          const queries = getQueries()
+          // Si ya tiene un id, entonces es un modelo existente y debes actualizarlo
+          await api.update(id, {
+            submodels: json.submodels,
+            name: modeloActual.name,
+            queries: queries,
+          });
+
+        } else {
+          // Si no tiene id, es un nuevo modelo y debes crearlo
+          const newModel = await api.create(loopConversor.fromGraphToJson(graph));
+          // Actualiza el id del modelo con el id devuelto por el backend
+          id = newModel.id;
+        }
+      } catch (error) {
+        console.error("Error al guardar:", error);
       }
-    } catch (error) {
-      console.error("Error al guardar:", error);
-    }
-  });
+    });
 
-  createLayout(editor);
+    createLayout(editor);
 
-  // empareja DNd dentro del grafo
-  mx.mxDragSource.prototype.getDropTarget = function (graph, x, y) {
-    let cell = graph.getCellAt(x, y);
+    // empareja DNd dentro del grafo
+    mx.mxDragSource.prototype.getDropTarget = function (graph, x, y) {
+      let cell = graph.getCellAt(x, y);
 
-    if (!graph.isValidDropTarget(cell)) {
-      cell = null;
-    }
+      if (!graph.isValidDropTarget(cell)) {
+        cell = null;
+      }
 
-    return null;
-  };
+      return null;
+    };
 
-  // parar la edicion al dar enter o tecla escape
-  let keyHandler = new mx.mxKeyHandler(graph);
-  let rubberband = new mx.mxRubberband(graph);
+    // parar la edicion al dar enter o tecla escape
+    let keyHandler = new mx.mxKeyHandler(graph);
+    let rubberband = new mx.mxRubberband(graph);
 
-  // const myGraph = new Graph(graph);
-  myGraph.addToolbarItem(toolbar, '/assets/icons/document-icon.svg');
+    // const myGraph = new Graph(graph);
+    myGraph.addToolbarItem(toolbar, '/assets/icons/document-icon.svg');
 
-  // GenerarGrafico(api, id, myGraph, loopConversor)
-  showNosqlData(api, id, myGraph)
-
+    // GenerarGrafico(api, id, myGraph, loopConversor)
+    showNosqlData(api, id, myGraph)
+  }
 }

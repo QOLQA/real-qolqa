@@ -95,7 +95,7 @@ export class Action {
   get graph() { return this._graph; }
 }
 
-function createConfirmationDialog(graph, cellToRemove) {
+function createConfirmationDialog(graph, cellToRemove, evt2) {
     // Crear el contenedor principal del diálogo
     const dialog = document.createElement('div');
     dialog.id = 'dialog-close';
@@ -159,7 +159,7 @@ const removeRelation = (graph, cellToRemove) => {
     const neighbors = getNeighbors(cellToRemove, graph)
     if (neighbors.length === 0) {
       // cell to remove don't have any relations
-      const r = graph.removeCells([evt2.properties.cell]) //evt2.properties.cell: tabla actual
+      const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
     } else {
       // remove incoming relations
       const incoming = getIncomingRelations(cellToRemove, graph)
