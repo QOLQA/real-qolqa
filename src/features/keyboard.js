@@ -15,9 +15,15 @@ export default function setup() {
                 return graph.getModel().isEdge(cell);
             });
 
+            edges.forEach(({source, target}) => {
+                target.value.to.filter(id => id === target.id);
+            })
+
+            const relatedAttributes = edges.map(edge => graph.getModel().getCell(edge.value.generatedAttr));
+
             if (edges.length > 0) {
                 // Deletes the selected edges
-                graph.removeCells(edges);
+                graph.removeCells([...edges, ...relatedAttributes]);
                 updateChart();
             }
         }
