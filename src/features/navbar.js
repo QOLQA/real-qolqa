@@ -1,6 +1,12 @@
-const haddleButtonNavbar = (id_section_father, id_section) => {
+export const haddleButtonNavbar = (id_section_father, id_section) => {
   const father = document.getElementById(id_section_father);
-  console.log(father)
+  const section = document.getElementById(id_section);
+
+  if (!section.classList.contains('hidden')) {
+    section.classList.add('hidden');
+    return
+  }
+
   Array.from(father.children).forEach((children) => {
     if (children.id === id_section) {
       children.classList.remove('hidden');
@@ -9,23 +15,19 @@ const haddleButtonNavbar = (id_section_father, id_section) => {
       children.classList.add('hidden');
     }
   });
-
 }
 
-console.log("asdfasdf");
-const buttonQuerys = document.getElementById("buttonQuerys");
-const buttonEdit = document.getElementById("buttonEdit");
-const buttonStats = document.getElementById("buttonStats");
-console.log("sadfasdfasd")
+export const haddleQuerySection = () => { haddleButtonNavbar("navbar-sections", "query-section") }
+export const haddleEditSection = () => { haddleButtonNavbar("navbar-sections", "edit-section") }
+export const haddleStatsSection = () => { haddleButtonNavbar("navbar-sections", "stats-section") }
 
+export const haddleNavbar = () => {
+  const buttonQuerys = document.getElementById("buttonQuerys");
+  const buttonEdit = document.getElementById("buttonEdit");
+  const buttonStats = document.getElementById("buttonStats");
 
-buttonQuerys.addEventListener('click', () => { haddleButtonNavbar("navbar-sections", "query-section") });
-buttonEdit.addEventListener('click', () => { haddleButtonNavbar("navbar-sections", "edit-section") });
-buttonStats.addEventListener('click', () => { haddleButtonNavbar("navbar-sections", "stats-section") });
+  buttonQuerys.addEventListener('click', () => { haddleQuerySection() });
+  buttonEdit.addEventListener('click', () => { haddleEditSection() });
+  buttonStats.addEventListener('click', () => { haddleStatsSection() });
+}
 
-console.log("gaaa");
-// const actionsNavbar = {
-//   querys: haddleButtonNavbar("sdfasdf", "asdfasd"),
-//   edit: haddleButtonNavbar("sdfasdf", "tyertywr"),
-//   stats: haddleButtonNavbar("sdfasdf", "hjklhkf"),
-// }
