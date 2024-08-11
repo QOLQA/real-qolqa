@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import {configureTableStyle} from "./configureTableStyle";
+import { configureTableStyle } from "./configureTableStyle";
 import mx from "./util";
-import {table, column} from "./cells.js";
-import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
+import { table, column } from "./cells.js";
+import { addActionsForDocs, addDefaultVertex } from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
-import {selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents} from "./userobjects.js";
+import { selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents } from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
 import { updateChart } from "./features/update_chart.js";
 
@@ -95,7 +95,7 @@ function createGraph() {
           return old;
         }
       }
-      
+
     }
   };
 
@@ -146,8 +146,8 @@ function createGraph() {
         }
       }
     },
-    mouseUp: function (sender, me) {},
-    dragEnter: function (evt, state) {},
+    mouseUp: function (sender, me) { },
+    dragEnter: function (evt, state) { },
     dragLeave: function (evt, state) {
       if (this.currentIconSet != null) {
         this.currentIconSet.destroy();
@@ -155,45 +155,43 @@ function createGraph() {
       }
     },
   });
-  
 
-  graph.addEdge = function(edge, parent, source, target, index) //agregar conexiones 
+
+  graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones 
   {
-      // Finds the primary key child of the target table
-      var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
-      let cells = this.model.cells
+    // Finds the primary key child of the target table
+    var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
+    let cells = this.model.cells
 
-      this.model.beginUpdate();
-      try
-      {
-        target.value.isTarget = true
-        target.value.to.push(source.value.id)
-        var col1 = this.model.cloneCell(column);
+    this.model.beginUpdate();
+    try {
+      target.value.isTarget = true
+      target.value.to.push(source.value.id)
+      var col1 = this.model.cloneCell(column);
 
-        col1.value.name = target.value.name + '.' + child.value.name;
-        col1.value.type = child.value.type;
-        col1.value.isForeignKey = true;//setea  como "clave foranea"
-        col1.value.to = target.value.id
+      col1.value.name = target.value.name + '.' + child.value.name;
+      col1.value.type = child.value.type;
+      col1.value.isForeignKey = true;//setea  como "clave foranea"
+      col1.value.to = target.value.id
 
-        this.addCell(col1, source);
-        source = col1;
-        target = child;
+      this.addCell(col1, source);
+      source = col1;
+      target = child;
 
 
-        const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
-        graph.getModel().setValue(edgeAdded, {generatedAttr: col1.id, cardinality: '0..1'});
-        return edgeAdded;
-      }
-      finally
-      {
-        moveContainedSwimlanesToBack(graph, this.model.getParent(source))
-        this.model.endUpdate();
-        updateChart();
-      }
-      return null;
+      const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+      graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
+      return edgeAdded;
+    }
+    finally {
+      moveContainedSwimlanesToBack(graph, this.model.getParent(source))
+      this.model.endUpdate();
+      updateChart();
+    }
+    return null;
   };
 
-  graph.isCellEditable = function(cell) {
+  graph.isCellEditable = function (cell) {
     return false
   }
 
@@ -203,36 +201,31 @@ function createGraph() {
 }
 
 
-(function()
-{
+(function () {
   // Enables rotation handle
   mx.mxVertexHandler.prototype.rotationEnabled = false;
-  
+
   // Enables managing of sizers
   mx.mxVertexHandler.prototype.manageSizers = true;
-  
+
   // Enables live preview
   mx.mxVertexHandler.prototype.livePreview = true;
 
   // One finger pans (no rubberband selection) must start regardless of mouse button
-  mx.mxPanningHandler.prototype.isPanningTrigger = function(me)
-  {
+  mx.mxPanningHandler.prototype.isPanningTrigger = function (me) {
     var evt = me.getEvent();
-    
+
     return (me.getState() == null && !mx.mxEvent.isMouseEvent(evt)) ||
       (mx.mxEvent.isPopupTrigger(evt) && (me.getState() == null ||
-      mx.mxEvent.isControlDown(evt) || mx.mxEvent.isShiftDown(evt)));
+        mx.mxEvent.isControlDown(evt) || mx.mxEvent.isShiftDown(evt)));
   };
 
   // On connect the target is selected and we clone the cell of the preview edge for insert
-  mx.mxConnectionHandler.prototype.selectCells = function(edge, target)
-  {
-    if (target != null)
-    {
+  mx.mxConnectionHandler.prototype.selectCells = function (edge, target) {
+    if (target != null) {
       this.graph.setSelectionCell(target);
     }
-    else
-    {
+    else {
       this.graph.setSelectionCell(edge);
     }
   };
@@ -240,20 +233,19 @@ function createGraph() {
 
 
   // Rounded edge and vertex handles
-  var touchHandle = new mx.mxImage('/assets/images/overlays/add.png', 17, 17);
+  var touchHandle = new mx.mxImage('/assets/images/overlays/handle-main.png', 17, 17);
   mx.mxVertexHandler.prototype.handleImage = touchHandle;
   mx.mxEdgeHandler.prototype.handleImage = touchHandle;
   mx.mxOutline.prototype.sizerImage = touchHandle;
-  
+
   // Pre-fetches touch handle
   new Image().src = touchHandle.src;
 
   // Adds connect icon to selected vertex
-  var connectorSrc = '/assets/images/overlays/add.png';
+  var connectorSrc = '/assets/images/overlays/arrow-right-solid.svg';
 
   var vertexHandlerInit = mx.mxVertexHandler.prototype.init;
-  mx.mxVertexHandler.prototype.init = function()
-  {
+  mx.mxVertexHandler.prototype.init = function () {
     // TODO: Use 4 sizers, move outside of shape
     //this.singleSizer = this.state.width < 30 && this.state.height < 30;
     vertexHandlerInit.apply(this, arguments);
@@ -261,29 +253,26 @@ function createGraph() {
     // Only show connector image on one cell and do not show on containers
     if (this.graph.connectionHandler.isEnabled() &&
       this.graph.isCellConnectable(this.state.cell) &&
-      this.graph.getSelectionCount() == 1)
-    {
+      this.graph.getSelectionCount() == 1) {
       this.connectorImg = mx.mxUtils.createImage(connectorSrc);
       this.connectorImg.style.cursor = 'pointer';
       this.connectorImg.style.width = '16px';
       this.connectorImg.style.height = '16px';
       this.connectorImg.style.position = 'absolute';
-      
-      if (!mx.mxClient.IS_TOUCH)
-      {
+
+      if (!mx.mxClient.IS_TOUCH) {
         this.connectorImg.setAttribute('title', mx.mxResources.get('connect'));
         mx.mxEvent.redirectMouseEvents(this.connectorImg, this.graph, this.state);
       }
 
       // Starts connecting on touch/mouse down
       mx.mxEvent.addGestureListeners(this.connectorImg,
-        mx.mxUtils.bind(this, function(evt)
-        {
+        mx.mxUtils.bind(this, function (evt) {
           this.graph.popupMenuHandler.hideMenu();
           this.graph.stopEditing(false);
-          
+
           var pt = mx.mxUtils.convertPoint(this.graph.container,
-              mx.mxEvent.getClientX(evt), mx.mxEvent.getClientY(evt));
+            mx.mxEvent.getClientX(evt), mx.mxEvent.getClientY(evt));
           this.graph.connectionHandler.start(this.state, pt.x, pt.y);
           this.graph.isMouseDown = true;
           this.graph.isMouseTrigger = mx.mxEvent.isMouseEvent(evt);
@@ -296,73 +285,63 @@ function createGraph() {
 
     this.redrawHandles();
   };
-  
+
   var vertexHandlerHideSizers = mx.mxVertexHandler.prototype.hideSizers;
-  mx.mxVertexHandler.prototype.hideSizers = function()
-  {
+  mx.mxVertexHandler.prototype.hideSizers = function () {
     vertexHandlerHideSizers.apply(this, arguments);
-    
-    if (this.connectorImg != null)
-    {
+
+    if (this.connectorImg != null) {
       this.connectorImg.style.visibility = 'hidden';
     }
   };
-  
+
   var vertexHandlerReset = mx.mxVertexHandler.prototype.reset;
-  mx.mxVertexHandler.prototype.reset = function()
-  {
+  mx.mxVertexHandler.prototype.reset = function () {
     vertexHandlerReset.apply(this, arguments);
-    
-    if (this.connectorImg != null)
-    {
+
+    if (this.connectorImg != null) {
       this.connectorImg.style.visibility = '';
     }
   };
-  
+
   var vertexHandlerRedrawHandles = mx.mxVertexHandler.prototype.redrawHandles;
-  mx.mxVertexHandler.prototype.redrawHandles = function()
-  {
+  mx.mxVertexHandler.prototype.redrawHandles = function () {
     vertexHandlerRedrawHandles.apply(this);
 
-    if (this.state != null && this.connectorImg != null)
-    {
+    if (this.state != null && this.connectorImg != null) {
       var pt = new mx.mxPoint();
       var s = this.state;
-      
+
       // Top right for single-sizer
-      if (mx.mxVertexHandler.prototype.singleSizer)
-      {
+      if (mx.mxVertexHandler.prototype.singleSizer) {
         pt.x = s.x + s.width - this.connectorImg.offsetWidth / 2;
         pt.y = s.y - this.connectorImg.offsetHeight / 2;
       }
-      else
-      {
+      else {
         pt.x = s.x + s.width + mx.mxConstants.HANDLE_SIZE / 2 + 4 + this.connectorImg.offsetWidth / 2;
         pt.y = s.y + s.height / 2;
       }
-      
-      
+
+
       this.connectorImg.style.left = (pt.x - this.connectorImg.offsetWidth / 2 + 8) + 'px';
-      this.connectorImg.style.top = (pt.y - this.connectorImg.offsetHeight / 2 ) + 'px';
+      this.connectorImg.style.top = (pt.y - this.connectorImg.offsetHeight / 2) + 'px';
     }
   };
-  
+
   var vertexHandlerDestroy = mx.mxVertexHandler.prototype.destroy;
-  mx.mxVertexHandler.prototype.destroy = function(sender, me)
-  {
+  mx.mxVertexHandler.prototype.destroy = function (sender, me) {
     vertexHandlerDestroy.apply(this, arguments);
 
-    if (this.connectorImg != null)
-    {
+    if (this.connectorImg != null) {
       this.connectorImg.parentNode.removeChild(this.connectorImg);
       this.connectorImg = null;
     }
   };
-  
+
   // Pre-fetches touch connector
   new Image().src = connectorSrc;
 })();
-  
+
 
 export default createGraph;
 export const container = document.querySelector("#container");
