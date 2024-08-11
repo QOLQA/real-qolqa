@@ -4,8 +4,9 @@ import mx from "./util";
 import {table, column} from "./cells.js";
 import {addActionsForDocs, addDefaultVertex} from "./cells_actions.js";
 import moveContainedSwimlanesToBack from "./swimbottom.js";
-import {selectionChanged, selectionChangedCardinality, selectionChangedForConnections} from "./userobjects.js";
+import {selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents} from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
+import { updateChart } from "./features/update_chart.js";
 
 function createGraph() {
 
@@ -45,12 +46,20 @@ function createGraph() {
   // retorna la etiqueta de la celda
   graph.getLabel = function (cell) {
     if (this.isHtmlLabel(cell)) {
-      // cell.value este sera mi objeto
+      // se ejecuta para obtener la etiqueta de un atributos
       return `${cell.value.name}:\t${cell.value.type}`;
     } else if (this.isSwimlane(cell)) {
-      return cell.value.name;
+      // se ejecuta de los documentos en general anidados y padres
+      const parent = graph.model.getParent(cell);
+      if (parent.value === undefined) {
+        // representacion de documentos padres
+        return cell.value.name;
+      } else {
+        // representacion de documentos anidados
+        return `${cell.value.name} (${cell.value.cardinality})`
+      }
     } else if (cell.isEdge()) {
-      return cell.value;
+      return cell.value.cardinality;
     }
   };
   //reemplaza la propiedad name del valor de la celda con un nuevo valor proporcionado,
@@ -62,7 +71,8 @@ function createGraph() {
         arguments
       );
     } else if (cell.isEdge()) {
-      if (!regex.isValidCardinality(value)) {
+      // if (!regex.isValidCardinality(value)) {
+      if (false) {
         alert('Escriba un formato valido de cardinaliad');
         return cell.value;
       } else {
@@ -145,6 +155,7 @@ function createGraph() {
       }
     },
   });
+  
 
   graph.addEdge = function(edge, parent, source, target, index) //agregar conexiones 
   {
@@ -168,15 +179,23 @@ function createGraph() {
         source = col1;
         target = child;
 
-        return mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+
+        const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+        graph.getModel().setValue(edgeAdded, {generatedAttr: col1.id, cardinality: '0..1'});
+        return edgeAdded;
       }
       finally
       {
         moveContainedSwimlanesToBack(graph, this.model.getParent(source))
         this.model.endUpdate();
+        updateChart();
       }
       return null;
   };
+
+  graph.isCellEditable = function(cell) {
+    return false
+  }
 
   configureTableStyle(graph);
 
@@ -221,7 +240,7 @@ function createGraph() {
 
 
   // Rounded edge and vertex handles
-  var touchHandle = new mx.mxImage('images/handle-main.png', 17, 17);
+  var touchHandle = new mx.mxImage('/assets/images/overlays/add.png', 17, 17);
   mx.mxVertexHandler.prototype.handleImage = touchHandle;
   mx.mxEdgeHandler.prototype.handleImage = touchHandle;
   mx.mxOutline.prototype.sizerImage = touchHandle;
@@ -230,7 +249,7 @@ function createGraph() {
   new Image().src = touchHandle.src;
 
   // Adds connect icon to selected vertex
-  var connectorSrc = 'images/arrow-right-solid-2.svg';
+  var connectorSrc = '/assets/images/overlays/add.png';
 
   var vertexHandlerInit = mx.mxVertexHandler.prototype.init;
   mx.mxVertexHandler.prototype.init = function()
@@ -396,11 +415,13 @@ export class Graph {
             selectionChangedForConnections(this.graph, evt.properties.removed[0])
           }
           else {
-            if (evt.properties.removed[0].parent.style == 'table') {
+            // si no tiene padre, es un documento padre
+            if (evt.properties.removed[0].parent.value === undefined) {
+              selectionChangedForParents(this.graph, evt.properties.removed[0])
+            } else if (evt.properties.removed[0].style === 'table') {
               selectionChangedCardinality(this.graph, evt.properties.removed[0])
-            }
-            else {
-              selectionChanged(this.graph, null);
+            } else {
+              console.log('se selecciono un atributo')
             }
           }
         }
@@ -438,6 +459,8 @@ function modalCreateDoc(graph, evt, prototype, cell) {
     addDefaultVertex(graph, vertex)
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
+
+    updateChart();
   }
 }
 

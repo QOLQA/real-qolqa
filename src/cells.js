@@ -20,6 +20,7 @@ export function Table(name) {
 
 Table.prototype.isTarget = false
 Table.prototype.to = []
+Table.prototype.cardinality = '1..1'
 Table.prototype.clone = function () {
   return mx.mxUtils.clone(this);
 }
