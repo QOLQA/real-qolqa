@@ -1,4 +1,5 @@
 import { updateChart } from "./features/update_chart";
+import { haddleEditSection } from "./features/navbar";
 
 /**
  * Actualiza el panel de propiedades para la cardinalidad.
@@ -6,10 +7,8 @@ import { updateChart } from "./features/update_chart";
  * @param {mxCell} table - Célula seleccionada que representa una tabla.
  */
 export function selectionChangedCardinality(graph, table) {
-  const div = document.querySelector('#properties');
-  if (div) {
-    div.style.display = 'block';
-  }
+  const div = document.querySelector('#edit-section');
+  haddleEditSection();
 
   if (!table) {
     div.innerHTML = '';
@@ -20,7 +19,7 @@ export function selectionChangedCardinality(graph, table) {
   const currentCardinality = table.value.cardinality;
 
   div.innerHTML = `
-  <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
+  <div class="relative p-8 sm:p-12">
     <h3 class="text-center font-bold text-lg">Nested Document Properties</h3>
     <div class="mb-6">
       <label for="TableName" class="text-left">Name</label>
@@ -80,19 +79,16 @@ export function selectionChangedCardinality(graph, table) {
  * @param {mxCell} cell - Célula seleccionada.
  */
 export function selectionChanged(graph, cell) {
-  const propertiesElement = document.querySelector('#properties');
-  if (propertiesElement) {
-    propertiesElement.style.display = 'block';
-  }
+  haddleEditSection();
 
-  const div = document.getElementById('properties');
+  const div = document.getElementById('edit-section');
   div.innerHTML = '';
 
   const type = cell.value.type;
   const name = cell.value.name;
 
   div.innerHTML = `
-  <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
+  <div class="relative p-8 sm:p-12">
     <h3 class="text-center font-bold text-lg">Attribute Properties</h3>
     <div class="mb-6">
       <label for="AttributeName" class="text-left">Name</label>
@@ -156,15 +152,10 @@ export function selectionChanged(graph, cell) {
 export function selectionChangedForConnections(graph, cell)
 //Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.
 {
-  var elemento = document.querySelector('#properties');
+  var elemento = document.querySelector('#edit-section');
+  haddleEditSection();
 
-  // Aplica el estilo CSS
-  if (elemento) {
-    elemento.style.display = 'block';
-  }
-
-
-  var div = document.getElementById('properties');
+  var div = document.getElementById('#edit-section');
   //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
 
   // Clears the DIV the non-DOM way
@@ -173,7 +164,7 @@ export function selectionChangedForConnections(graph, cell)
   const cardinality = cell.value.cardinality;
 
   div.innerHTML = `
-  <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
+  <div class="relative p-8 sm:p-12">
     <h3 class="text-center font-bold text-lg">Relation Properties</h3>
     <div class="mb-6">
       <label for="Cardinality" class="text-left">Cardinality</label>
@@ -198,7 +189,7 @@ export function selectionChangedForConnections(graph, cell)
 
   const update = () => {
     const newCardinality = document.getElementById('Cardinality').value;
-    graph.getModel().setValue(cell, {generatedAttr: cell.value.generatedAttr, cardinality: newCardinality});
+    graph.getModel().setValue(cell, { generatedAttr: cell.value.generatedAttr, cardinality: newCardinality });
     updateChart();
   }
 
@@ -211,10 +202,11 @@ export function selectionChangedForConnections(graph, cell)
  * @param {mxCell} table - Célula seleccionada que representa una tabla.
  */
 export function selectionChangedForParents(graph, table) {
-  const div = document.querySelector('#properties');
-  if (div) {
-    div.style.display = 'block';
-  }
+  const div = document.querySelector('#edit-section');
+  haddleEditSection();
+  // if (div) {
+  //   div.style.display = 'block';
+  // }
 
   if (!table) {
     div.innerHTML = '';
@@ -224,7 +216,7 @@ export function selectionChangedForParents(graph, table) {
   const name = table.value.name;
 
   div.innerHTML = `
-  <div class="bg-white relative rounded-lg p-8 sm:p-12 shadow-lg">
+  <div class="relative p-8 sm:p-12 ">
     <h3 class="text-center font-bold text-lg">Document Properties</h3>
     <div class="mb-6">
       <label for="TableName" class="text-left">Name</label>
