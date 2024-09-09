@@ -21,6 +21,22 @@ export const haddleQuerySection = () => { haddleButtonNavbar("navbar-sections", 
 export const haddleEditSection = () => { haddleButtonNavbar("navbar-sections", "edit-section") }
 export const haddleStatsSection = () => { haddleButtonNavbar("navbar-sections", "stats-section") }
 
+
+
+export const openEditSection = () => {
+  const father = document.getElementById("navbar-sections");
+  const id_section = "edit-section";
+
+  Array.from(father.children).forEach((children) => {
+    if (children.id === id_section) {
+      children.classList.remove('hidden');
+    }
+    else {
+      children.classList.add('hidden');
+    }
+  });
+}
+
 export const haddleNavbar = () => {
   const buttonQuerys = document.getElementById("buttonQuerys");
   const buttonEdit = document.getElementById("buttonEdit");

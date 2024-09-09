@@ -1,5 +1,5 @@
 import { updateChart } from "./features/update_chart";
-import { haddleEditSection } from "./features/navbar";
+import { openEditSection } from "./features/navbar";
 
 /**
  * Actualiza el panel de propiedades para la cardinalidad.
@@ -8,7 +8,7 @@ import { haddleEditSection } from "./features/navbar";
  */
 export function selectionChangedCardinality(graph, table) {
   const div = document.querySelector('#edit-section');
-  haddleEditSection();
+  openEditSection();
 
   if (!table) {
     div.innerHTML = '';
@@ -79,7 +79,7 @@ export function selectionChangedCardinality(graph, table) {
  * @param {mxCell} cell - Célula seleccionada.
  */
 export function selectionChanged(graph, cell) {
-  haddleEditSection();
+  openEditSection();
 
   const div = document.getElementById('edit-section');
   div.innerHTML = '';
@@ -153,7 +153,7 @@ export function selectionChangedForConnections(graph, cell)
 //Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.
 {
   var elemento = document.querySelector('#edit-section');
-  haddleEditSection();
+  openEditSection();
 
   var div = document.getElementById('#edit-section');
   //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
@@ -203,7 +203,7 @@ export function selectionChangedForConnections(graph, cell)
  */
 export function selectionChangedForParents(graph, table) {
   const div = document.querySelector('#edit-section');
-  haddleEditSection();
+  openEditSection();
   // if (div) {
   //   div.style.display = 'block';
   // }
