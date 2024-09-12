@@ -29,8 +29,8 @@
     </header>
 
     <main class="bg-white h-full flex">
-      <aside class="bg-red-600 w-[80px] flex flex-col items-center gap-4">
-        <div class="flex flex-col items-center z-30 h-full w-[80px] gap-4 shadow">
+      <aside class="border w-auto flex">
+        <div class="bg-black flex flex-col items-center z-30 h-full w-[80px] gap-4 shadow">
           <button class="h-[80px] bg-white w-full flex items-center justify-center" id="buttonQuerys">
             <svg class="w-7" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 9H30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -65,28 +65,32 @@
             </svg>
           </button>
         </div>
-        <div class="h-full w-auto hidden" id="navbar-sections">
-          <div class="hidden bg-white h-full md:w-[400px] w-[calc(100vw - 80px)]" id="query-section">
+        <div class="h-full w-auto" id="navbar-sections">
+          <div class="hidden bg-white h-full md:w-[300px] w-[calc(100vw - 80px)] mx-10 my-15" id="query-section">
             <h3>Query Section</h3>
           </div>
-          <div class="hidden bg-white h-full md:w-[400px] w-[calc(100vw - 80px)]" id="edit-section">
+          <div class="hidden bg-white h-full md:w-[300px] w-[calc(100vw - 80px)] mx-10 my-15" id="edit-section">
             <h3>Edit Section</h3>
           </div>
-          <div class="hidden bg-white h-full md:w-[400px] w-[calc(100vw - 80px)]" id="stats-section">
+          <div class="hidden bg-white h-full md:w-[300px] w-[calc(100vw - 80px)] mx-10 my-15" id="stats-section">
             <h3>Stats Section</h3>
           </div>
         </div>
+
+
+
+
       </aside>
-      <div class="h-full w-full">
-        <div class="w-full h-[60px] flex gap-4">
+      <div class="z-10 h-full w-full">
+        <div class="w-full h-[40px] flex gap-4">
           <button id="saveButton" class="fa fa-print w-[40px] text-[20px]"></button>
         </div>
         <div class="w-full text-black relative h-[calc(100%-60px)] w-full">
           <div id="container" class="bg-blue-300 absolute w-full h-full z-10 overflow-auto">
           </div>
-          <div class="absolute left-[calc(100vw_-_410px)] top-[50px] flex flex-col z-30">
-            <div class="border w-[300px] h-[200px] mb-[40px]" id="outlineContainer"></div>
-            <div class="border w-[300px] h-[200px] ">metricas</div>
+          <div class="absolute right-[30px] flex flex-col z-30">
+            <div class="border-2 border-black w-[300px] h-[200px] mb-[40px]" id="outlineContainer"></div>
+            <div class="border-2 border-black w-[300px] h-[200px] ">metricas</div>
           </div>
 
           <div class="absolute border w-[20px] h-[20px] left-[30px] bottom-[60px] z-50">
