@@ -152,10 +152,9 @@ export function selectionChanged(graph, cell) {
 export function selectionChangedForConnections(graph, cell)
 //Se define una función llamada selectionChanged que toma un argumento graph, que se supone que es una instancia del gráfico mxGraph.
 {
-  var elemento = document.querySelector('#edit-section');
   openEditSection();
 
-  var div = document.getElementById('#edit-section');
+  var div = document.getElementById('edit-section');
   //Se obtiene una referencia al elemento HTML con el ID 'properties'. Esto se utiliza para manipular el contenido del panel de propiedades.
 
   // Clears the DIV the non-DOM way

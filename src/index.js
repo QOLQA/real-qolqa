@@ -10,5 +10,3 @@ setupZoomSlider();
 setupKeyboard();
 haddleNavbar();
 
-alert('gaaaa!');
-
