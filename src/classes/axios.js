@@ -24,7 +24,15 @@ export default class Axios extends Api {
     }
 
     async update(id, jsonModel) {
-        const resp = await axios.patch(`${this.endpoint}/${id}`, jsonModel);
+        const resp = await axios.patch(
+            `${this.endpoint}/${id}`,
+            jsonModel, {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                }
+            }
+        );
         // resp se retorna del backend
         return resp.data;
     }

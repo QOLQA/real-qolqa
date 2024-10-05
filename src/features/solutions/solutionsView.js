@@ -14,7 +14,7 @@ export const renderSolutionsView = async(handleNavigation) => {
         const linksContainer = document.getElementById('linkModels');
         solutions.forEach(solution => {
             let linkModel = document.createElement('a');
-            linkModel.setAttribute('href', `/diagrama/${solution.id}`);
+            linkModel.setAttribute('href', `/diagrama/${solution._id}`);
             linkModel.innerText = `Model named: ${solution.name}`;
             linkModel.addEventListener('click', handleNavigation);
 

@@ -39,6 +39,8 @@ export const renderDiagramaView = async(params, router) => {
     await loadHTML('/model.html');
     haddleNavbar();
     initializeQueryPopup();
+
+    const conversor = new LoopConversor();
     
     const renderDiagram = () => {
         const status = selectStateDiagrama(store.getState());
@@ -46,7 +48,6 @@ export const renderDiagramaView = async(params, router) => {
         
         if (status !== 'loaded' && status !== 'failed') {
             if (status === 'idle') {
-                console.log('se llama');
                 const diagrama = selectDiagrama(store.getState());
                 const conversor = new LoopConversor();
                 conversor.fromJsonToGraph(diagrama, myGraph.graph);
@@ -96,16 +97,17 @@ export const renderDiagramaView = async(params, router) => {
     let botonSave = document.getElementById("saveButton");
 
     botonSave.addEventListener('click', () => {
+        console.log('click click')
         const json = conversor.fromGraphToJson(graph);
         const diagrama = selectDiagrama(store.getState());
         store.dispatch(saveDiagrama(
-            params.id,
             {
+                id: params.id,
                 submodels: json.submodels,
                 name: diagrama.name,
                 queries: diagrama.queries,
             },
-        ))
+        ));
     })
 
     let backToIndex = document.getElementById('back-to-index');
