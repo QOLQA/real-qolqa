@@ -7,6 +7,8 @@ import moveContainedSwimlanesToBack from "./swimbottom.js";
 import { selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents } from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
 import { updateChart } from "./features/update_chart.js";
+import { store } from "./app/store.js";
+import { addReferentialRelation } from "./features/matrix/matrixSlice.js";
 
 function createGraph() {
 
@@ -181,12 +183,12 @@ function createGraph() {
 
       const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
       graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
+      console.log('vamos a ver estooo!');
       return edgeAdded;
     }
     finally {
       moveContainedSwimlanesToBack(graph, this.model.getParent(source))
       this.model.endUpdate();
-      updateChart();
     }
     return null;
   };
@@ -439,7 +441,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
 
-    updateChart();
+    updateChart(graph);
   }
 }
 
