@@ -159,7 +159,7 @@ function createGraph() {
   });
 
 
-  graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones 
+  graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones
   {
     // Finds the primary key child of the target table
     var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
@@ -182,16 +182,26 @@ function createGraph() {
       source = col1;
       target = child;
 
-
       const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+      // const edgeAdded = mx.mxGraph.prototype.addEdge.apply(
+      //   this,
+      //   [edge,
+      //   parent,
+      //   source,
+      //   target,]
+      // );
       graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
-      const matrix = selectMatrix(store.getState());
-      if (sourceName in matrix && targetName in matrix) {
-        store.dispatch(addReferentialRelation({
-          source: sourceName,
-          target: targetName,
-        }));
-      }
+      // const matrix = selectMatrix(store.getState())
+      // console.log('existe o no matrix', matrix);
+      // const condition = sourceName in matrix && targetName in matrix &&
+      //   matrix[sourceName][targetName] === '00';
+      // if (condition) {
+      //   console.log('entra o no');
+      //   // store.dispatch(addReferentialRelation({
+      //   //   source: sourceName,
+      //   //   target: targetName,
+      //   // }));
+      // }
       return edgeAdded;
     }
     finally {
@@ -199,6 +209,7 @@ function createGraph() {
       this.model.endUpdate();
       updateChart(graph);
     }
+    // return edgeAdded;
     return null;
   };
 
@@ -294,7 +305,7 @@ function createGraph() {
       this.graph.container.appendChild(this.connectorImg);
     }
 
-    this.redrawHandles();
+    // this.redrawHandles();
   };
 
   var vertexHandlerHideSizers = mx.mxVertexHandler.prototype.hideSizers;

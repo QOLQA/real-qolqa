@@ -25,6 +25,19 @@ function generateMatrix(queries) {
     return matrix;
 }
 
+function addReferentialRelations(matrix, submodels) {
+    const submodelRelations = submodels.map(submodel => submodel.relations);
+    submodelRelations.forEach(relations => {
+        relations.forEach(({source, target}) => {
+            const {name: sourceName} = source;
+            const {name: targetName} = target;
+            if (sourceName in matrix && targetName in matrix) {
+                matrix[sourceName][targetName] = '10';
+            }
+        });
+    });
+}
+
 export const matrixSlice = createSlice({
     name: 'matrix',
     initialState,
@@ -39,11 +52,13 @@ export const matrixSlice = createSlice({
         },
         setParticipant: (state, action) => {
             state.value[action.payload][action.payload] = '11';
-        }
+        },
     },
     extraReducers: builder => {
         builder.addCase(loadDiagrama.fulfilled, (state, action) => {
-            state.value = generateMatrix(action.payload.queries);
+            const matrix = generateMatrix(action.payload.queries);
+            addReferentialRelations(matrix, action.payload.submodels);
+            state.value = matrix;
         });
         builder.addCase(addQuery, (state, action) => {
             const existendCollections = Object.keys(state.value);
@@ -64,23 +79,6 @@ export const matrixSlice = createSlice({
             });
             state.value = newMatrix;
         });
-        builder.addCase(setLoaded, (state) => {
-            const newMatrix = {...state.value};
-            const allCells = Object.values(graph.getModel().cells);
-            const onlyCollections = allCells.filter(cell => graph.isSwimlane(cell));
-            const collectionsInqueries = onlyCollections.filter(cell => cell.value.name in state.value);
-            collectionsInqueries.forEach(col => {
-                newMatrix[col.value.name][col.value.name] = '11';
-            });
-            const nestedCollections = collectionsInqueries.filter(col => {
-                const parent = graph.getModel().getParent(col);
-                return parent.value !== undefined;
-            });
-            nestedCollections.forEach(nestedCol => {
-                const parent = graph.getModel().getParent(nestedCol);
-                newMatrix[parent.value.name][nestedCol.value.name] = '01';
-            });
-        })
     }
 });
 
