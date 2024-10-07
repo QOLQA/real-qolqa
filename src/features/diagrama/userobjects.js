@@ -1,5 +1,5 @@
-import { updateChart } from "./features/update_chart";
-import { openEditSection } from "./features/navbar";
+import { updateChart } from "../update_chart";
+import { openEditSection } from "../navbar";
 
 /**
  * Actualiza el panel de propiedades para la cardinalidad.
