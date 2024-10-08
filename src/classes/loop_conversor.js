@@ -49,9 +49,7 @@ export default class LoopConversor extends ConversorJson {
                                 let cardinality;
                                 for (const edges of cell.edges) {
                                     if (edges.target.id === attribute.value.to && edges.source.id === cell.value.id) {
-                                        cardinality = edges.value.cardinality
-                                        console.log('target', edges.target);
-                                        console.log('source', cell);
+                                        cardinality = edges.value.cardinality;
                                         relaciones.push({
                                             source: {
                                                 id: cell.value.id,
@@ -66,12 +64,6 @@ export default class LoopConversor extends ConversorJson {
                                         break
                                     }
                                 }
-
-                                // relaciones.push({
-                                //     id_source: cell.value.id,
-                                //     id_target: attribute.value.to,
-                                //     cardinality: cardinality,
-                                // })
                             }
                         }
                     }
@@ -79,7 +71,7 @@ export default class LoopConversor extends ConversorJson {
                     // Agrega el documento y la relacion al submodelo correspondiente
                     jsonData.submodels.push({
                         collections: documento,
-                        relations: relaciones.length > 0 ? relaciones : null
+                        relations: relaciones,
                     });
                 }
             }
