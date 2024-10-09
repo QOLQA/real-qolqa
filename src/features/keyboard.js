@@ -26,7 +26,7 @@ export default function setup() {
             if (edges.length > 0) {
                 // Deletes the selected edges
                 graph.removeCells([...edges, ...relatedAttributes]);
-                updateChart();
+                updateChart(graph);
                 // console.log(graph.getModel().cells);
             }
         }

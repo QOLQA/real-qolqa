@@ -181,12 +181,12 @@ function createGraph() {
 
       const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
       graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
+      console.log('vamos a ver estooo!');
       return edgeAdded;
     }
     finally {
       moveContainedSwimlanesToBack(graph, this.model.getParent(source))
       this.model.endUpdate();
-      updateChart();
     }
     return null;
   };
@@ -439,7 +439,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
 
-    updateChart();
+    updateChart(graph);
   }
 }
 

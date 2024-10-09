@@ -32,7 +32,8 @@ export const diagramaSlice = createSlice({
         })
         builder.addCase(loadDiagrama.fulfilled, (state, action) => {
                 state.status = 'idle'
-                state.value = action.payload
+                state.value = {...action.payload}
+                state.value.queries = []
                 state.initialValue = action.payload
         })
         builder.addCase(loadDiagrama.rejected, (state, action) => {
@@ -46,6 +47,9 @@ export const diagramaSlice = createSlice({
         builder.addCase(saveDiagrama.fulfilled, (state, action) => {
             state.value = action.payload;
         })
+        // builder.addCase(sendForm, (state, action) => {
+        //     console.log('vista en diagramaSlice', action.payload.newKey);
+        // })
     }
 })
 
@@ -80,7 +84,7 @@ export const {
 
 export const selectDiagrama = state => state.diagrama.value
 export const selectStateDiagrama = state => state.diagrama.status
-export const selectQueries = state => state.diagrama.value.queries
+// export const selectQueries = state => state.diagrama.value.queries
 const selectDBValue = state => state.diagrama.initialValue
 
 export default diagramaSlice.reducer

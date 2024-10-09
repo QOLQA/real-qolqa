@@ -66,7 +66,7 @@ export function selectionChangedCardinality(graph, table) {
     clone.name = newName;
     clone.cardinality = newCardinality;
     graph.model.setValue(table, clone);
-    updateChart();
+    updateChart(graph);
   }
 
   document.getElementById('TableName').addEventListener('input', update);
@@ -141,11 +141,11 @@ export function selectionChanged(graph, cell) {
 
   document.getElementById('AttributeName').addEventListener('input', () => {
     update('AttributeName', 'name')
-    updateChart();
+    updateChart(graph);
   });
   document.getElementById('Type').addEventListener('input', () => {
     update('Type', 'type');
-    updateChart();
+    updateChart(graph);
   });
 }
 
@@ -189,7 +189,7 @@ export function selectionChangedForConnections(graph, cell)
   const update = () => {
     const newCardinality = document.getElementById('Cardinality').value;
     graph.getModel().setValue(cell, { generatedAttr: cell.value.generatedAttr, cardinality: newCardinality });
-    updateChart();
+    updateChart(graph);
   }
 
   document.getElementById('Cardinality').addEventListener('input', update)
@@ -240,7 +240,7 @@ export function selectionChangedForParents(graph, table) {
     const clone = table.value.clone();
     clone.name = newName;
     graph.getModel().setValue(table, clone);
-    updateChart();
+    updateChart(graph);
   }
 
   document.getElementById('TableName').addEventListener('input', update);

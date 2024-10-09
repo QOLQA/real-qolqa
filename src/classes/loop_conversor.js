@@ -49,16 +49,21 @@ export default class LoopConversor extends ConversorJson {
                                 let cardinality;
                                 for (const edges of cell.edges) {
                                     if (edges.target.id === attribute.value.to && edges.source.id === cell.value.id) {
-                                        cardinality = edges.value.cardinality
+                                        cardinality = edges.value.cardinality;
+                                        relaciones.push({
+                                            source: {
+                                                id: cell.value.id,
+                                                name: cell.value.name,
+                                            },
+                                            target: {
+                                                id: attribute.value.to,
+                                                name: edges.target.value.name,
+                                            },
+                                            cardinality: cardinality,
+                                        })
                                         break
                                     }
                                 }
-
-                                relaciones.push({
-                                    id_source: cell.value.id,
-                                    id_target: attribute.value.to,
-                                    cardinality: cardinality,
-                                })
                             }
                         }
                     }
@@ -66,7 +71,7 @@ export default class LoopConversor extends ConversorJson {
                     // Agrega el documento y la relacion al submodelo correspondiente
                     jsonData.submodels.push({
                         collections: documento,
-                        relations: relaciones.length > 0 ? relaciones : null
+                        relations: relaciones,
                     });
                 }
             }
@@ -95,7 +100,9 @@ export default class LoopConversor extends ConversorJson {
             collections.forEach(collection => processDocument(collection, graph, prototype, counter++));
             if (relations !== null) {
                 var parent = graph.getDefaultParent();
-                for (const { id_source, id_target, cardinality } of relations) {
+                for (const { source, target, cardinality } of relations) {
+                    const { id: id_source, name:  sourceName } = source;
+                    const { id: id_target, name:  targetName } = target;
                     const sourceVertex = model.cells[id_source]
                     const targetVertex = model.cells[id_target]
                     const edge = new mx.mxCell()

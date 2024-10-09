@@ -8,6 +8,7 @@ import moveContainedSwimlanesToBack from "./swimbottom";
 import { selectionChanged, selectionChangedCardinality } from "./userobjects";
 import mx from "./util";
 import { updateChart } from "./features/update_chart";
+import { store } from "./app/store";
 
 function getNeighbors(cell, graph) {
   const neighbors = []
@@ -144,7 +145,7 @@ function createConfirmationDialog(graph, cellToRemove, evt2) {
     confirmButton.addEventListener('click', () => {
         document.body.removeChild(dialog); // Eliminar el diálogo
         removeRelation(graph, cellToRemove); // Ejecutar la lógica de eliminación
-        updateChart();
+        updateChart(graph);
     });
 
     // Mostrar el diálogo
@@ -331,7 +332,7 @@ export class AddPropAction extends Action {
       // Función para procesar los datos cuando se hace clic en el botón
       procesarBoton.addEventListener('click', () => {
         addProp(this.graph)
-        updateChart();
+        updateChart(this.graph);
       });
     });
   }
@@ -378,7 +379,20 @@ export class NestDocumentAction extends Action {
           this.graph.importCells([vertex], 0, 0, evt2.properties.cell)
         );
 
-        updateChart();
+        const sourceName = evt2.properties.cell.value.name;
+        const targetName = vertex.value.name;
+        const matrix = selectMatrix(store.getState());
+        console.log({sourceName, targetName});
+        if (targetName in matrix) {
+          store.dispatch(setParticipant(targetName));
+          if (sourceName in matrix) {
+            store.dispatch(addNestedRelation({
+              source: sourceName,
+              target: targetName,
+            }));
+          }
+        }
+        updateChart(this.graph);
       }
     });
   }

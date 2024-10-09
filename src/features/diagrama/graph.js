@@ -7,6 +7,7 @@ import moveContainedSwimlanesToBack from "./swimbottom.js";
 import { selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents } from "./userobjects.js";
 import { SimpleRegex } from "../../classes/simple_regex.js";
 import { updateChart } from "../update_chart.js";
+import { store } from "../../app/store.js";
 
 function createGraph() {
 
@@ -157,14 +158,16 @@ function createGraph() {
   });
 
 
-  graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones 
+  graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones
   {
     // Finds the primary key child of the target table
     var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
-    let cells = this.model.cells
 
     this.model.beginUpdate();
     try {
+      const targetName = target.value.name;
+      const sourceName = source.value.name;
+
       target.value.isTarget = true
       target.value.to.push(source.value.id)
       var col1 = this.model.cloneCell(column);
@@ -178,16 +181,34 @@ function createGraph() {
       source = col1;
       target = child;
 
-
       const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+      // const edgeAdded = mx.mxGraph.prototype.addEdge.apply(
+      //   this,
+      //   [edge,
+      //   parent,
+      //   source,
+      //   target,]
+      // );
       graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
+      // const matrix = selectMatrix(store.getState())
+      // console.log('existe o no matrix', matrix);
+      // const condition = sourceName in matrix && targetName in matrix &&
+      //   matrix[sourceName][targetName] === '00';
+      // if (condition) {
+      //   console.log('entra o no');
+      //   // store.dispatch(addReferentialRelation({
+      //   //   source: sourceName,
+      //   //   target: targetName,
+      //   // }));
+      // }
       return edgeAdded;
     }
     finally {
       moveContainedSwimlanesToBack(graph, this.model.getParent(source))
       this.model.endUpdate();
-      updateChart();
+      updateChart(graph);
     }
+    // return edgeAdded;
     return null;
   };
 
@@ -283,7 +304,7 @@ function createGraph() {
       this.graph.container.appendChild(this.connectorImg);
     }
 
-    this.redrawHandles();
+    // this.redrawHandles();
   };
 
   var vertexHandlerHideSizers = mx.mxVertexHandler.prototype.hideSizers;
@@ -425,8 +446,9 @@ export function createDoc(graph, prototype, name, pt) {
 
 function modalCreateDoc(graph, evt, prototype, cell) {
   var name = mx.mxUtils.prompt("Enter name for new document");
+  name = name.trim();
 
-  if (name != null && name.trim() !== "") {
+  if (name != null && name !== "") {
     let pt = graph.getPointForEvent(evt);
     let vertex = createDoc(graph, prototype, name, pt);
     vertex.value.id = uuidv4();
@@ -439,7 +461,12 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
 
-    updateChart();
+    const matrix = selectMatrix(store.getState());
+    if (name in matrix) {
+      store.dispatch(setParticipant(name));
+    }
+
+    updateChart(graph);
   }
 }
 
