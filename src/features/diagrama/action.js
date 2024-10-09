@@ -8,7 +8,6 @@ import moveContainedSwimlanesToBack from "./swimbottom";
 import { selectionChanged, selectionChangedCardinality } from "./userobjects";
 import mx from "../../util";
 import { updateChart } from "../update_chart";
-import { addNestedRelation, selectMatrix, setParticipant } from "../matrix/matrixSlice";
 import { store } from "../../app/store";
 
 function getNeighbors(cell, graph) {

@@ -8,7 +8,6 @@ import { selectionChanged, selectionChangedCardinality, selectionChangedForConne
 import { SimpleRegex } from "../../classes/simple_regex.js";
 import { updateChart } from "../update_chart.js";
 import { store } from "../../app/store.js";
-import { addReferentialRelation, selectMatrix, setParticipant } from "../matrix/matrixSlice.js";
 
 function createGraph() {
 

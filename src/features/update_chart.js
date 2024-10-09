@@ -1,5 +1,5 @@
 import { store } from "../app/store";
-import { selectQueries } from "./diagrama/diagramaSlice";
+// import { selectQueries } from "./diagrama/diagramaSlice";
 
 export function updateChart(graph) {
     // // generate a matrix based on queries

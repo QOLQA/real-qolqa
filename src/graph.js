@@ -7,8 +7,6 @@ import moveContainedSwimlanesToBack from "./swimbottom.js";
 import { selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents } from "./userobjects.js";
 import { SimpleRegex } from "./classes/simple_regex.js";
 import { updateChart } from "./features/update_chart.js";
-import { store } from "./app/store.js";
-import { addReferentialRelation } from "./features/matrix/matrixSlice.js";
 
 function createGraph() {
 
