@@ -7,7 +7,9 @@ import moveContainedSwimlanesToBack from "./swimbottom.js";
 import { selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents } from "./userobjects.js";
 import { SimpleRegex } from "../../classes/simple_regex.js";
 import { updateChart } from "../update_chart.js";
+import { updateMatrix } from "../queries/queries-slice.js";
 import { store } from "../../app/store.js";
+import { selectStateDiagrama } from "./diagramaSlice.js";
 
 function createGraph() {
 
@@ -182,31 +184,13 @@ function createGraph() {
       target = child;
 
       const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
-      // const edgeAdded = mx.mxGraph.prototype.addEdge.apply(
-      //   this,
-      //   [edge,
-      //   parent,
-      //   source,
-      //   target,]
-      // );
       graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
-      // const matrix = selectMatrix(store.getState())
-      // console.log('existe o no matrix', matrix);
-      // const condition = sourceName in matrix && targetName in matrix &&
-      //   matrix[sourceName][targetName] === '00';
-      // if (condition) {
-      //   console.log('entra o no');
-      //   // store.dispatch(addReferentialRelation({
-      //   //   source: sourceName,
-      //   //   target: targetName,
-      //   // }));
-      // }
       return edgeAdded;
     }
     finally {
       moveContainedSwimlanesToBack(graph, this.model.getParent(source))
       this.model.endUpdate();
-      updateChart(graph);
+      // store.dispatch(updateMatrix());
     }
     // return edgeAdded;
     return null;
@@ -428,6 +412,32 @@ export class Graph {
       }
     )
   }
+
+  getCollections() {
+    return Object.values(this.graph.getModel().cells).filter(
+      cell => this.graph.isSwimlane(cell)
+    );
+  }
+
+  getReferentialRelations() {
+    return Object.values(this.graph.getModel().cells).filter(
+      cell => cell.isEdge()
+    );
+  }
+
+  getNestedRelations() {
+    const nestedCols = Object.values(this.graph.getModel().cells).filter(
+      cell => {
+        const parent = this.graph.getModel().getParent(cell);
+        return this.graph.isSwimlane(cell) && parent.value !== undefined;
+      }
+    );
+
+    return nestedCols.map(nestedCell => ({
+      parent: this.graph.getModel().getParent(nestedCell),
+      child: nestedCell,
+    }));
+  }
 }
 
 export function createDoc(graph, prototype, name, pt) {
@@ -461,12 +471,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
 
-    const matrix = selectMatrix(store.getState());
-    if (name in matrix) {
-      store.dispatch(setParticipant(name));
-    }
-
-    updateChart(graph);
+    store.dispatch(updateMatrix());
   }
 }
 

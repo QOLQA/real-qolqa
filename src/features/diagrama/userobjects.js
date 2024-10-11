@@ -1,5 +1,7 @@
 import { updateChart } from "../update_chart";
 import { openEditSection } from "../navbar";
+import { store } from "../../app/store";
+import { updateMatrix } from "../queries/queries-slice";
 
 /**
  * Actualiza el panel de propiedades para la cardinalidad.
@@ -66,11 +68,21 @@ export function selectionChangedCardinality(graph, table) {
     clone.name = newName;
     clone.cardinality = newCardinality;
     graph.model.setValue(table, clone);
-    updateChart(graph);
   }
 
-  document.getElementById('TableName').addEventListener('input', update);
   document.getElementById('Cardinality').addEventListener('input', update);
+  let typingTimer;
+  const doneTypingInterval = 1500;
+
+  const doneTyping = () => {
+    store.dispatch(updateMatrix());
+  };
+
+  document.getElementById('TableName').addEventListener('input', () => {
+    clearTimeout(typingTimer);
+    update();
+    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+  });
 }
 
 /**
@@ -240,8 +252,18 @@ export function selectionChangedForParents(graph, table) {
     const clone = table.value.clone();
     clone.name = newName;
     graph.getModel().setValue(table, clone);
-    updateChart(graph);
   }
 
-  document.getElementById('TableName').addEventListener('input', update);
+  let typingTimer;
+  const doneTypingInterval = 1500;
+
+  const doneTyping = () => {
+    store.dispatch(updateMatrix());
+  };
+
+  document.getElementById('TableName').addEventListener('input', () => {
+    clearTimeout(typingTimer);
+    update();
+    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+  });
 }
