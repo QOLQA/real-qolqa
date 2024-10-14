@@ -7,7 +7,9 @@ import moveContainedSwimlanesToBack from "./swimbottom.js";
 import { selectionChanged, selectionChangedCardinality, selectionChangedForConnections, selectionChangedForParents } from "./userobjects.js";
 import { SimpleRegex } from "../../classes/simple_regex.js";
 import { updateChart } from "../update_chart.js";
+import { updateMatrix } from "../queries/queries-slice.js";
 import { store } from "../../app/store.js";
+import { selectStateDiagrama } from "./diagramaSlice.js";
 
 function createGraph() {
 
@@ -206,7 +208,7 @@ function createGraph() {
     finally {
       moveContainedSwimlanesToBack(graph, this.model.getParent(source))
       this.model.endUpdate();
-      updateChart(graph);
+      // store.dispatch(updateMatrix());
     }
     // return edgeAdded;
     return null;
@@ -428,6 +430,32 @@ export class Graph {
       }
     )
   }
+
+  getCollections() {
+    return Object.values(this.graph.getModel().cells).filter(
+      cell => this.graph.isSwimlane(cell)
+    );
+  }
+
+  getReferentialRelations() {
+    return Object.values(this.graph.getModel().cells).filter(
+      cell => cell.isEdge()
+    );
+  }
+
+  getNestedRelations() {
+    const nestedCols = Object.values(this.graph.getModel().cells).filter(
+      cell => {
+        const parent = this.graph.getModel().getParent(cell);
+        return this.graph.isSwimlane(cell) && parent.value !== undefined;
+      }
+    );
+
+    return nestedCols.map(nestedCell => ({
+      parent: this.graph.getModel().getParent(nestedCell),
+      child: nestedCell,
+    }));
+  }
 }
 
 export function createDoc(graph, prototype, name, pt) {
@@ -461,12 +489,7 @@ function modalCreateDoc(graph, evt, prototype, cell) {
 
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
 
-    const matrix = selectMatrix(store.getState());
-    if (name in matrix) {
-      store.dispatch(setParticipant(name));
-    }
-
-    updateChart(graph);
+    store.dispatch(updateMatrix());
   }
 }
 

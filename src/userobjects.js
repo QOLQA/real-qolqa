@@ -66,11 +66,22 @@ export function selectionChangedCardinality(graph, table) {
     clone.name = newName;
     clone.cardinality = newCardinality;
     graph.model.setValue(table, clone);
-    updateChart(graph);
   }
 
-  document.getElementById('TableName').addEventListener('input', update);
   document.getElementById('Cardinality').addEventListener('input', update);
+
+  let typingTimer;
+  const doneTypingInterval = 1500;
+
+  const doneTyping = () => {
+    store.dispatch(updateMatrix());
+  };
+
+  document.getElementById('TableName').addEventListener('input', () => {
+    clearTimeout(typingTimer);
+    update();
+    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+  });
 }
 
 /**
@@ -243,5 +254,16 @@ export function selectionChangedForParents(graph, table) {
     updateChart(graph);
   }
 
-  document.getElementById('TableName').addEventListener('input', update);
+  let typingTimer;
+  const doneTypingInterval = 1500;
+
+  const doneTyping = () => {
+    store.dispatch(updateMatrix());
+  };
+
+  document.getElementById('TableName').addEventListener('input', () => {
+    clearTimeout(typingTimer);
+    update();
+    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+  });
 }

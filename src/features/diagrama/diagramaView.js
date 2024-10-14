@@ -6,7 +6,9 @@ import createLayout from "./layout";
 import mx from "../../util";
 import { haddleNavbar } from "../navbar";
 import LoopConversor from "../../classes/loop_conversor";
-import { changeStep, selectQueries, selectQueryForm, onSubmitQueryForm, toggleVisibility, deleteQuery } from "../queries/queries-slice";
+import { changeStep, selectQueries, selectQueryForm, onSubmitQueryForm, toggleVisibility, deleteQuery, selectCompletitudMetric, updateMatrix } from "../queries/queries-slice";
+import moveContainedSwimlanesToBack from "./swimbottom";
+import { column } from "./cells";
 
 function generateQueryHTML(query, index) {
     const div = document.createElement('div');
@@ -89,6 +91,8 @@ export const renderDiagramaView = async(params, router) => {
     const fullQueryInput = document.getElementById('query');
     const wordsButtons = document.getElementById('words-buttons');
     const selectedWordsInput = document.getElementById('selected-words');
+    // metric completitud
+    const completitudContainer = document.getElementById('content-completitud');
 
     openPopupButton.addEventListener('click', () => {
         store.dispatch(toggleVisibility());
@@ -120,18 +124,11 @@ export const renderDiagramaView = async(params, router) => {
             full_query: fullQueryInput.value,
             collections: collectionNames,
         }));
-        // store.dispatch(sendForm({
-        //     queryData: {
-        //         full_query: fullQueryInput.value,
-        //         collections: collectionNames,
-        //     },
-        //     modification: '',
-        // }));
     })
 
+    // Query Form Function
     const selectedWords = []
 
-    // Query Form Function
     function getWords(sentence) {
         const words = sentence.split(/\s+/)
         return words.filter(p => p !== '')
@@ -175,8 +172,74 @@ export const renderDiagramaView = async(params, router) => {
                 store.dispatch(setLoaded());
             }
         } else if (status === 'loaded') {
+            graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones
+            {
+                // Finds the primary key child of the target table
+                var child = this.model.getChildAt(target, 0); //por defetco agarra el primer atributo
+
+                this.model.beginUpdate();
+                try {
+                    const targetName = target.value.name;
+                    const sourceName = source.value.name;
+
+                    target.value.isTarget = true
+                    target.value.to.push(source.value.id)
+                    var col1 = this.model.cloneCell(column);
+
+                    col1.value.name = target.value.name + '.' + child.value.name;
+                    col1.value.type = child.value.type;
+                    col1.value.isForeignKey = true;//setea  como "clave foranea"
+                    col1.value.to = target.value.id
+
+                    this.addCell(col1, source);
+                    source = col1;
+                    target = child;
+
+                    const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
+                    graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
+                    return edgeAdded;
+                }
+                finally {
+                    moveContainedSwimlanesToBack(graph, this.model.getParent(source))
+                    this.model.endUpdate();
+                    store.dispatch(updateMatrix());
+                }
+                // return edgeAdded;
+                return null;
+            };
             const queries = selectQueries(store.getState());
             showQueries(queries);
+            const completitudValue = selectCompletitudMetric(store.getState());
+            completitudContainer.innerHTML = `Se cubrieron las consultas de la aplicacion en un ${completitudValue}/1`;
+        }
+
+        // render function for query form
+        const queryForm = selectQueryForm(store.getState());
+        stepTwoForm.dataset.customData = queryForm.toEdit;
+        if (queryForm.open) {
+            // show query popup
+            queryPopup.classList.replace('hidden', 'flex');
+            queryPopup.classList.add('items-center', 'justify-center');
+            // stepper one with fullQuery
+            if (queryForm.step === 1) {
+                stepTwoContainer.classList.replace('block', 'hidden');
+                stepOneForm.classList.replace('hidden', 'block');
+                fullQueryInput.value = queryForm.fullQuery;
+            } else if (queryForm.step === 2) {
+                // show form for step two
+                stepOneForm.classList.replace('block', 'hidden');
+                stepTwoContainer.classList.replace('hidden', 'block');
+                const words = getWords(queryForm.fullQuery);
+                wordsButtons.innerHTML = '';
+                for (let word of words) {
+                    let wordButton = createWordButton(word);
+                    wordsButtons.appendChild(wordButton);
+                }
+            }
+        } else {
+            // hide query popup
+            queryPopup.classList.replace('flex', 'hidden');
+            queryPopup.classList.remove('items-center', 'justify-center');
         }
 
         // render function for query form

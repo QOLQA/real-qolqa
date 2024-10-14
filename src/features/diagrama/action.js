@@ -9,6 +9,7 @@ import { selectionChanged, selectionChangedCardinality } from "./userobjects";
 import mx from "../../util";
 import { updateChart } from "../update_chart";
 import { store } from "../../app/store";
+import { selectMatrix } from "../queries/queries-slice";
 
 function getNeighbors(cell, graph) {
   const neighbors = []
@@ -145,14 +146,26 @@ function createConfirmationDialog(graph, cellToRemove, evt2) {
     confirmButton.addEventListener('click', () => {
         document.body.removeChild(dialog); // Eliminar el diálogo
         removeRelation(graph, cellToRemove); // Ejecutar la lógica de eliminación
-        updateChart(graph);
     });
 
     // Mostrar el diálogo
     dialog.classList.replace('hidden', 'flex');
 }
 
+const eliminateCollectionFromStore = (cell, graph, matrix) => {
+  if (cell.value.name in matrix) {
+    store.dispatch(deleteCollection(cell.value.name));
+  }
+  const childrens = graph.getModel().getChildren(cell);
+  const onlyCols = childrens.filter(child => graph.isSwimlane(child));
+  if (onlyCols.length === 0) return;
+  onlyCols.forEach(col => {
+    eliminateCollectionFromStore(col, graph, matrix);
+  });
+}
+
 const removeRelation = (graph, cellToRemove) => {
+  const matrix = selectMatrix(store.getState());
   // let cellToRemove = evt2.properties.cell; //celda a remover 
   graph.clearSelection()
   graph.getModel().beginUpdate()
@@ -161,6 +174,7 @@ const removeRelation = (graph, cellToRemove) => {
     if (neighbors.length === 0) {
       // cell to remove don't have any relations
       const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
+      // eliminateCollectionFromStore(r[0], graph, matrix);
     } else {
       // remove incoming relations
       const incoming = getIncomingRelations(cellToRemove, graph)
@@ -384,7 +398,6 @@ export class NestDocumentAction extends Action {
         const sourceName = evt2.properties.cell.value.name;
         const targetName = vertex.value.name;
         const matrix = selectMatrix(store.getState());
-        console.log({sourceName, targetName});
         if (targetName in matrix) {
           store.dispatch(setParticipant(targetName));
           if (sourceName in matrix) {
@@ -394,7 +407,6 @@ export class NestDocumentAction extends Action {
             }));
           }
         }
-        updateChart(this.graph);
       }
     });
   }
