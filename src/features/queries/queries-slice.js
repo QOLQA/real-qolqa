@@ -266,7 +266,7 @@ const queryFormSlice = createSlice({
                     }
                 });
                 // calc metric completude
-                state.metric = verificarQueries(state.queries, state.matrix);                
+                state.metric = verificarQueries(state.queries, state.matrix);
             }
             // close and reset form state
             state.step = 1;
