@@ -14,9 +14,15 @@ const structuralMetricsSlice = createSlice({
     name: 'structuralMetrics',
     initialState,
     reducers: {
-        updateStructuralMetrics: (state, action) => {
-            console.log('update my metrics');
+        updateCountRelations: (state, action) => {
+
         },
+        updateCountAtts: (state, action) => {
+
+        },
+        updateCountCols: (state, action) => {
+
+        }
     },
     extraReducers: builder => {
         // builder.addCase(setLoaded, (state, action) => {
@@ -49,7 +55,9 @@ const structuralMetricsSlice = createSlice({
 });
 
 export const {
-    updateStructuralMetrics,
+    updateCountAtts,
+    updateCountCols,
+    updateCountRelations,
 } = structuralMetricsSlice.actions;
 
 export default structuralMetricsSlice.reducer;
