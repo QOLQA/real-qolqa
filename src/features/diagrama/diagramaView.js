@@ -241,35 +241,6 @@ export const renderDiagramaView = async(params, router) => {
             queryPopup.classList.replace('flex', 'hidden');
             queryPopup.classList.remove('items-center', 'justify-center');
         }
-
-        // render function for query form
-        const queryForm = selectQueryForm(store.getState());
-        stepTwoForm.dataset.customData = queryForm.toEdit;
-        if (queryForm.open) {
-            // show query popup
-            queryPopup.classList.replace('hidden', 'flex');
-            queryPopup.classList.add('items-center', 'justify-center');
-            // stepper one with fullQuery
-            if (queryForm.step === 1) {
-                stepTwoContainer.classList.replace('block', 'hidden');
-                stepOneForm.classList.replace('hidden', 'block');
-                fullQueryInput.value = queryForm.fullQuery;
-            } else if (queryForm.step === 2) {
-                // show form for step two
-                stepOneForm.classList.replace('block', 'hidden');
-                stepTwoContainer.classList.replace('hidden', 'block');
-                const words = getWords(queryForm.fullQuery);
-                wordsButtons.innerHTML = '';
-                for (let word of words) {
-                    let wordButton = createWordButton(word);
-                    wordsButtons.appendChild(wordButton);
-                }
-            }
-        } else {
-            // hide query popup
-            queryPopup.classList.replace('flex', 'hidden');
-            queryPopup.classList.remove('items-center', 'justify-center');
-        }
     }
 
     unsubscribe.value = store.subscribe(renderDiagram);
