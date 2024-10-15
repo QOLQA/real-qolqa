@@ -10,6 +10,7 @@ import mx from "./util";
 import { updateChart } from "./features/update_chart";
 import { store } from "./app/store";
 import { selectMatrix, updateMatrix } from "./features/queries/queries-slice";
+import { updateStructuralMetrics } from "./features/structural-metrics/structural-metrics-slice";
 
 function getNeighbors(cell, graph) {
   const neighbors = []
@@ -206,6 +207,7 @@ const removeRelation = (graph, cellToRemove) => {
     const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
   }
   store.dispatch(updateMatrix());
+  store.dispatch(updateStructuralMetrics());
   graph.getModel().endUpdate()
 }
 
@@ -399,6 +401,7 @@ export class NestDocumentAction extends Action {
         // const targetName = vertex.value.name;
         // const matrix = selectMatrix(store.getState());
         store.dispatch(updateMatrix());
+        store.dispatch(updateStructuralMetrics());
       }
     });
   }
