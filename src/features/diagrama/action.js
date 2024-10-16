@@ -9,7 +9,8 @@ import { selectionChanged, selectionChangedCardinality } from "./userobjects";
 import mx from "../../util";
 import { updateChart } from "../update_chart";
 import { store } from "../../app/store";
-import { selectMatrix } from "../queries/queries-slice";
+import { selectMatrix, updateMatrix } from "../queries/queries-slice";
+import { updateCountAtts, updateCountRelations, updateRedundance } from "../../features/structural-metrics/structural-metrics-slice";
 
 function getNeighbors(cell, graph) {
   const neighbors = []
@@ -169,12 +170,13 @@ const removeRelation = (graph, cellToRemove) => {
   // let cellToRemove = evt2.properties.cell; //celda a remover 
   graph.clearSelection()
   graph.getModel().beginUpdate()
+  // TODO: remove the next line
+  // eliminateCollectionFromStore(cellToRemove, graph, matrix);
   if (cellToRemove.style === 'table') {
     const neighbors = getNeighbors(cellToRemove, graph)
     if (neighbors.length === 0) {
       // cell to remove don't have any relations
       const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
-      // eliminateCollectionFromStore(r[0], graph, matrix);
     } else {
       // remove incoming relations
       const incoming = getIncomingRelations(cellToRemove, graph)
@@ -204,6 +206,10 @@ const removeRelation = (graph, cellToRemove) => {
   } else {
     const r = graph.removeCells([cellToRemove]) //evt2.properties.cell: tabla actual
   }
+  store.dispatch(updateMatrix());
+  store.dispatch(updateCountAtts());
+  store.dispatch(updateCountRelations());
+  store.dispatch(updateRedundance());
   graph.getModel().endUpdate()
 }
 
@@ -340,14 +346,13 @@ export class AddPropAction extends Action {
           }
         }
         // Cerrar el modal cuando se hace clic en el botón
-        var background = document.getElementById('background-add-property');
-        background.innerHTML = '';
         // wnd.destroy();
       }
 
       // Función para procesar los datos cuando se hace clic en el botón
       procesarBoton.addEventListener('click', () => {
-        addProp(this.graph);
+        addProp(this.graph)
+        tableContainer.remove();
         updateChart(this.graph);
       });
     });
@@ -395,18 +400,14 @@ export class NestDocumentAction extends Action {
           this.graph.importCells([vertex], 0, 0, evt2.properties.cell)
         );
 
-        const sourceName = evt2.properties.cell.value.name;
-        const targetName = vertex.value.name;
-        const matrix = selectMatrix(store.getState());
-        if (targetName in matrix) {
-          store.dispatch(setParticipant(targetName));
-          if (sourceName in matrix) {
-            store.dispatch(addNestedRelation({
-              source: sourceName,
-              target: targetName,
-            }));
-          }
-        }
+        // const sourceName = evt2.properties.cell.value.name;
+        // const targetName = vertex.value.name;
+        // const matrix = selectMatrix(store.getState());
+        store.dispatch(updateMatrix());
+        store.dispatch(updateCountAtts());
+        store.dispatch(updateCountRelations());
+        store.dispatch(updateRedundance());
+        // store.dispatch(updateStructuralMetrics());
       }
     });
   }
@@ -426,6 +427,7 @@ export class EditAction extends Action {
         let selectElement = document.getElementById('tipoValueTable');
         selectElement.value = evt2.properties.cell.value.type;
       }
+      store.dispatch(updateMatrix());
     });
   }
 }
