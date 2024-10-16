@@ -1,10 +1,10 @@
-import { column, table } from "../cells";
-import { addActionsForDocs, addDefaultVertex, addActionsForNestedDocs } from "../cells_actions";
-import { createDoc } from "../graph";
-import { createDataOverlay } from "../helpers";
-import { overlayForDelete, overlayForEdit } from "../overlays";
+import { column, table } from "../features/diagrama/cells";
+import { addActionsForDocs, addDefaultVertex, addActionsForNestedDocs } from "../features/diagrama/cells_actions";
+import { createDoc } from "../features/diagrama/graph";
+import { createDataOverlay } from "../features/diagrama/helpers";
+import { overlayForDelete, overlayForEdit } from "../features/diagrama/overlays";
 import ConversorJson from "../services/coversor_json";
-import moveContainedSwimlanesToBack from "../swimbottom";
+import moveContainedSwimlanesToBack from "../features/diagrama/swimbottom";
 import mx from "../util";
 
 export default class LoopConversor extends ConversorJson {
