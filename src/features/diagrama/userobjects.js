@@ -2,6 +2,7 @@ import { updateChart } from "../update_chart";
 import { openEditSection } from "../navbar";
 import { store } from "../../app/store";
 import { updateMatrix } from "../queries/queries-slice";
+import { updateRedundance } from "../structural-metrics/structural-metrics-slice";
 
 /**
  * Actualiza el panel de propiedades para la cardinalidad.
@@ -76,6 +77,7 @@ export function selectionChangedCardinality(graph, table) {
 
   const doneTyping = () => {
     store.dispatch(updateMatrix());
+    store.dispatch(updateRedundance());
   };
 
   document.getElementById('TableName').addEventListener('input', () => {
@@ -259,6 +261,7 @@ export function selectionChangedForParents(graph, table) {
 
   const doneTyping = () => {
     store.dispatch(updateMatrix());
+    store.dispatch(updateRedundance());
   };
 
   document.getElementById('TableName').addEventListener('input', () => {

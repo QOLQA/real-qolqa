@@ -106,13 +106,13 @@ const structuralMetricsSlice = createSlice({
             state.redundance = calcRedundanceValue(myGraph.graph);
         },
         updateCountRelations: (state, action) => {            
-            // state.relationsCalc = calcRelationsValue(myGraph.graph);
+            state.relationsCalc = calcRelationsValue(myGraph.graph);
         },
         updateCountAtts: (state, action) => {
-            // state.attributesCalc = calcAttributesValue(myGraph.graph);
+            state.attributesCalc = calcAttributesValue(myGraph.graph);
         },
-        updateCountCols: (state, action) => {
-            // state.redundance = calcRedundanceValue(myGraph.graph);
+        updateRedundance: (state, action) => {
+            state.redundance = calcRedundanceValue(myGraph.graph);
         },
     },
     extraReducers: builder => {
@@ -126,7 +126,7 @@ const structuralMetricsSlice = createSlice({
 
 export const {
     updateCountAtts,
-    updateCountCols,
+    updateRedundance,
     updateCountRelations,
     firstCalcStructuralMetrics,
 } = structuralMetricsSlice.actions;
