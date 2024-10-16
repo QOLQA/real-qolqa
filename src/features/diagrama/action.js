@@ -353,7 +353,9 @@ export class AddPropAction extends Action {
       procesarBoton.addEventListener('click', () => {
         addProp(this.graph)
         tableContainer.remove();
-        updateChart(this.graph);
+        var background = document.getElementById('background-add-property');
+        background.classList.replace('flex', 'hidden');
+        store.dispatch(updateCountAtts());
       });
     });
   }
