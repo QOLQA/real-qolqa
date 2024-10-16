@@ -1,6 +1,8 @@
-import { graph } from "../graph";
+import { store } from "../app/store";
 import mx from "../util";
-import { updateChart } from "./update_chart";
+import { graph } from "./diagrama/graph";
+import { updateMatrix } from "./queries/queries-slice";
+import { updateCountRelations } from "./structural-metrics/structural-metrics-slice";
 
 export default function setup() {
     const keyhandler = new mx.mxKeyHandler(graph);
@@ -26,8 +28,8 @@ export default function setup() {
             if (edges.length > 0) {
                 // Deletes the selected edges
                 graph.removeCells([...edges, ...relatedAttributes]);
-                updateChart(graph);
-                // console.log(graph.getModel().cells);
+                store.dispatch(updateMatrix());
+                store.dispatch(updateCountRelations());
             }
         }
     }

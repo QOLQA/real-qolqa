@@ -215,7 +215,7 @@ function processNestedDocs(vertex, nested_docs, columns, graph) {
     }
 }
 
-function findConnectedCells(graph, startCell) {
+export function findConnectedCells(graph, startCell) {
     function getNeighbors(cell, graph) {
         const neighbors = []
         for (let to of cell.value.to) {

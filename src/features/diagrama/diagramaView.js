@@ -9,6 +9,8 @@ import LoopConversor from "../../classes/loop_conversor";
 import { changeStep, selectQueries, selectQueryForm, onSubmitQueryForm, toggleVisibility, deleteQuery, selectCompletitudMetric, updateMatrix } from "../queries/queries-slice";
 import moveContainedSwimlanesToBack from "./swimbottom";
 import { column } from "./cells";
+import setup from "../keyboard";
+import { firstCalcStructuralMetrics, selectNavigationCost, selectRecuperationPattern, selectRedundance, updateCountRelations } from "../structural-metrics/structural-metrics-slice";
 
 function generateQueryHTML(query, index) {
     const div = document.createElement('div');
@@ -93,6 +95,9 @@ export const renderDiagramaView = async(params, router) => {
     const selectedWordsInput = document.getElementById('selected-words');
     // metric completitud
     const completitudContainer = document.getElementById('content-completitud');
+    const redundanceContainer = document.getElementById('content-redundance');
+    const costNavigationContainer = document.getElementById('content-cost-navigation');
+    const patternAccessContainer = document.getElementById('content-pattern-access');
 
     openPopupButton.addEventListener('click', () => {
         store.dispatch(toggleVisibility());
@@ -170,6 +175,7 @@ export const renderDiagramaView = async(params, router) => {
                 const conversor = new LoopConversor();
                 conversor.fromJsonToGraph(diagrama, myGraph.graph);
                 store.dispatch(setLoaded());
+                // store.dispatch(firstCalcStructuralMetrics());
             }
         } else if (status === 'loaded') {
             graph.addEdge = function (edge, parent, source, target, index) //agregar conexiones
@@ -203,6 +209,7 @@ export const renderDiagramaView = async(params, router) => {
                     moveContainedSwimlanesToBack(graph, this.model.getParent(source))
                     this.model.endUpdate();
                     store.dispatch(updateMatrix());
+                    store.dispatch(updateCountRelations());
                 }
                 // return edgeAdded;
                 return null;
@@ -211,6 +218,12 @@ export const renderDiagramaView = async(params, router) => {
             showQueries(queries);
             const completitudValue = selectCompletitudMetric(store.getState());
             completitudContainer.innerHTML = `Se cubrieron las consultas de la aplicacion en un ${completitudValue}/1`;
+            const redundanceValue = selectRedundance(store.getState());
+            redundanceContainer.innerHTML = `Se repiten ${redundanceValue} nombres de colecciones`;
+            const patternAccessValue = selectRecuperationPattern(store.getState());
+            patternAccessContainer.innerHTML = `Valor de patron de acceso ${patternAccessValue}`;
+            const costNavigationValue = selectNavigationCost(store.getState());
+            costNavigationContainer.innerHTML = `El costo de navegacion es de ${costNavigationValue}`;
         }
 
         // render function for query form
@@ -300,4 +313,7 @@ export const renderDiagramaView = async(params, router) => {
         window.history.pushState({}, '', '/');
         router();
     })
+
+    // setup keyboard funcionality
+    setup();
 }

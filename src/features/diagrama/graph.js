@@ -10,6 +10,7 @@ import { updateChart } from "../update_chart.js";
 import { updateMatrix } from "../queries/queries-slice.js";
 import { store } from "../../app/store.js";
 import { selectStateDiagrama } from "./diagramaSlice.js";
+import { updateCountAtts, updateRedundance } from "../structural-metrics/structural-metrics-slice.js";
 
 function createGraph() {
 
@@ -490,6 +491,8 @@ function modalCreateDoc(graph, evt, prototype, cell) {
     graph.setSelectionCells(graph.importCells([vertex], 0, 0, cell));
 
     store.dispatch(updateMatrix());
+    store.dispatch(updateCountAtts());
+    store.dispatch(updateRedundance());
   }
 }
 

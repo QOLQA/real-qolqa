@@ -181,7 +181,7 @@ function createGraph() {
 
       const edgeAdded = mx.mxGraph.prototype.addEdge.apply(this, arguments); // "supercall"
       graph.getModel().setValue(edgeAdded, { generatedAttr: col1.id, cardinality: '0..1' });
-      console.log('vamos a ver estooo!');
+      // console.log('vamos a ver estooo!');
       return edgeAdded;
     }
     finally {
@@ -400,7 +400,7 @@ export class Graph {
             } else if (evt.properties.removed[0].style === 'table') {
               selectionChangedCardinality(this.graph, evt.properties.removed[0])
             } else {
-              console.log('se selecciono un atributo')
+              // console.log('se selecciono un atributo')
             }
           }
         }

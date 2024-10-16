@@ -307,9 +307,9 @@ const queryFormSlice = createSlice({
             const colsInQueries = new Set(Object.keys(state.matrix));
             const uniqueCols = new Set(collections.map(col => col.value.name));
             colsInQueries.forEach(col => {
-                console.log('analizado', col);
+                // console.log('analizado', col);
                 if (!uniqueCols.has(col)) {
-                    console.log('emtra siquiera una vez');
+                    // console.log('emtra siquiera una vez');
                     colsInQueries.forEach(otherCol => {
                         state.matrix[otherCol][col] = '00';
                         state.matrix[col][otherCol] = '00';
@@ -321,7 +321,7 @@ const queryFormSlice = createSlice({
                         }
                     });
                 }
-                console.log('sale del bucle');
+                // console.log('sale del bucle');
             });
             collections.forEach(collection => {
                 if (collection.value.name in state.matrix) {
