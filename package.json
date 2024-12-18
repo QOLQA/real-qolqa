@@ -17,6 +17,7 @@
     "@aire-ux/mxgraph": "^4.2.6",
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.6.0",
+    "chart.js": "^4.4.5",
     "uuid": "^9.0.1"
   }
 }

@@ -50,6 +50,8 @@ const router = () => {
   // Si no hay coincidencias, redirigir al home
   window.history.pushState({}, '', '/');
   renderSolutionsView(handleNavigation);
+
+  
 };
 
 // Manejar navegación al hacer clic en los enlaces
