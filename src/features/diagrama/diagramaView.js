@@ -11,6 +11,7 @@ import moveContainedSwimlanesToBack from "./swimbottom";
 import { column } from "./cells";
 import setup from "../keyboard";
 import { firstCalcStructuralMetrics, selectNavigationCost, selectRecuperationPattern, selectRedundance, updateCountRelations } from "../structural-metrics/structural-metrics-slice";
+import Chart from "chart.js/auto";
 
 function generateQueryHTML(query, index) {
     const div = document.createElement('div');
@@ -93,11 +94,6 @@ export const renderDiagramaView = async(params, router) => {
     const fullQueryInput = document.getElementById('query');
     const wordsButtons = document.getElementById('words-buttons');
     const selectedWordsInput = document.getElementById('selected-words');
-    // metric completitud
-    const completitudContainer = document.getElementById('content-completitud');
-    const redundanceContainer = document.getElementById('content-redundance');
-    const costNavigationContainer = document.getElementById('content-cost-navigation');
-    const patternAccessContainer = document.getElementById('content-pattern-access');
 
     openPopupButton.addEventListener('click', () => {
         store.dispatch(toggleVisibility());
@@ -164,6 +160,43 @@ export const renderDiagramaView = async(params, router) => {
     function updateSelectedWordsInput() {
         selectedWordsInput.value = selectedWords.join(',')
     }
+
+    // Chart canvas
+    const chartQueryContainer = document.getElementById('query-metrics-chart');
+    const chartStrucContainer = document.getElementById('struc-metrics-chart');
+
+    const chartQuery = new Chart(chartQueryContainer, {
+        type: 'pie',
+        data: {
+            labels: ['Consultas abordadas', 'Consultas sin abordar'],
+            datasets: [{
+                label: '%',
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                ],
+            }],
+        },
+    });
+    const chartStruc = new Chart(chartStrucContainer, {
+        type: 'pie',
+        data: {
+            labels: ['Redundancia', 'Patron de Acceso', 'Costo de Navegacion'],
+            datasets: [{
+                label: 'Valor proporcionado',
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                ],
+                // data: [
+                //     redundanceValue,
+                //     patternAccessValue,
+                //     costNavigationValue,
+                // ],
+            }]
+        }
+    });
     
     const renderDiagram = () => {
         const status = selectStateDiagrama(store.getState());
@@ -217,13 +250,20 @@ export const renderDiagramaView = async(params, router) => {
             const queries = selectQueries(store.getState());
             showQueries(queries);
             const completitudValue = selectCompletitudMetric(store.getState());
-            completitudContainer.innerHTML = `Se cubrieron las consultas de la aplicacion en un ${completitudValue}/1`;
             const redundanceValue = selectRedundance(store.getState());
-            redundanceContainer.innerHTML = `Se repiten ${redundanceValue} nombres de colecciones`;
             const patternAccessValue = selectRecuperationPattern(store.getState());
-            patternAccessContainer.innerHTML = `Valor de patron de acceso ${patternAccessValue}`;
             const costNavigationValue = selectNavigationCost(store.getState());
-            costNavigationContainer.innerHTML = `El costo de navegacion es de ${costNavigationValue}`;
+            chartQuery.data.datasets[0].data = [
+                completitudValue * 100,
+                (1 - completitudValue) * 100,
+            ];
+            chartStruc.data.datasets[0].data = [
+                redundanceValue,
+                patternAccessValue,
+                costNavigationValue,
+            ];
+            chartQuery.update();
+            chartStruc.update();
         }
 
         // render function for query form
