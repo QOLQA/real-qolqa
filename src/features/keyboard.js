@@ -1,10 +1,9 @@
 import { store } from "../app/store";
 import mx from "../util";
-import { graph } from "./diagrama/graph";
 import { updateMatrix } from "./queries/queries-slice";
 import { updateCountRelations } from "./structural-metrics/structural-metrics-slice";
 
-export default function setup() {
+export default function setup(graph) {
     const keyhandler = new mx.mxKeyHandler(graph);
 
     keyhandler.bindKey(46, deleteSelectedEdges);
