@@ -1,6 +1,4 @@
-import { graph } from "../graph"
-
-export default function setup() {
+export default function setup(graph) {
     document.getElementById('zoomInButton').addEventListener('click', function() {
         graph.zoomIn()
     })

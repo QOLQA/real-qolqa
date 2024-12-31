@@ -9,7 +9,8 @@ import LoopConversor from "../../classes/loop_conversor";
 import { changeStep, selectQueries, selectQueryForm, onSubmitQueryForm, toggleVisibility, deleteQuery, selectCompletitudMetric, updateMatrix } from "../queries/queries-slice";
 import moveContainedSwimlanesToBack from "./swimbottom";
 import { column } from "./cells";
-import setup from "../keyboard";
+import keyboardSetup from "../keyboard";
+import zoomSetup from "../zoom_slider";
 import { firstCalcStructuralMetrics, selectNavigationCost, selectRecuperationPattern, selectRedundance, updateCountRelations } from "../structural-metrics/structural-metrics-slice";
 import Chart from "chart.js/auto";
 
@@ -355,5 +356,6 @@ export const renderDiagramaView = async(params, router) => {
     })
 
     // setup keyboard funcionality
-    setup();
+    keyboardSetup(graph);
+    zoomSetup(graph);
 }
