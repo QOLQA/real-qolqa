@@ -1,7 +1,6 @@
-import { container, graph } from "../graph"
 import mx from "../util"
 
-export default function setup() {
+export default function setup(container, graph) {
     const outlineNavigator = document.getElementById('outlineContainer')
 
     mx.mxEvent.disableContextMenu(container)
