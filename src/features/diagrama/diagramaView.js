@@ -11,6 +11,7 @@ import moveContainedSwimlanesToBack from "./swimbottom";
 import { column } from "./cells";
 import keyboardSetup from "../keyboard";
 import zoomSetup from "../zoom_slider";
+import minimapSetup from "../outline_navigator";
 import { firstCalcStructuralMetrics, selectNavigationCost, selectRecuperationPattern, selectRedundance, updateCountRelations } from "../structural-metrics/structural-metrics-slice";
 import Chart from "chart.js/auto";
 
@@ -358,4 +359,5 @@ export const renderDiagramaView = async(params, router) => {
     // setup keyboard funcionality
     keyboardSetup(graph);
     zoomSetup(graph);
+    minimapSetup(container, graph);
 }
