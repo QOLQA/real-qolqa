@@ -5,17 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css && vite build",
-    "preview": "vite preview",
-    "css": "npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --watch"
+    "build": "tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
-    "vite": "^4.5.2"
+    "tailwindcss": "^4.0.12",
+    "vite": "^6.2.1"
   },
   "dependencies": {
     "@aire-ux/mxgraph": "^4.2.6",
     "@reduxjs/toolkit": "^2.3.0",
+    "@tailwindcss/vite": "^4.0.12",
     "axios": "^1.6.0",
     "chart.js": "^4.4.5",
     "uuid": "^9.0.1"
