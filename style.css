@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 #toolbar {
   background-color: #f2f4f4;
   border-radius: 5px;
@@ -10,6 +12,7 @@
   top: 100px;
   width: 24px;
 }
+
 #container {
   bottom: 0px;
   left: 45px;
@@ -18,6 +21,7 @@
   right: 0px;
   top: 26px;
 }
+
 #importButton {
   background-color: #00bfa6;
   border: 2px dashed #00bfa6;
@@ -90,6 +94,7 @@
   top: 10px;
   width: 300px;
 }
+
 /*
 #buttons {
   position: absolute;
@@ -108,6 +113,7 @@
   position: absolute;
   top: 50px;
 }
+
 /*
 .btn-toolbar{
   position: absolute;
@@ -152,18 +158,25 @@
   position: absolute;
   top: 50px;
 }
-#new-model{
+
+#new-model {
   display: inline-block;
-  padding: 10px 20px; /* Ajusta el padding según sea necesario */
-  background-color: #4CAF50; /* Color de fondo del botón */
-  color: white; /* Color del texto del botón */
+  padding: 10px 20px;
+  /* Ajusta el padding según sea necesario */
+  background-color: #4CAF50;
+  /* Color de fondo del botón */
+  color: white;
+  /* Color del texto del botón */
   text-align: center;
   text-decoration: none;
   border: none;
-  border-radius: 5px; /* Bordes redondeados */
+  border-radius: 5px;
+  /* Bordes redondeados */
   cursor: pointer;
-  transition: background-color 0.3s; /* Efecto de transición para el color de fondo */
+  transition: background-color 0.3s;
+  /* Efecto de transición para el color de fondo */
 }
+
 #view1 {
   max-width: 1000px;
   margin: 0 auto;
