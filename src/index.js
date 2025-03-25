@@ -1,4 +1,4 @@
-import "./styles/output.css";
+// import "./styles/output.css";
 import { renderDiagramaView } from "./features/diagrama/diagramaView";
 import { renderSolutionsView } from "./features/solutions/solutionsView";
 
@@ -34,8 +34,8 @@ const router = () => {
   //   renderTodoView();
   // }
   const routes = [
-    {path: '/', view: renderSolutionsView},
-    {path: '/diagrama/:id', view: renderDiagramaView},
+    { path: '/', view: renderSolutionsView },
+    { path: '/diagrama/:id', view: renderDiagramaView },
   ]
 
   // Buscar la ruta que coincida con el path actual
@@ -51,7 +51,7 @@ const router = () => {
   window.history.pushState({}, '', '/');
   renderSolutionsView(handleNavigation);
 
-  
+
 };
 
 // Manejar navegación al hacer clic en los enlaces

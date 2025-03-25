@@ -1,9 +1,8 @@
 import { store } from "../../app/store";
 import { cleanUp, loadHTML, unsubscribe } from "../../app/utils";
 import { loadSolutions, removeSolution, selectSolutions, submitSolution } from "./solutionsSlice";
-import '../../styles/output.css';
 
-export const renderSolutionsView = async(handleNavigation) => {
+export const renderSolutionsView = async (handleNavigation) => {
     // clean up
     cleanUp()
 
